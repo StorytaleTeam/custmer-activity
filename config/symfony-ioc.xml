@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <!-- Doctrine start -->
+        <parameter type="collection" key="db.psql.connection.master">
+            <parameter type="string" key="host">%env(DB_PSQL_CONNECTION_MASTER_HOST)%</parameter>
+            <parameter type="string" key="port">%env(DB_PSQL_CONNECTION_MASTER_PORT)%</parameter>
+            <parameter type="string" key="user">%env(DB_PSQL_CONNECTION_MASTER_USER)%</parameter>
+            <parameter type="string" key="password">%env(DB_PSQL_CONNECTION_MASTER_PASSWORD)%</parameter>
+            <parameter type="string" key="dbname">%env(DB_PSQL_CONNECTION_MASTER_DBNAME)%</parameter>
+            <parameter type="string" key="charset">%env(DB_PSQL_CONNECTION_MASTER_CHARSET)%</parameter>
+        </parameter>
+
+        <parameter type="collection" key="db.psql.connection.slave">
+            <parameter type="string" key="host">%env(DB_PSQL_CONNECTION_SLAVE_HOST)%</parameter>
+            <parameter type="string" key="port">%env(DB_PSQL_CONNECTION_SLAVE_PORT)%</parameter>
+            <parameter type="string" key="user">%env(DB_PSQL_CONNECTION_SLAVE_USER)%</parameter>
+            <parameter type="string" key="password">%env(DB_PSQL_CONNECTION_SLAVE_PASSWORD)%</parameter>
+            <parameter type="string" key="dbname">%env(DB_PSQL_CONNECTION_SLAVE_DBNAME)%</parameter>
+            <parameter type="string" key="charset">%env(DB_PSQL_CONNECTION_SLAVE_CHARSET)%</parameter>
+        </parameter>
+
+        <parameter type="string" key="doctrine.orm.configuration.isDev">$env(DOCTRINE_CONFIGURATION_IS_DEV)</parameter>
+        <parameter type="string" key="doctrine.orm.configuration.proxyDir">%kernel.project_dir%/runtime/Doctrine/Proxies</parameter>
+        <parameter type="string" key="doctrine.cache.adapter.class">%env(DOCTRINE_CACHE_ADAPTER_CLASS)%</parameter>
+        <!-- Doctrine end -->
+
+        <!-- EventBus -->
+        <parameter type="collection" key="eventBus.amqp.connection">
+            <parameter type="string" key="host">%env(AMQP_CONNECTION_HOST)%</parameter>
+            <parameter type="string" key="port">%env(AMQP_CONNECTION_PORT)%</parameter>
+            <parameter type="string" key="vhost">%env(AMQP_CONNECTION_VHOST)%</parameter>
+            <parameter type="string" key="login">%env(AMQP_CONNECTION_LOGIN)%</parameter>
+            <parameter type="string" key="password">%env(AMQP_CONNECTION_PASSWORD)%</parameter>
+        </parameter>
+
+        <parameter type="collection" key="eventBus.amqp.exchangeConfig">
+            <parameter type="string" key="name">storytaleMessageBus</parameter>
+            <parameter type="string" key="type">fanout</parameter>
+            <parameter type="collection" key="arguments"/>
+            <parameter type="binary" key="flags">2</parameter>
+        </parameter>
+        <!-- EventBus end -->
+    </parameters>
+
+    <services>
+        <!-- Doctrine start -->
+        <service id="doctrine.metadata.driver" class="Doctrine\ORM\Mapping\Driver\XmlDriver">
+            <argument type="collection">
+                <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Order/Persistence/Doctrine/Mapping/</argument>
+            </argument>
+        </service>
+
+        <service id="doctrine.migrations.configuration" class="Doctrine\Migrations\Configuration\Configuration" public="true">
+            <argument type="service" id="doctrine.orm.connection"/>
+            <call method="setMigrationsDirectory">
+                <argument>%kernel.project_dir%/runtime/Doctrine/Migrations</argument>
+            </call>
+            <call method="setMigrationsNamespace">
+                <argument>Doctrine\Migrations</argument>
+            </call>
+            <call method="setMigrationsTableName">
+                <argument>migrations</argument>
+            </call>
+            <call method="setMigrationsColumnName">
+                <argument>version</argument>
+            </call>
+        </service>
+
+        <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration">
+            <factory class="Storytale\PortAdapters\Secondary\Persistence\Doctrine\DoctrineConfiguratorSetup" method="createConfiguration"/>
+            <argument>%doctrine.orm.configuration.isDev%</argument>
+            <argument>%doctrine.orm.configuration.proxyDir%</argument>
+            <argument type="service" id="doctrine.orm.configuration.cache"/>
+            <argument type="collection"/>
+            <call method="setMetadataDriverImpl">
+                <argument type="service" id="doctrine.metadata.driver"/>
+            </call>
+        </service>
+
+        <service id="doctrine.orm.configuration.cache" class="%doctrine.cache.adapter.class%"/>
+
+        <service id="doctrine.dbal.driver.pdopgsql" class="Doctrine\DBAL\Driver\PDOPgSql\Driver"/>
+
+        <service id="storytale.portAdapters.inner.persistence.doctrine.EventCollectorSubscriber" class="Storytale\PortAdapters\Secondary\Persistence\Doctrine\EventCollectorSubscriber"/>
+
+        <service id="doctrine.common.eventmanager" class="Doctrine\Common\EventManager">
+            <call method="addEventSubscriber">
+                <argument type="service" id="storytale.portAdapters.inner.persistence.doctrine.EventCollectorSubscriber"/>
+            </call>
+        </service>
+
+        <service id="doctrine.orm.connection" class="Doctrine\DBAL\Connection" public="true">
+            <argument>%db.psql.connection.master%</argument>
+            <argument type="service" id="doctrine.dbal.driver.pdopgsql"/>
+            <argument>null</argument>
+            <argument type="service" id="doctrine.common.eventmanager"/>
+        </service>
+
+        <service id="doctrine.orm.entityManager" class="Doctrine\ORM\EntityManager" public="true">
+            <factory class="Doctrine\ORM\EntityManager" method="create"/>
+            <argument type="service" id="doctrine.orm.connection"/>
+            <argument type="service" id="doctrine.orm.configuration"/>
+            <argument type="service" id="doctrine.common.eventmanager"/>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession" class="Storytale\PortAdapters\Secondary\Persistence\Doctrine\DoctrineDomainSession">
+            <argument type="service" id="doctrine.orm.entityManager"/>
+        </service>
+        <!-- Doctrine end -->
+
+        <!-- EventBus -->
+        <service id="amqp.connection" class="AMQPConnection">
+            <argument>%eventBus.amqp.connection%</argument>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.eventBus.rabbitMQ.rabbitMQEventBusPublisher" class="Storytale\PortAdapters\Secondary\EventBus\RabbitMQ\RabbitMQEventBusPublisher">
+            <argument>%eventBus.amqp.exchangeConfig%</argument>
+            <argument type="service" id="amqp.connection"/>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.eventBus.rabbitMQ.rabbitMQEventBusSubscriber" class="Storytale\PortAdapters\Secondary\EventBus\RabbitMQ\RabbitMQEventBusSubscriber">
+            <argument type="collection">
+                <argument key="name">%env(AMQP_QUEUE_NAME)%</argument>
+                <argument key="flags">%env(AMQP_QUEUE_FLAGS)%</argument>
+            </argument>
+            <argument>%eventBus.amqp.exchangeConfig%</argument>
+            <argument type="service" id="amqp.connection"/>
+        </service>
+
+        <service id="storytale.contracts.sharedEvents.eventHandlersMap" class="Storytale\Contracts\SharedEvents\EventHandlersMap" public="true">
+            <argument type="collection">
+<!--                <argument key="inventory.illustration.illustrationWasCreated" type="service" id="storytale.statistic.application.command.illustrationLog.externalEvent.onIllustrationWasCreatedHandler"/>-->
+            </argument>
+        </service>
+
+        <service id="storytale.contracts.sharedEvents.eventsMap" class="Storytale\Contracts\SharedEvents\EventsMap" public="true">
+            <argument type="collection">
+<!--                <argument key="inventory.illustration.illustrationWasCreated">Storytale\Contracts\SharedEvents\Illustration\IllustrationWasCreated</argument>-->
+            </argument>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.eventBus.storytaleEventBus" class="Storytale\PortAdapters\Secondary\EventBus\StorytaleEventBus" public="true">
+            <argument type="service" id="storytale.portAdapters.secondary.eventBus.rabbitMQ.rabbitMQEventBusPublisher"/>
+            <argument type="service" id="storytale.portAdapters.secondary.eventBus.rabbitMQ.rabbitMQEventBusSubscriber"/>
+        </service>
+        <!-- EventBus end -->
+
+        <service id="AuraPgSQLQueryFactory" class="Aura\SqlQuery\QueryFactory">
+            <argument type="string">pgsql</argument>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection" class="Storytale\PortAdapters\Secondary\DataBase\Sql\StorytaleTeam\StorytalePdoConnection">
+            <argument>pgsql:dbname=%env(DB_PSQL_CONNECTION_SLAVE_DBNAME)%;host=%env(DB_PSQL_CONNECTION_SLAVE_HOST)%;port=%env(DB_PSQL_CONNECTION_SLAVE_PORT)%</argument>
+            <argument>%env(DB_PSQL_CONNECTION_SLAVE_USER)%</argument>
+            <argument>%env(DB_PSQL_CONNECTION_SLAVE_PASSWORD)%</argument>
+        </service>
+
+        <!-- Logger start -->
+        <service id="gelf.transport.tcpTransport" class="Gelf\Transport\TcpTransport">
+            <argument>%env(GELF_TCP_TRANSPORT_HOST)%</argument>
+            <argument>%env(GELF_TCP_TRANSPORT_PORT)%</argument>
+            <call method="setConnectTimeout">
+                <argument>%env(GELF_TCP_TRANSPORT_TIMEOUT)%</argument>
+            </call>
+        </service>
+
+        <service id="gelf.publisher" class="Gelf\Publisher">
+            <argument type="service" id="gelf.transport.tcpTransport"/>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.logger.gelf.gelfLogger" class="Storytale\PortAdapters\Secondary\Logger\Gelf\GelfLogger">
+            <argument type="service" id="gelf.publisher"/>
+            <argument>%env(GELF_LOGGER_FACILITY)%</argument>
+        </service>
+
+        <service id="zend.log.writer.stream" class="Zend\Log\Writer\Stream">
+            <argument>%env(GELF_LOGGER_STREAM)%</argument>
+            <argument>null</argument>
+            <argument type="constant">PHP_EOL</argument>
+        </service>
+
+        <service id="zend.log.logger" class="Zend\Log\Logger">
+            <call method="addWriter">
+                <argument type="service" id="zend.log.writer.stream"/>
+            </call>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.logger.zend.zendLogger" class="Storytale\PortAdapters\Secondary\Logger\Zend\ZendLogger">
+            <argument type="service" id="zend.log.logger"/>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.logger.chainLogger" class="Storytale\PortAdapters\Secondary\Logger\Chain\ChainLogger" public="true">
+            <argument type="collection">
+<!--                <argument type="service" id="storytale.portAdapters.secondary.logger.gelf.gelfLogger"/>-->
+                <argument type="service" id="storytale.portAdapters.secondary.logger.zend.zendLogger"/>
+            </argument>
+        </service>
+        <!-- Logger end -->
+
+        <!--Controllers start-->
+        <service id="RestAPI\Controller\IndexController" class="RestAPI\Controller\IndexController" public="true"/>
+
+        <service id="RestAPI\Controller\TestController" class="RestAPI\Controller\TestController" public="true">
+            <argument type="service" id="storytale.skeletonDev.application.command.testOrder.testOrderService"/>
+            <argument type="service" id="storytale.skeletonDev.portAdapters.secondary.order.querying.aura.auraOrderDataProvider"/>
+        </service>
+        <!--Controllers end-->
+
+        <!-- Command start -->
+        <service id="storytale.skeletonDev.application.command.testOrder.testOrderService" class="Storytale\SkeletonDev\Application\Command\TestOrder\TestOrderService">
+            <argument type="service" id="storytale.skeletonDev.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+        </service>
+        <!-- Command end -->
+
+        <!-- Query start -->
+        <service id="storytale.skeletonDev.portAdapters.secondary.order.querying.aura.auraOrderDataProvider" class="Storytale\SkeletonDev\PortAdapters\Secondary\Order\Querying\Aura\AuraOrderDataProvider">
+            <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
+            <argument type="service" id="AuraPgSQLQueryFactory"/>
+        </service>
+        <!-- Query start -->
+
+        <service id="storytale.skeletonDev.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository" class="Storytale\SkeletonDev\PortAdapters\Secondary\Order\Persistence\Doctrine\DoctrineOrderRepository">
+            <argument type="service" id="doctrine.orm.entityManager"/>
+        </service>
+
+
+    </services>
+</container>

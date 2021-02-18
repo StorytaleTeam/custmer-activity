@@ -1,0 +1,35 @@
+{
+    "name": "storytale/skeleton-dev",
+    "description": "skeleton for Symfony backend services",
+    "authors": [
+        {
+            "name": "Evgeniy Bezginow",
+            "email": "bezginow3@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Storytale\\SkeletonDev\\": "src/",
+            "RestAPI\\": "src/PortAdapters/Primary/App/Zend/RestAPI/src/RestAPI"
+        }
+    },
+    "require": {
+        "php": ">=7.4.1",
+        "symfony/dotenv": "^5.1",
+        "storytale/contracts-sk": "dev-master",
+        "storytale/port-adapter-sk": "dev-master",
+        "aura/sqlquery": "^2.7",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "git@github.com:StorytaleTeam/port-adapter-sk.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:StorytaleTeam/contracts-sk.git"
+        }
+    ]
+}

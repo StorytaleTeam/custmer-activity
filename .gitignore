@@ -1,0 +1,5 @@
+*.local.php
+/vendor
+/.idea
+/config/.env
+/runtime/Doctrine/Proxies/*
