@@ -1,17 +1,17 @@
 version: "3"
 services:
-#  postgres_skeleton-dev:
-#    image: postgres:13
-#    container_name: psql.skeleton-dev
-#    ports:
-#      - 5434:5432
-#    environment:
-#      POSTGRES_USER: skeleton-dev
-#      POSTGRES_PASSWORD: skeleton-dev
-#      POSTGRES_DB: skeleton-dev
+  postgres_customer-activity:
+    image: postgres:13
+    container_name: psql.customer-activity
+    ports:
+      - 5437:5432
+    environment:
+      POSTGRES_USER: customer-activity
+      POSTGRES_PASSWORD: customer-activity
+      POSTGRES_DB: customer-activity
 
-  fpm_skeleton-dev:
-    container_name: fpm.skeleton-dev
+  fpm_customer-activity:
+    container_name: fpm.customer-activity
     image: ewwgenn/storytale:fpm7.4_LOCAL
     env_file: ./../../config/.env
     restart: always
@@ -20,15 +20,15 @@ services:
     volumes:
       - "./../../:/www/"
 
-  nginx_skeleton-dev:
-    container_name: nginx.skeleton-dev
+  nginx_customer-activity:
+    container_name: nginx.customer-activity
     image: nginx:alpine
     restart: always
     depends_on:
-      - fpm_skeleton-dev
+      - fpm_customer-activity
     links:
-      - fpm_skeleton-dev:fpm_skeleton-dev.local
+      - fpm_customer-activity:fpm_customer-activity.local
     ports:
-      - "7006:80"
+      - "7009:80"
     volumes:
       - "./nginx:/etc/nginx/conf.d"

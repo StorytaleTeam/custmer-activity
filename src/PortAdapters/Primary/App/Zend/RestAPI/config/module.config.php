@@ -1,7 +1,10 @@
 <?php
 
 use RestAPI\Controller\IndexController;
-use RestAPI\Controller\TestController;
+use RestAPI\Controller\SubscriptionPlanController;
+use RestAPI\Controller\SubscriptionPlanCustomerController;
+use RestAPI\Controller\CustomerController;
+use RestAPI\Controller\SubscriptionController;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 
@@ -33,16 +36,55 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
-                    'test' => [
+                    'customer' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/test[/:action]',
+                            'route' => '/customer[/:id]',
                             'constraints' => [
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*',
                             ],
                             'defaults' => [
-                                'controller' => TestController::class,
-                                'action' => 'index',
+                                'controller' => CustomerController::class,
+                                'action' => null,
+                            ],
+                        ],
+                    ],
+                    'subscriptionPlan' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/subscriptionPlan[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => SubscriptionPlanController::class,
+                                'action' => null,
+                            ],
+                        ],
+                    ],
+                    'customerSubscriptionPlan' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/customer/subscriptionPlan[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => SubscriptionPlanCustomerController::class,
+                                'action' => null,
+                            ],
+                        ],
+                    ],
+                    'subscription' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/subscription[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => SubscriptionController::class,
+                                'action' => null,
                             ],
                         ],
                     ],

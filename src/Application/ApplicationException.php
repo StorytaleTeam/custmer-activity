@@ -1,6 +1,6 @@
 <?php
 
-namespace Storytale\SkeletonDev\Application;
+namespace Storytale\CustomerActivity\Application;
 
 class ApplicationException extends \Exception
 {}

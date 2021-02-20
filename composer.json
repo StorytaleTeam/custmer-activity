@@ -1,6 +1,5 @@
 {
-    "name": "storytale/skeleton-dev",
-    "description": "skeleton for Symfony backend services",
+    "name": "storytale/customer-activity",
     "authors": [
         {
             "name": "Evgeniy Bezginow",
@@ -9,7 +8,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Storytale\\SkeletonDev\\": "src/",
+            "Storytale\\CustomerActivity\\": "src/",
             "RestAPI\\": "src/PortAdapters/Primary/App/Zend/RestAPI/src/RestAPI"
         }
     },

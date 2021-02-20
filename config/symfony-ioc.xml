@@ -49,7 +49,8 @@
         <!-- Doctrine start -->
         <service id="doctrine.metadata.driver" class="Doctrine\ORM\Mapping\Driver\XmlDriver">
             <argument type="collection">
-                <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Order/Persistence/Doctrine/Mapping/</argument>
+                <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Customer/Persistence/Doctrine/Mapping/</argument>
+                <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Subscription/Persistence/Doctrine/Mapping/</argument>
             </argument>
         </service>
 
@@ -203,29 +204,56 @@
         <!--Controllers start-->
         <service id="RestAPI\Controller\IndexController" class="RestAPI\Controller\IndexController" public="true"/>
 
-        <service id="RestAPI\Controller\TestController" class="RestAPI\Controller\TestController" public="true">
-            <argument type="service" id="storytale.skeletonDev.application.command.testOrder.testOrderService"/>
-            <argument type="service" id="storytale.skeletonDev.portAdapters.secondary.order.querying.aura.auraOrderDataProvider"/>
+        <service id="RestAPI\Controller\SubscriptionPlanController" class="RestAPI\Controller\SubscriptionPlanController">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionPlanDataProvider"/>
+        </service>
+
+        <service id="RestAPI\Controller\SubscriptionPlanCustomerController" class="RestAPI\Controller\SubscriptionPlanCustomerController">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionPlanDataProvider"/>
+        </service>
+
+        <service id="RestAPI\Controller\CustomerController" class="RestAPI\Controller\CustomerController" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraCustomerDataProvider"/>
+        </service>
+
+        <service id="RestAPI\Controller\SubscriptionController" class="RestAPI\Controller\SubscriptionController">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionDataProvider"/>
         </service>
         <!--Controllers end-->
 
         <!-- Command start -->
-        <service id="storytale.skeletonDev.application.command.testOrder.testOrderService" class="Storytale\SkeletonDev\Application\Command\TestOrder\TestOrderService">
-            <argument type="service" id="storytale.skeletonDev.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository"/>
-            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
-        </service>
         <!-- Command end -->
 
         <!-- Query start -->
-        <service id="storytale.skeletonDev.portAdapters.secondary.order.querying.aura.auraOrderDataProvider" class="Storytale\SkeletonDev\PortAdapters\Secondary\Order\Querying\Aura\AuraOrderDataProvider">
+        <service id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraCustomerDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Querying\Aura\AuraCustomerDataProvider">
+            <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
+            <argument type="service" id="AuraPgSQLQueryFactory"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Querying\Aura\AuraSubscriptionDataProvider">
+            <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
+            <argument type="service" id="AuraPgSQLQueryFactory"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionPlanDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Querying\Aura\AuraSubscriptionPlanDataProvider">
             <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
             <argument type="service" id="AuraPgSQLQueryFactory"/>
         </service>
         <!-- Query start -->
 
-        <service id="storytale.skeletonDev.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository" class="Storytale\SkeletonDev\PortAdapters\Secondary\Order\Persistence\Doctrine\DoctrineOrderRepository">
+        <!-- Repository -->
+        <service id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Persistence\Doctrine\DoctrineCustomerRepository">
             <argument type="service" id="doctrine.orm.entityManager"/>
         </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Persistence\Doctrine\DoctrineSubscriptionRepository">
+            <argument type="service" id="doctrine.orm.entityManager"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionPlanRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Persistence\Doctrine\DoctrineSubscriptionPlanRepository">
+            <argument type="service" id="doctrine.orm.entityManager"/>
+        </service>
+        <!-- Repository END -->
 
 
     </services>

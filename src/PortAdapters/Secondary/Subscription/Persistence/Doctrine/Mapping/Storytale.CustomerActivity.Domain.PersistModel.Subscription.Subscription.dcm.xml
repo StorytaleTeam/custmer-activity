@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription" table="subscriptions">
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+        <field name="createdDate" type="datetime" column="created_date"/>
+        <field name="name" column="name"/>
+        <field name="duration" type="integer"/>
+        <field name="price" type="float"/>
+        <field name="downloadLimit" type="integer" column="download_limit"/>
+        <field name="downloadRemaining" type="integer" column="download_remaining"/>
+        <field name="status" type="integer" column="status"/>
+        <field name="startDate" type="datetime" column="start_date" nullable="true"/>
+        <field name="endDate" type="datetime" column="end_date" nullable="true"/>
+        <one-to-many field="downloads" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload" mapped-by="subscription"/>
+        <many-to-one field="customer" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer" inversed-by="subscriptions">
+            <join-column name="customer_id" referenced-column-name="id"/>
+        </many-to-one>
+        <many-to-one field="subscriptionPlan" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan" inversed-by="subscriptions">
+            <join-column name="subscription_plan_id" referenced-column-name="id"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

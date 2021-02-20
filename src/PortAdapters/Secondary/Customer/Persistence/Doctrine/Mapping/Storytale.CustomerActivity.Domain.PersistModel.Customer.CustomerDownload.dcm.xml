@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload" table="customer_downloads">
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+        <field name="createdDate" type="datetime" column="created_date"/>
+        <field name="illustrationId" type="integer" column="illustration_id"/>
+        <field name="reDownloadCount" type="integer" column="re_download_count"/>
+        <field name="lastDownloadDate"  type="datetime" column="last_download_date"/>
+        <many-to-one field="customer" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer" inversed-by="downloads">
+            <join-column name="customer_id" referenced-column-name="id"/>
+        </many-to-one>
+        <many-to-one field="subscription" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription" inversed-by="downloads">
+            <join-column name="subscription_id" referenced-column-name="id"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

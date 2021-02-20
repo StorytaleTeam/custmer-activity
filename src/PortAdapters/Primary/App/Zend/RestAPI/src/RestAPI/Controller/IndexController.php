@@ -9,6 +9,6 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        return new JsonModel(['success' => true, 'result' => 'skeleton-dev service']);
+        return new JsonModel(['success' => true, 'result' => 'customer-activity service']);
     }
 }

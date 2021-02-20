@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer" table="customers">
+        <id name="id" type="integer" column="id">
+            <generator strategy="NONE"/>
+        </id>
+        <field name="email" column="email"/>
+        <field name="name" column="name" nullable="true"/>
+        <field name="createdDate" type="datetime" column="created_date"/>
+        <field name="subscriptionAutoRenewal" type="boolean" column="subscription_auto_renewal"/>
+        <one-to-many field="likes" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerLike" mapped-by="customer"/>
+        <one-to-many field="downloads" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload" mapped-by="customer"/>
+        <one-to-many field="subscriptions" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription" mapped-by="customer"/>
+    </entity>
+</doctrine-mapping>

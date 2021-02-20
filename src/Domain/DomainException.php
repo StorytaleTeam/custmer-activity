@@ -1,6 +1,6 @@
 <?php
 
-namespace Storytale\SkeletonDev\Domain;
+namespace Storytale\CustomerActivity\Domain;
 
 class DomainException extends \Exception
 {}
