@@ -10,7 +10,7 @@ use Storytale\PortAdapters\Secondary\DataBase\Sql\StorytaleTeam\AbstractAuraData
 class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
     implements SubscriptionDataProvider
 {
-    public function findAllByCustomer(int $customerId): array
+    public function findAllByCustomer(int $customerId, int $count, int $page): array
     {
         $select = $this->queryFactory
             ->newSelect()
@@ -27,6 +27,8 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
             ])
             ->from('subscriptions AS s')
             ->where('s.customer_id = :customerId')
+            ->limit($count)
+            ->offset($count * ($page - 1))
             ->bindValue('customerId' , $customerId);
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), SubscriptionBasic::class);
@@ -63,5 +65,27 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
         }
 
         return count($response) === 0 ? null : $response[0];
+    }
+
+    public function findList(int $count, int $page, ?array $params = null): array
+    {
+        $select = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                's.id',
+                's.customer_id' => 'customerId',
+                's.subscription_plan_id' => 'subscriptionPlanId',
+                's.created_date' => 'createdDate',
+                's.name',
+                's.price',
+                's.status',
+                's.start_date' => 'startDate',
+                's.end_date' => 'endDate',
+            ])
+            ->from('subscriptions AS s')
+            ->limit($count)
+            ->offset($count * ($page - 1));
+
+        return $this->executeStatement($select->getStatement(), $select->getBindValues(), SubscriptionBasic::class);
     }
 }

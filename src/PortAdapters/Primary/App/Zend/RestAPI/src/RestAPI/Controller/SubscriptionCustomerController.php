@@ -8,7 +8,7 @@ use Storytale\CustomerActivity\Application\Query\Subscription\SubscriptionDataPr
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
-class SubscriptionController extends AbstractRestfulController
+class SubscriptionCustomerController extends AbstractRestfulController
 {
     /** @var SubscriptionDataProvider */
     private SubscriptionDataProvider $subscriptionDataProvider;
@@ -25,7 +25,9 @@ class SubscriptionController extends AbstractRestfulController
     public function create($data)
     {
         $subscriptionSigningDTO = new SubscriptionSigningDTO($data);
-        $response = $this->subscriptionService->signing($subscriptionSigningDTO, true);
+
+        /** @Annotation The second argument CANNOT be TRUE */
+        $response = $this->subscriptionService->signing($subscriptionSigningDTO);
 
         return new JsonModel($response->jsonSerialize());
     }
@@ -34,8 +36,12 @@ class SubscriptionController extends AbstractRestfulController
     {
         $page = $this->params()->fromQuery('page', 1);
         $count = $this->params()->fromQuery('count', 50);
+        $customerId = $this->params()->fromQuery('customerId');
+        if (empty($customerId)) {
+            return new JsonModel(['success' => false, 'message' => 'Need not empty `customerId` param.']);
+        }
 
-        $subscriptions = $this->subscriptionDataProvider->findList($count ,$page);
+        $subscriptions = $this->subscriptionDataProvider->findAllByCustomer($customerId, $count ,$page);
         $response = [
             'success' => true,
             'subscriptions' => $subscriptions,

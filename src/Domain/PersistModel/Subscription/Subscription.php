@@ -83,4 +83,12 @@ class Subscription extends AbstractEntity
         $this->endDate = $endDate;
         parent::__construct();
     }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 }

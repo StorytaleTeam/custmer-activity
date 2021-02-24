@@ -5,6 +5,7 @@ use RestAPI\Controller\SubscriptionPlanController;
 use RestAPI\Controller\SubscriptionPlanCustomerController;
 use RestAPI\Controller\CustomerController;
 use RestAPI\Controller\SubscriptionController;
+use RestAPI\Controller\SubscriptionCustomerController;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 
@@ -84,6 +85,19 @@ return [
                             ],
                             'defaults' => [
                                 'controller' => SubscriptionController::class,
+                                'action' => null,
+                            ],
+                        ],
+                    ],
+                    'customerSubscription' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/customer/subscription[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => SubscriptionCustomerController::class,
                                 'action' => null,
                             ],
                         ],

@@ -219,11 +219,18 @@
 
         <service id="RestAPI\Controller\SubscriptionController" class="RestAPI\Controller\SubscriptionController" public="true">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionDataProvider"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.subscriptionService"/>
+        </service>
+
+        <service id="RestAPI\Controller\SubscriptionCustomerController" class="RestAPI\Controller\SubscriptionCustomerController" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionDataProvider"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.subscriptionService"/>
         </service>
         <!--Controllers end-->
 
         <!-- DTO Validation -->
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOValidation" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOValidation"/>
+        <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionSigningDTOValidation" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionSigningDTOValidation"/>
         <!-- DTO Validation END -->
 
         <!-- Command start -->
@@ -232,6 +239,15 @@
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionPlanFactory"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOValidation"/>
+        </service>
+
+        <service id="storytale.customerActivity.application.command.subscription.subscriptionService" class="Storytale\CustomerActivity\Application\Command\Subscription\SubscriptionService">
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionProcessingService"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionPlanRepository"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionSigningDTOValidation"/>
         </service>
         <!-- Command end -->
 

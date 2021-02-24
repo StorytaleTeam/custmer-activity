@@ -40,7 +40,7 @@ class SubscriptionProcessingService
      * @return Subscription
      * @throws DomainException
      */
-    public function firstSigning(SubscriptionPlan $subscriptionPlan, Customer $customer, bool $isActorModerator = false): Subscription
+    public function signing(SubscriptionPlan $subscriptionPlan, Customer $customer, bool $isActorModerator = false): Subscription
     {
         $planCanBeUsed = $isActorModerator ?
             $this->isModeratorCanChangeSubscriptionPlanSpecification->isSatisfiedBy($subscriptionPlan) :
