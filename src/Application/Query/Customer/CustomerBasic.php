@@ -22,11 +22,11 @@ class CustomerBasic implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id' => $this->id,
-            'likesCount' => $this->likesCount,
-            'downloadsCount' => $this->downloadsCount,
-            'email' => $this->email,
-            'name' => $this->name,
+            'id' => $this->id ?? null,
+            'likesCount' => $this->likesCount ?? null,
+            'downloadsCount' => $this->downloadsCount ?? null,
+            'email' => $this->email ?? null,
+            'name' => $this->name ?? null,
         ];
     }
 

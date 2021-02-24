@@ -27,7 +27,10 @@ class Customer extends AbstractEntity
     /** @var string|null */
     private ?string $name;
 
-    public function __construct(int $id, string $email, bool $subscriptionAutoRenewal, ?string $name = null)
+    public function __construct(
+        int $id, string $email, bool $subscriptionAutoRenewal,
+        ?string $name = null
+    )
     {
         $this->id = $id;
         $this->email = $email;

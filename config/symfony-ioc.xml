@@ -133,13 +133,13 @@
 
         <service id="storytale.contracts.sharedEvents.eventHandlersMap" class="Storytale\Contracts\SharedEvents\EventHandlersMap" public="true">
             <argument type="collection">
-<!--                <argument key="inventory.illustration.illustrationWasCreated" type="service" id="storytale.statistic.application.command.illustrationLog.externalEvent.onIllustrationWasCreatedHandler"/>-->
+                <argument key="account.user.newUserWasRegistered" type="service" id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasRegisteredHandler"/>
             </argument>
         </service>
 
         <service id="storytale.contracts.sharedEvents.eventsMap" class="Storytale\Contracts\SharedEvents\EventsMap" public="true">
             <argument type="collection">
-<!--                <argument key="inventory.illustration.illustrationWasCreated">Storytale\Contracts\SharedEvents\Illustration\IllustrationWasCreated</argument>-->
+                <argument key="account.user.newUserWasRegistered">Storytale\Contracts\SharedEvents\User\NewUserWasRegistered</argument>
             </argument>
         </service>
 
@@ -235,7 +235,7 @@
         </service>
         <!-- Command end -->
 
-        <!-- Query start -->
+        <!-- Query -->
         <service id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraCustomerDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Querying\Aura\AuraCustomerDataProvider">
             <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
             <argument type="service" id="AuraPgSQLQueryFactory"/>
@@ -250,7 +250,15 @@
             <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
             <argument type="service" id="AuraPgSQLQueryFactory"/>
         </service>
-        <!-- Query start -->
+        <!-- Query END -->
+
+        <!--  ExternalEvent handler -->
+        <service id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasRegisteredHandler" class="Storytale\CustomerActivity\Application\Command\Customer\ExternalEvent\OnNewUserWasRegisteredHandler">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerFactory"/>
+        </service>
+        <!--  ExternalEvent handler END -->
 
         <!-- Repository -->
         <service id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Persistence\Doctrine\DoctrineCustomerRepository">
@@ -283,6 +291,7 @@
         <!-- Factory -->
         <service id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.subscription.subscriptionPlanFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlanFactory" />
+        <service id="storytale.customerActivity.domain.persistModel.customer.customerFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerFactory"/>
         <!-- Factory END -->
     </services>
 </container>

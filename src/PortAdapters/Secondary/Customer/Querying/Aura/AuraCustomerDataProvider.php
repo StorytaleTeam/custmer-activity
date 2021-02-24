@@ -74,10 +74,9 @@ class AuraCustomerDataProvider extends AbstractAuraDataProvider
                 'c.id',
                 'c.email',
                 'c.name',
-                'c.createdDate',
+                'c.created_date' => 'createdDate',
             ])
             ->from('customers AS c')
-            ->where('u.id = :customerId')
             ->limit($count)
             ->offset($count * ($page-1));
 
