@@ -204,11 +204,12 @@
         <!--Controllers start-->
         <service id="RestAPI\Controller\IndexController" class="RestAPI\Controller\IndexController" public="true"/>
 
-        <service id="RestAPI\Controller\SubscriptionPlanController" class="RestAPI\Controller\SubscriptionPlanController">
+        <service id="RestAPI\Controller\SubscriptionPlanController" class="RestAPI\Controller\SubscriptionPlanController" public="true">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionPlanDataProvider"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.subscriptionPlanService"/>
         </service>
 
-        <service id="RestAPI\Controller\SubscriptionPlanCustomerController" class="RestAPI\Controller\SubscriptionPlanCustomerController">
+        <service id="RestAPI\Controller\SubscriptionPlanCustomerController" class="RestAPI\Controller\SubscriptionPlanCustomerController" public="true">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionPlanDataProvider"/>
         </service>
 
@@ -216,12 +217,22 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraCustomerDataProvider"/>
         </service>
 
-        <service id="RestAPI\Controller\SubscriptionController" class="RestAPI\Controller\SubscriptionController">
+        <service id="RestAPI\Controller\SubscriptionController" class="RestAPI\Controller\SubscriptionController" public="true">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionDataProvider"/>
         </service>
         <!--Controllers end-->
 
+        <!-- DTO Validation -->
+        <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOValidation" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOValidation"/>
+        <!-- DTO Validation END -->
+
         <!-- Command start -->
+        <service id="storytale.customerActivity.application.command.subscription.subscriptionPlanService" class="Storytale\CustomerActivity\Application\Command\Subscription\SubscriptionPlanService">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionPlanRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionPlanFactory"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOValidation"/>
+        </service>
         <!-- Command end -->
 
         <!-- Query start -->
@@ -255,6 +266,23 @@
         </service>
         <!-- Repository END -->
 
+        <!-- Specification -->
+        <service id="storytale.customerActivity.domain.persistModel.subscription.specification.isCustomerCanChangeSubscriptionPlanSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\IsCustomerCanChangeSubscriptionPlanSpecification"/>
+        <service id="storytale.customerActivity.domain.persistModel.subscription.specification.isModeratorCanChangeSubscriptionPlanSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\IsModeratorCanChangeSubscriptionPlanSpecification"/>
+        <service id="storytale.customerActivity.domain.persistModel.subscription.specification.subscriptionCanBeProlongatedSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\SubscriptionCanBeProlongatedSpecification"/>
+        <!-- Specification END -->
 
+        <!-- DomainService -->
+        <service id="storytale.customerActivity.domain.persistModel.subscription.subscriptionProcessingService" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionProcessingService">
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.specification.isCustomerCanChangeSubscriptionPlanSpecification"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.specification.isModeratorCanChangeSubscriptionPlanSpecification"/>
+        </service>
+        <!-- DomainService END -->
+
+        <!-- Factory -->
+        <service id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionFactory"/>
+        <service id="storytale.customerActivity.domain.persistModel.subscription.subscriptionPlanFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlanFactory" />
+        <!-- Factory END -->
     </services>
 </container>

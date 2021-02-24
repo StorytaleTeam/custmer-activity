@@ -11,9 +11,9 @@ class Subscription extends AbstractEntity
     public const STATUS_WAITING_PAYMENT     = 2;
     public const STATUS_PAID                = 3;
     public const STATUS_ACTIVE              = 4;
-    public const STATUS_SPENT               = 5;
-    public const STATUS_CANCELED_BY_ADMIN   = 6;
-    public const STATUS_CANCELED_BY_CLIENT  = 7;
+    public const STATUS_SPENT_LIMIT         = 5;
+    public const STATUS_DURATION_EXPIRED    = 6;
+    public const STATUS_CANCELED_BY_ADMIN   = 7;
     public const STATUS_PAUSED              = 8;
 
     /** @var int */
