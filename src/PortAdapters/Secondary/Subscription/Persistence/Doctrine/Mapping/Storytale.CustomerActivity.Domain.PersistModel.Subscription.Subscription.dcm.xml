@@ -9,7 +9,6 @@
         <field name="duration" type="integer"/>
         <field name="price" type="float"/>
         <field name="downloadLimit" type="integer" column="download_limit"/>
-        <field name="downloadRemaining" type="integer" column="download_remaining"/>
         <field name="status" type="integer" column="status"/>
         <field name="startDate" type="datetime" column="start_date" nullable="true"/>
         <field name="endDate" type="datetime" column="end_date" nullable="true"/>

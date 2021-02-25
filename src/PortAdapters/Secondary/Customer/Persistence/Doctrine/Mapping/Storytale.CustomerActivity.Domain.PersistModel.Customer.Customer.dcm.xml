@@ -8,8 +8,23 @@
         <field name="name" column="name" nullable="true"/>
         <field name="createdDate" type="datetime" column="created_date"/>
         <field name="subscriptionAutoRenewal" type="boolean" column="subscription_auto_renewal"/>
-        <one-to-many field="likes" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerLike" mapped-by="customer"/>
-        <one-to-many field="downloads" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload" mapped-by="customer"/>
-        <one-to-many field="subscriptions" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription" mapped-by="customer"/>
+
+        <one-to-many field="likes" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerLike" mapped-by="customer">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+        </one-to-many>
+
+        <one-to-many field="downloads" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload" mapped-by="customer">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+        </one-to-many>
+
+        <one-to-many field="subscriptions" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription" mapped-by="customer">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+        </one-to-many>
     </entity>
 </doctrine-mapping>

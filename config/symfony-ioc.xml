@@ -226,6 +226,14 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionDataProvider"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.subscriptionService"/>
         </service>
+
+        <service id="RestAPI\Controller\SubscriptionCustomerController" class="RestAPI\Controller\SubscriptionCustomerController" public="true">
+            <argument type="service" id="storytale.customerActivity.application.command.download.downloadService"/>
+        </service>
+
+        <service id="RestAPI\Controller\DownloadCustomerController" class="RestAPI\Controller\DownloadCustomerController" public="true">
+            <argument type="service" id="storytale.customerActivity.application.command.download.downloadService"/>
+        </service>
         <!--Controllers end-->
 
         <!-- DTO Validation -->
@@ -249,6 +257,13 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionSigningDTOValidation"/>
         </service>
+
+        <service id="storytale.customerActivity.application.command.download.downloadService" class="Storytale\CustomerActivity\Application\Command\Download\DownloadService">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.downloadProcessingService"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.illustration.querying.storytale.storytaleRemoteIllustrationDataProvider"/>
+        </service>
         <!-- Command end -->
 
         <!-- Query -->
@@ -265,6 +280,10 @@
         <service id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionPlanDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Querying\Aura\AuraSubscriptionPlanDataProvider">
             <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
             <argument type="service" id="AuraPgSQLQueryFactory"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.illustration.querying.storytale.storytaleRemoteIllustrationDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Illustration\Querying\Storytale\StorytaleRemoteIllustrationDataProvider">
+            <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
         </service>
         <!-- Query END -->
 
@@ -302,12 +321,32 @@
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.specification.isCustomerCanChangeSubscriptionPlanSpecification"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.specification.isModeratorCanChangeSubscriptionPlanSpecification"/>
         </service>
+
+        <service id="storytale.customerActivity.domain.persistModel.customer.downloadProcessingService" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\DownloadProcessingService">
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerDownloadFactory"/>
+        </service>
         <!-- DomainService END -->
 
         <!-- Factory -->
         <service id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.subscription.subscriptionPlanFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlanFactory" />
         <service id="storytale.customerActivity.domain.persistModel.customer.customerFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerFactory"/>
+        <service id="storytale.customerActivity.domain.persistModel.customer.customerDownloadFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownloadFactory"/>
         <!-- Factory END -->
+
+        <!-- Service client -->
+        <service id="zend.http.client" class="Zend\Http\Client">
+            <call method="setOptions">
+                <argument type="collection">
+                    <argument key="timeout">%env(SERVICE_CLIENT_TIMEOUT)%</argument>
+                </argument>
+            </call>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient" class="Storytale\PortAdapters\Secondary\ServiceClient\Inventory\InventoryServiceClient">
+            <argument type="service" id="zend.http.client"/>
+            <argument>%env(INVENTORY_SERVICE_URL)%</argument>
+        </service>
+        <!-- Service client END -->
     </services>
 </container>

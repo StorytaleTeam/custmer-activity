@@ -2,7 +2,9 @@
 
 namespace Storytale\CustomerActivity\Domain\PersistModel\Subscription;
 
+use Storytale\CustomerActivity\Domain\DomainException;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
+use Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
 class Subscription extends AbstractEntity
@@ -31,9 +33,6 @@ class Subscription extends AbstractEntity
     /** @var int */
     private int $downloadLimit;
 
-    /** @var int */
-    private int $downloadRemaining;
-
     /** @var array */
     private $downloads;
 
@@ -58,7 +57,6 @@ class Subscription extends AbstractEntity
      * @param int $duration
      * @param int $downloadLimit
      * @param float $price
-     * @param int $downloadRemaining
      * @param Customer $customer
      * @param SubscriptionPlan $subscriptionPlan
      * @param int $status
@@ -67,7 +65,7 @@ class Subscription extends AbstractEntity
      */
     public function __construct(
         string $name, int $duration, int $downloadLimit, float $price,
-        int $downloadRemaining, Customer $customer, SubscriptionPlan $subscriptionPlan,
+        Customer $customer, SubscriptionPlan $subscriptionPlan,
         int $status, ?\DateTime $startDate = null, ?\DateTime $endDate = null
     )
     {
@@ -75,7 +73,6 @@ class Subscription extends AbstractEntity
         $this->duration = $duration;
         $this->downloadLimit = $downloadLimit;
         $this->price = $price;
-        $this->downloadRemaining = $downloadRemaining;
         $this->customer = $customer;
         $this->subscriptionPlan = $subscriptionPlan;
         $this->status = $status;
@@ -90,5 +87,54 @@ class Subscription extends AbstractEntity
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDownloadRemaining(): int
+    {
+        return $this->downloadLimit - count($this->downloads);
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getStartDate(): ?\DateTime
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getEndDate(): ?\DateTime
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * @param CustomerDownload $customerDownload
+     * @throws DomainException
+     */
+    public function newDownload(CustomerDownload $customerDownload): void
+    {
+        if ($this->getDownloadRemaining() < 1) {
+            throw new DomainException('Download limit reached.');
+        }
+        if ($customerDownload->getSubscription() !== null) {
+            throw new DomainException('Download already assign to subscription.');
+        }
+        $customerDownload->setSubscription($this);
+
+        $this->downloads[] = $customerDownload;
     }
 }

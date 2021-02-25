@@ -40,17 +40,18 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
             ->newSelect()
             ->cols([
                 's.id',
-                's.customer_id' => 'customerId',
-                's.subscription_plan_id' => 'subscriptionPlanId',
-                's.created_date' => 'createdDate',
+                's.customer_id'                     => 'customerId',
+                's.subscription_plan_id'            => 'subscriptionPlanId',
+                's.created_date'                    => 'createdDate',
                 's.name',
                 's.duration',
                 's.price',
-                's.download_limit' => 'downloadLimit',
-                's.download_remaining' => 'downloadRemaining',
+                's.download_limit'                  => 'downloadLimit',
+                's.download_limit - (SELECT count(*) from customer_downloads 
+                AS cd where cd.subscription_id = s.id)' => 'downloadRemaining',
                 's.status',
-                's.start_date' => 'startDate',
-                's.end_date' => 'endDate',
+                's.start_date'                      => 'startDate',
+                's.end_date'                        => 'endDate',
             ])
             ->from('subscriptions AS s')
             ->where('s.customer_id = :customerId')
@@ -76,6 +77,9 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
                 's.customer_id' => 'customerId',
                 's.subscription_plan_id' => 'subscriptionPlanId',
                 's.created_date' => 'createdDate',
+                's.download_limit'                  => 'downloadLimit',
+                's.download_limit - (SELECT count(*) from customer_downloads 
+                AS cd where cd.subscription_id = s.id)' => 'downloadRemaining',
                 's.name',
                 's.price',
                 's.status',

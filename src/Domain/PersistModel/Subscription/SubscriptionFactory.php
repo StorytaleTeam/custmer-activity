@@ -13,7 +13,6 @@ class SubscriptionFactory
             $subscriptionPlan->getDuration(),
             $subscriptionPlan->getDownloadLimit(),
             $subscriptionPlan->getPrice(),
-            $subscriptionPlan->getDownloadLimit(),
             $customer,
             $subscriptionPlan,
             Subscription::STATUS_NEW

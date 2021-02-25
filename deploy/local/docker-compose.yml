@@ -1,14 +1,14 @@
 version: "3"
 services:
-  postgres_customer-activity:
-    image: postgres:13
-    container_name: psql.customer-activity
-    ports:
-      - 5437:5432
-    environment:
-      POSTGRES_USER: customer-activity
-      POSTGRES_PASSWORD: customer-activity
-      POSTGRES_DB: customer-activity
+#  postgres_customer-activity:
+#    image: postgres:13
+#    container_name: psql.customer-activity
+#    ports:
+#      - 5437:5432
+#    environment:
+#      POSTGRES_USER: customer-activity
+#      POSTGRES_PASSWORD: customer-activity
+#      POSTGRES_DB: customer-activity
 
   fpm_customer-activity:
     container_name: fpm.customer-activity

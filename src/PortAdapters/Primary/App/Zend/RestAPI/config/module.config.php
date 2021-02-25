@@ -6,6 +6,8 @@ use RestAPI\Controller\SubscriptionPlanCustomerController;
 use RestAPI\Controller\CustomerController;
 use RestAPI\Controller\SubscriptionController;
 use RestAPI\Controller\SubscriptionCustomerController;
+use RestAPI\Controller\DownloadController;
+use RestAPI\Controller\DownloadCustomerController;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 
@@ -98,6 +100,32 @@ return [
                             ],
                             'defaults' => [
                                 'controller' => SubscriptionCustomerController::class,
+                                'action' => null,
+                            ],
+                        ],
+                    ],
+                    'download' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/download[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => DownloadController::class,
+                                'action' => null,
+                            ],
+                        ],
+                    ],
+                    'customerDownload' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/customer/download[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => DownloadCustomerController::class,
                                 'action' => null,
                             ],
                         ],
