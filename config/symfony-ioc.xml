@@ -233,6 +233,7 @@
 
         <service id="RestAPI\Controller\DownloadCustomerController" class="RestAPI\Controller\DownloadCustomerController" public="true">
             <argument type="service" id="storytale.customerActivity.application.command.download.downloadService"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraCustomerDataProvider"/>
         </service>
         <!--Controllers end-->
 
@@ -263,6 +264,7 @@
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.downloadProcessingService"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.illustration.querying.storytale.storytaleRemoteIllustrationDataProvider"/>
+            <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
         </service>
         <!-- Command end -->
 

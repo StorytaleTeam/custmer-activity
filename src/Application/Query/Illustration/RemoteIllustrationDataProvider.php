@@ -8,8 +8,8 @@ interface RemoteIllustrationDataProvider
 {
     /**
      * @param int $illustrationId
-     * @return string|null
+     * @return array|null
      * @throws ValidationException
      */
-    public function getZip(int $illustrationId): ?string;
+    public function getZip(int $illustrationId): ?array;
 }

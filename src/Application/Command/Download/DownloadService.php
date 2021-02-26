@@ -27,22 +27,22 @@ class DownloadService
     /** @var RemoteIllustrationDataProvider */
     private RemoteIllustrationDataProvider $remoteIllustrationDataProvider;
 
-//    /** @var EventBus */
-//    private EventBus $eventBus;
+    /** @var EventBus */
+    private EventBus $eventBus;
 
     public function __construct(
         CustomerRepository  $customerRepository,
         DomainSession $domainSession,
         DownloadProcessingService $downloadProcessingService,
-        RemoteIllustrationDataProvider $remoteIllustrationDataProvider
-//        EventBus $eventBus
+        RemoteIllustrationDataProvider $remoteIllustrationDataProvider,
+        EventBus $eventBus
     )
     {
         $this->customerRepository = $customerRepository;
         $this->domainSession = $domainSession;
         $this->downloadProcessingService = $downloadProcessingService;
         $this->remoteIllustrationDataProvider = $remoteIllustrationDataProvider;
-//        $this->eventBus = $eventBus;
+        $this->eventBus = $eventBus;
     }
 
     public function downloadIllustration(int $illustrationId, int $customerId): OperationResponse
@@ -57,8 +57,8 @@ class DownloadService
             }
             if ($this->downloadProcessingService->getDownloadPass($customer, $illustrationId)) {
 
-                $zip = $this->remoteIllustrationDataProvider->getZip($illustrationId);
-                if (empty($zip)) {
+                $illustrationData = $this->remoteIllustrationDataProvider->getZip($illustrationId);
+                if (!isset($illustrationData['zip']) || empty($illustrationData['zip'])) {
                     throw new ValidationException('Error occurrence with zip generating.');
                 }
 
@@ -71,12 +71,11 @@ class DownloadService
                 $this->domainSession->flush();
 
                 if ($isNewDownload) {
-                    var_dump('fire event');die;
-//                    $this->eventBus->fire(new IllustrationWasDownload());
+                    $this->eventBus->fire(new IllustrationWasDownload($illustrationData['illustration'] ?? []));
                 }
 
 
-                $result['zip'] = $zip;
+                $result['zip'] = $illustrationData['zip'];
             } else {
                 throw new ValidationException('Check your subscription.');
             }

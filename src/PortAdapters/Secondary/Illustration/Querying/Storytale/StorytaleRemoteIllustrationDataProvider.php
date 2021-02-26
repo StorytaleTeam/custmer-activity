@@ -18,15 +18,15 @@ class StorytaleRemoteIllustrationDataProvider implements RemoteIllustrationDataP
         $this->inventoryClient = $inventoryClient;
     }
 
-    public function getZip(int $illustrationId): ?string
+    public function getZip(int $illustrationId): ?array
     {
         try {
             $response = null;
-            $downloadIllustrationCommand = new DownloadIllustrationCommand($this->inventoryClient, ['illustrationId' => $illustrationId, 'customerId' => 1]);
+            $downloadIllustrationCommand = new DownloadIllustrationCommand($this->inventoryClient, ['illustrationId' => $illustrationId]);
             $remoteResponse = $downloadIllustrationCommand->run();
             if (isset($remoteResponse['success']) && $remoteResponse['success'] === true) {
                 if (isset($remoteResponse['result']['zip']) && !empty($remoteResponse['result']['zip'])) {
-                    $response = $remoteResponse['result']['zip'];
+                    $response = $remoteResponse['result'];
                 }
             } else {
                 $message = $remoteResponse['message'] ?? 'Unexpected response format from remote service';
