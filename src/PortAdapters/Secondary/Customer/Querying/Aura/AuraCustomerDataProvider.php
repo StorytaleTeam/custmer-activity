@@ -38,11 +38,13 @@ class AuraCustomerDataProvider extends AbstractAuraDataProvider
             ->cols([
                 'cl.id',
                 'cl.customer_id' => 'customerId',
-                'cl.illustrationId' => 'illustrationId',
-                'cl.last_action_date' => 'lastActionDate'
+                'cl.illustration_id' => 'illustrationId',
+                'cl.created_date' => 'createdDate',
+
             ])
             ->from('customer_likes AS cl')
             ->where('cl.customer_id = :customerId')
+            ->orderBy(['cl.created_date DESC'])
             ->bindValue('customerId', $customerId);
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), CustomerLikeBasic::class);
@@ -61,6 +63,7 @@ class AuraCustomerDataProvider extends AbstractAuraDataProvider
             ])
             ->from('customer_downloads AS cd')
             ->where('cd.customer_id = :customerId')
+            ->orderBy(['cd.last_download_date DESC'])
             ->bindValue('customerId', $customerId);
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), CustomerDownloadBasic::class);

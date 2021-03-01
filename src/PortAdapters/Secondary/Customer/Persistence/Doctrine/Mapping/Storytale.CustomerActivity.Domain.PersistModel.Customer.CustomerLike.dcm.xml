@@ -6,8 +6,6 @@
         </id>
         <field name="createdDate" type="datetime" column="created_date"/>
         <field name="illustrationId" type="integer" column="illustration_id"/>
-        <field name="status" type="integer" column="status"/>
-        <field name="lastActionDate" type="datetime" column="last_action_date"/>
         <many-to-one field="customer" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer" inversed-by="downloads">
             <join-column name="customer_id" referenced-column-name="id"/>
         </many-to-one>

@@ -103,4 +103,17 @@ class Customer extends AbstractEntity
 
         return $isNewDownload;
     }
+
+    public function like(CustomerLike $customerLike): bool
+    {
+        /** @var CustomerLike $like */
+        foreach ($this->likes as $like) {
+            if ($like->getIllustrationId() === $customerLike->getIllustrationId()) {
+                return false;
+            }
+        }
+
+        $this->likes[] = $customerLike;
+        return true;
+    }
 }

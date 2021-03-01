@@ -8,6 +8,7 @@ use RestAPI\Controller\SubscriptionController;
 use RestAPI\Controller\SubscriptionCustomerController;
 use RestAPI\Controller\DownloadController;
 use RestAPI\Controller\DownloadCustomerController;
+use RestAPI\Controller\LikeCustomerController;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 
@@ -126,6 +127,19 @@ return [
                             ],
                             'defaults' => [
                                 'controller' => DownloadCustomerController::class,
+                                'action' => null,
+                            ],
+                        ],
+                    ],
+                    'customerLike' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/customer/like[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => LikeCustomerController::class,
                                 'action' => null,
                             ],
                         ],

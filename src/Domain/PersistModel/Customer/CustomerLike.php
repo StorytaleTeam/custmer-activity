@@ -15,18 +15,18 @@ class CustomerLike extends AbstractEntity
     /** @var int */
     private int $illustrationId;
 
-    /** @var int */
-    private int $status;
-
-    /** @var \DateTime */
-    private \DateTime $lastActionDate;
-
-    public function __construct(Customer $customer, int $illustrationId, int $status, \DateTime $lastActionDate)
+    public function __construct(Customer $customer, int $illustrationId)
     {
         $this->customer = $customer;
         $this->illustrationId = $illustrationId;
-        $this->status = $status;
-        $this->lastActionDate = $lastActionDate;
         parent::__construct();
+    }
+
+    /**
+     * @return int
+     */
+    public function getIllustrationId(): int
+    {
+        return $this->illustrationId;
     }
 }

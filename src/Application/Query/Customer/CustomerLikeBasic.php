@@ -14,7 +14,7 @@ class CustomerLikeBasic implements \JsonSerializable
     private ?int $illustrationId;
 
     /** @var string|null */
-    private ?string $lastActionDate;
+    private ?string $createdDate;
 
     public function jsonSerialize()
     {
@@ -22,7 +22,7 @@ class CustomerLikeBasic implements \JsonSerializable
             'id' => $this->id ?? null,
             'customerId' => $this->customerId ?? null,
             'illustrationId' => $this->illustrationId ?? null,
-            'lastActionDate' => $this->lastActionDate ?? null,
+            'createdDate' => $this->createdDate ?? null,
         ];
     }
 }
