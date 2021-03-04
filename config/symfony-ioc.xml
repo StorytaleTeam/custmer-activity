@@ -227,9 +227,9 @@
             <argument type="service" id="storytale.customerActivity.application.command.subscription.subscriptionService"/>
         </service>
 
-        <service id="RestAPI\Controller\SubscriptionCustomerController" class="RestAPI\Controller\SubscriptionCustomerController" public="true">
-            <argument type="service" id="storytale.customerActivity.application.command.download.downloadService"/>
-        </service>
+<!--        <service id="RestAPI\Controller\SubscriptionCustomerController" class="RestAPI\Controller\SubscriptionCustomerController" public="true">-->
+<!--            <argument type="service" id="storytale.customerActivity.application.command.download.downloadService"/>-->
+<!--        </service>-->
 
         <service id="RestAPI\Controller\DownloadCustomerController" class="RestAPI\Controller\DownloadCustomerController" public="true">
             <argument type="service" id="storytale.customerActivity.application.command.download.downloadService"/>

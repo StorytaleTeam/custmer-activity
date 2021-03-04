@@ -64,11 +64,11 @@ class SubscriptionService
 
             $subscriptionPlan = $this->subscriptionPlanRepository->get($subscriptionSigningDTO->getSubscriptionPlanId());
             if (!$subscriptionPlan instanceof SubscriptionPlan) {
-                throw new ValidationException('SubscriptionPlan with this id not fount.');
+                throw new ValidationException('SubscriptionPlan with this id not found.');
             }
             $customer = $this->customerRepository->get($subscriptionSigningDTO->getCustomerId());
             if (!$customer instanceof Customer) {
-                throw new ValidationException('Customer with this id not fount.');
+                throw new ValidationException('Customer with this id not found.');
             }
 
             try {
