@@ -6,7 +6,7 @@
         </id>
         <field name="createdDate" type="datetime" column="created_date"/>
         <field name="name" column="name"/>
-        <field name="duration" type="integer"/>
+        <embedded name="duration" class="duration" column-prefix="duration_"/>
         <field name="price" type="float"/>
         <field name="downloadLimit" type="integer" column="download_limit"/>
         <field name="status" type="integer" column="status"/>

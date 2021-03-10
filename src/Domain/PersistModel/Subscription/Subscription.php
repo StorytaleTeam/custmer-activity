@@ -27,8 +27,8 @@ class Subscription extends AbstractEntity
     /** @var float */
     private float $price;
 
-    /** @var int */
-    private int $duration;
+    /** @var Duration */
+    private Duration $duration;
 
     /** @var int */
     private int $downloadLimit;
@@ -54,7 +54,7 @@ class Subscription extends AbstractEntity
     /**
      * Subscription constructor.
      * @param string $name
-     * @param int $duration
+     * @param Duration $duration
      * @param int $downloadLimit
      * @param float $price
      * @param Customer $customer
@@ -64,7 +64,7 @@ class Subscription extends AbstractEntity
      * @param \DateTime|null $endDate
      */
     public function __construct(
-        string $name, int $duration, int $downloadLimit, float $price,
+        string $name, Duration $duration, int $downloadLimit, float $price,
         Customer $customer, SubscriptionPlan $subscriptionPlan,
         int $status, ?\DateTime $startDate = null, ?\DateTime $endDate = null
     )

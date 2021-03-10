@@ -10,8 +10,11 @@ class SubscriptionPlanDTO
     /** @var float|null */
     private ?float $price;
 
+    /** @var string|null */
+    private ?string $durationLabel;
+
     /** @var int|null */
-    private ?int $duration;
+    private ?int $durationCount;
 
     /** @var int|null */
     private ?int $downloadLimit;
@@ -20,7 +23,8 @@ class SubscriptionPlanDTO
     {
         $this->name = $data['name'] ? trim($data['name']) : null;
         $this->price = $data['price'] ?? null;
-        $this->duration = $data['duration'] ?? null;
+        $this->durationCount = $data['duration_count'] ?? null;
+        $this->durationLabel = $data['duration_label'] ?? null;
         $this->downloadLimit = $data['downloadLimit'] ?? null;
     }
 
@@ -41,11 +45,19 @@ class SubscriptionPlanDTO
     }
 
     /**
+     * @return string|null
+     */
+    public function getDurationLabel(): ?string
+    {
+        return $this->durationLabel;
+    }
+
+    /**
      * @return int|null
      */
-    public function getDuration(): ?int
+    public function getDurationCount(): ?int
     {
-        return $this->duration;
+        return $this->durationCount;
     }
 
     /**

@@ -20,7 +20,8 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
                 'sp.name',
                 'sp.price',
                 'sp.status',
-                'sp.duration',
+                'sp.duration_count' => 'durationCount',
+                'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
             ])
             ->from('subscription_plans AS sp');
@@ -37,7 +38,8 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
                 'sp.created_date' => 'createdDate',
                 'sp.name',
                 'sp.price',
-                'sp.duration',
+                'sp.duration_count' => 'durationCount',
+                'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
             ])
             ->from('subscription_plans AS sp')

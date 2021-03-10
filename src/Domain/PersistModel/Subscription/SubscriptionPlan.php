@@ -21,8 +21,8 @@ class SubscriptionPlan extends AbstractEntity
     /** @var float */
     private float $price;
 
-    /** @var int */
-    private int $duration;
+    /** @var Duration */
+    private Duration $duration;
 
     /** @var int */
     private int $downloadLimit;
@@ -33,7 +33,7 @@ class SubscriptionPlan extends AbstractEntity
     /** @var int */
     private int $status;
 
-    public function __construct(string $name, float $price, int $duration, int $downloadLimit, int $status)
+    public function __construct(string $name, float $price, Duration $duration, int $downloadLimit, int $status)
     {
         $this->name = $name;
         $this->price = $price;
@@ -68,9 +68,9 @@ class SubscriptionPlan extends AbstractEntity
     }
 
     /**
-     * @return int
+     * @return Duration
      */
-    public function getDuration(): int
+    public function getDuration(): Duration
     {
         return $this->duration;
     }

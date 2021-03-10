@@ -8,10 +8,12 @@ class SubscriptionPlanFactory
 {
     public function buildFromDTO(SubscriptionPlanDTO $subscriptionPlanDTO): SubscriptionPlan
     {
+        $duration = new Duration($subscriptionPlanDTO->getDurationLabel(), $subscriptionPlanDTO->getDurationCount());
+
         return new SubscriptionPlan(
             $subscriptionPlanDTO->getName(),
             $subscriptionPlanDTO->getPrice(),
-            $subscriptionPlanDTO->getDuration(),
+            $duration,
             $subscriptionPlanDTO->getDownloadLimit(),
             SubscriptionPlan::STATUS_DRAFTED
         );

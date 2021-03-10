@@ -19,6 +19,8 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
                 's.customer_id' => 'customerId',
                 's.subscription_plan_id' => 'subscriptionPlanId',
                 's.created_date' => 'createdDate',
+                's.duration_count' => 'durationCount',
+                's.duration_label' => 'durationLabel',
                 's.name',
                 's.price',
                 's.status',
@@ -44,7 +46,8 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
                 's.subscription_plan_id'            => 'subscriptionPlanId',
                 's.created_date'                    => 'createdDate',
                 's.name',
-                's.duration',
+                's.duration_count' => 'durationCount',
+                's.duration_label' => 'durationLabel',
                 's.price',
                 's.download_limit'                  => 'downloadLimit',
                 's.download_limit - (SELECT count(*) from customer_downloads 
@@ -77,6 +80,8 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
                 's.customer_id' => 'customerId',
                 's.subscription_plan_id' => 'subscriptionPlanId',
                 's.created_date' => 'createdDate',
+                's.duration_count' => 'durationCount',
+                's.duration_label' => 'durationLabel',
                 's.download_limit'                  => 'downloadLimit',
                 's.download_limit - (SELECT count(*) from customer_downloads 
                 AS cd where cd.subscription_id = s.id)' => 'downloadRemaining',
