@@ -49,6 +49,9 @@ class LikeService
                 $this->likeRepository->delete($like);
             } else {
                 $customer = $this->customerRepository->get($customerId);
+                if (!$customer instanceof Customer) {
+                    throw new ValidationException('Customer with this id not found.');
+                }
                 $newLike = $this->likeFactory->create($customer, $illustrationId);
                 if (!$customer instanceof Customer) {
                     throw new ValidationException('User with this id not found.');
