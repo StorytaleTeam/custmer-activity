@@ -34,8 +34,9 @@ class SubscriptionController extends AbstractRestfulController
     {
         $page = $this->params()->fromQuery('page', 1);
         $count = $this->params()->fromQuery('count', 50);
+        $params = $this->params()->fromQuery(null, []);
 
-        $subscriptions = $this->subscriptionDataProvider->findList($count ,$page);
+        $subscriptions = $this->subscriptionDataProvider->findList($count ,$page, $params);
         $response = [
             'success' => true,
             'subscriptions' => $subscriptions,

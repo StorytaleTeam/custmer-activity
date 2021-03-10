@@ -44,4 +44,23 @@ class SubscriptionPlanController extends AbstractRestfulController
 
         return new JsonModel($response);
     }
+
+    public function update($id, $data)
+    {
+        $data['id'] = $id;
+        $response = $this->subscriptionPlanService->edit($data);
+
+        return new JsonModel($response->jsonSerialize());
+    }
+
+    public function get($id)
+    {
+        $subscriptionPlan = $this->subscriptionPlanDataProvider->find($id);
+        $response = [
+            'success' => true,
+            'result' => ['subscriptionPlan' => $subscriptionPlan]
+        ];
+
+        return new JsonModel($response);
+    }
 }

@@ -49,7 +49,7 @@ class SubscriptionPlanService
 
             $subscriptionPlan = $this->subscriptionPlanFactory->buildFromDTO($subscriptionPlanDTO);
             if(!$subscriptionPlan instanceof SubscriptionPlan) {
-                throw new ApplicationException('Error creating SubscriptionPlan');
+                throw new ValidationException('Error creating SubscriptionPlan');
             }
 
             $this->subscriptionPlanRepository->save($subscriptionPlan);
@@ -65,6 +65,33 @@ class SubscriptionPlanService
         return new OperationResponse($success, $result, $message);
     }
 
+    public function edit(array $data): OperationResponse
+    {
+        $result = null;
+        $message = null;
 
+        try {
+            if (!isset($data['id'])) {
+                throw new ValidationException('Need not empty `id` param.');
+            }
+            if (!isset($data['status'])) {
+                throw new ValidationException('Need not empty `status` param.');
+            }
+
+            $subscriptionPlan = $this->subscriptionPlanRepository->get($data['id']);
+            if (!$subscriptionPlan instanceof SubscriptionPlan) {
+                throw new ValidationException('Plan with this id not found');
+            }
+            $subscriptionPlan->changeStatus($data['status']);
+            $this->domainSession->flush();
+
+            $success = true;
+        } catch (ValidationException $e) {
+            $success = false;
+            $message = $e->getMessage();
+        }
+
+        return new OperationResponse($success, $result, $message);
+    }
 
 }

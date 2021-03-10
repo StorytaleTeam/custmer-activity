@@ -95,6 +95,12 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
             ->limit($count)
             ->offset($count * ($page - 1));
 
+        if (isset($params['subscriptionPlanId'])) {
+            $select
+                ->where('s.subscription_plan_id = :subscriptionPlanId')
+                ->bindValue('subscriptionPlanId', $params['subscriptionPlanId']);
+        }
+
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), SubscriptionBasic::class);
     }
 }

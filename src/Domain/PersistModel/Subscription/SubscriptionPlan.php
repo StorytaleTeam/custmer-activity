@@ -90,4 +90,14 @@ class SubscriptionPlan extends AbstractEntity
     {
         return $this->status;
     }
+
+    /**
+     * @param int $status
+     */
+    public function changeStatus(int $status): void
+    {
+        if ($this->status !== $status) {
+            $this->status = $status;
+        }
+    }
 }

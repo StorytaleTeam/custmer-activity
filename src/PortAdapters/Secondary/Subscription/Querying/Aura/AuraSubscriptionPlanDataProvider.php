@@ -10,6 +10,30 @@ use Storytale\PortAdapters\Secondary\DataBase\Sql\StorytaleTeam\AbstractAuraData
 class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
     implements SubscriptionPlanDataProvider
 {
+    public function find(int $id): ?SubscriptionPlanBasic
+    {
+        $select = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'sp.id',
+                'sp.created_date' => 'createdDate',
+                'sp.name',
+                'sp.price',
+                'sp.status',
+                'sp.duration_count' => 'durationCount',
+                'sp.duration_label' => 'durationLabel',
+                'sp.download_limit' => 'downloadLimit',
+            ])
+            ->where('sp.id = :id')
+            ->bindValue('id', $id)
+            ->from('subscription_plans AS sp');
+
+        $response = $this->executeStatement($select->getStatement(), $select->getBindValues(), SubscriptionPlanBasic::class);;
+        $response = count($response) > 0 ? $response[0] : null;
+
+        return $response;
+    }
+
     public function findListForAdmin(): array
     {
         $select = $this->queryFactory
