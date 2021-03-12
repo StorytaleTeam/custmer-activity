@@ -39,7 +39,9 @@ class SubscriptionController extends AbstractRestfulController
         $subscriptions = $this->subscriptionDataProvider->findList($count ,$page, $params);
         $response = [
             'success' => true,
-            'subscriptions' => $subscriptions,
+            'result' => [
+                'subscriptions' => $subscriptions,
+            ],
         ];
 
         return new JsonModel($response);
