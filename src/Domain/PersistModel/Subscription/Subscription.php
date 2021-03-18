@@ -90,6 +90,22 @@ class Subscription extends AbstractEntity
     }
 
     /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    /**
      * @return int
      */
     public function getStatus(): int
@@ -136,5 +152,13 @@ class Subscription extends AbstractEntity
         $customerDownload->setSubscription($this);
 
         $this->downloads[] = $customerDownload;
+    }
+
+    /**
+     * @return SubscriptionPlan
+     */
+    public function getSubscriptionPlan(): SubscriptionPlan
+    {
+        return $this->subscriptionPlan;
     }
 }

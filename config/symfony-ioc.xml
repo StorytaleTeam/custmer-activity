@@ -227,10 +227,6 @@
             <argument type="service" id="storytale.customerActivity.application.command.subscription.subscriptionService"/>
         </service>
 
-<!--        <service id="RestAPI\Controller\SubscriptionCustomerController" class="RestAPI\Controller\SubscriptionCustomerController" public="true">-->
-<!--            <argument type="service" id="storytale.customerActivity.application.command.download.downloadService"/>-->
-<!--        </service>-->
-
         <service id="RestAPI\Controller\DownloadCustomerController" class="RestAPI\Controller\DownloadCustomerController" public="true">
             <argument type="service" id="storytale.customerActivity.application.command.download.downloadService"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraCustomerDataProvider"/>
@@ -262,6 +258,8 @@
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionSigningDTOValidation"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.payment.storytalePaymentService"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
         </service>
 
         <service id="storytale.customerActivity.application.command.download.downloadService" class="Storytale\CustomerActivity\Application\Command\Download\DownloadService">
@@ -279,6 +277,13 @@
             <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerLikeFactory"/>
         </service>
         <!-- Command end -->
+
+        <!-- DTO Assembler -->
+        <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionDTOAssembler">
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler"/>
+        </service>
+        <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOAssembler"/>
+        <!-- DTO Assembler END -->
 
         <!-- Query -->
         <service id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraCustomerDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Querying\Aura\AuraCustomerDataProvider">
@@ -353,6 +358,12 @@
         <service id="storytale.customerActivity.domain.persistModel.customer.customerLikeFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerLikeFactory"/>
         <!-- Factory END -->
 
+        <!-- PortAdapter service -->
+        <service id="storytale.customerActivity.portAdapters.secondary.payment.storytalePaymentService" class="Storytale\CustomerActivity\PortAdapters\Secondary\Payment\StorytalePaymentService">
+            <argument type="service" id="storytale.portAdapters.secondary.serviceClient.payment.paymentServiceClient"/>
+        </service>
+        <!-- PortAdapter service END -->
+
         <!-- Service client -->
         <service id="zend.http.client" class="Zend\Http\Client">
             <call method="setOptions">
@@ -366,6 +377,27 @@
             <argument type="service" id="zend.http.client"/>
             <argument>%env(INVENTORY_SERVICE_URL)%</argument>
         </service>
+
+        <service id="storytale.portAdapters.secondary.serviceClient.payment.paymentServiceClient" class="Storytale\PortAdapters\Secondary\ServiceClient\Payment\PaymentServiceClient">
+            <argument type="service" id="zend.http.client"/>
+            <argument>%env(PAYMENT_SERVICE_URL)%</argument>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.serviceClient.paddle.paddleServiceClient" class="Storytale\PortAdapters\Secondary\ServiceClient\Paddle\PaddleServiceClient">
+            <argument type="service" id="zend.http.client"/>
+            <argument>%env(PADDLE_SERVICE_URL)%</argument>
+            <argument>%env(PADDLE_VENDOR_ID)%</argument>
+            <argument>%env(PADDLE_VENDOR_AUTH_CODE)%</argument>
+        </service>
         <!-- Service client END -->
+
+        <!-- Console command -->
+        <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\SubscriptionPlan\SyncWithPaddleCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\SubscriptionPlan\SyncWithPaddleCommand" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionPlanRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.portAdapters.secondary.serviceClient.paddle.paddleServiceClient"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler"/>
+        </service>
+        <!-- Console command END -->
     </services>
 </container>

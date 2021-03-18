@@ -10,6 +10,7 @@
         <field name="price" type="float"/>
         <field name="downloadLimit" type="integer" column="download_limit"/>
         <field name="status" type="integer" column="status"/>
+        <field name="paddleId" type="integer" column="paddle_id" nullable="true"/>
         <one-to-many field="subscriptions" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription" mapped-by="subscriptionPlan"/>
     </entity>
 </doctrine-mapping>

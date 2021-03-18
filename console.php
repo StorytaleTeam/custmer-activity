@@ -12,8 +12,8 @@ $realPath = realpath(__DIR__);
 
 include $realPath . '/vendor/autoload.php';
 
-if (file_exists($realPath . '/deploy/.env')) {
-    (new Dotenv(true))->loadEnv($realPath . '/deploy/.env');
+if (file_exists($realPath . '/config/.env')) {
+    (new Dotenv(true))->loadEnv($realPath . '/config/.env');
 }
 
 $envContext = new EnvContext(time(), null, false, getenv());
@@ -36,7 +36,7 @@ $errorHandler->registerErrorHandler($cliContext);
 $cliAppConfigPath = $realPath . '/config/symfony-cli-config.php';
 
 $cliApp = SymfonyCliApp::buildWithConfig($cliAppConfigPath, $realPath);
-
+//var_dump($cliApp);die;
 $cliApp->dispatch(
     $symfonyIoc,
     $cliContext,

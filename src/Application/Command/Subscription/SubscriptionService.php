@@ -4,6 +4,7 @@ namespace Storytale\CustomerActivity\Application\Command\Subscription;
 
 use Storytale\Contracts\Persistence\DomainSession;
 use Storytale\CustomerActivity\Application\ApplicationException;
+use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionDTOAssembler;
 use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionSigningDTO;
 use Storytale\CustomerActivity\Application\DTOValidation;
 use Storytale\CustomerActivity\Application\OperationResponse;
@@ -16,6 +17,7 @@ use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlanRepository;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionProcessingService;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionRepository;
+use Storytale\CustomerActivity\PortAdapters\Secondary\Payment\PaymentService;
 
 class SubscriptionService
 {
@@ -37,13 +39,21 @@ class SubscriptionService
     /** @var DTOValidation */
     private DTOValidation $subscriptionSigningDTOValidation;
 
+    /** @var PaymentService */
+    private PaymentService $paymentService;
+
+    /** @var SubscriptionDTOAssembler */
+    private SubscriptionDTOAssembler $subscriptionDTOAssembler;
+
     public function __construct(
         SubscriptionProcessingService $subscriptionProcessingService,
         SubscriptionPlanRepository $subscriptionPlanRepository,
         CustomerRepository $customerRepository,
         DomainSession $domainSession,
         SubscriptionRepository $subscriptionRepository,
-        DTOValidation $subscriptionSigningDTOValidation
+        DTOValidation $subscriptionSigningDTOValidation,
+        PaymentService $paymentService,
+        SubscriptionDTOAssembler $subscriptionDTOAssembler
     )
     {
         $this->subscriptionProcessingService = $subscriptionProcessingService;
@@ -52,6 +62,8 @@ class SubscriptionService
         $this->domainSession = $domainSession;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->subscriptionSigningDTOValidation = $subscriptionSigningDTOValidation;
+        $this->paymentService = $paymentService;
+        $this->subscriptionDTOAssembler = $subscriptionDTOAssembler;
     }
 
     public function signing(SubscriptionSigningDTO $subscriptionSigningDTO, bool $isActorModerator = false): OperationResponse
@@ -87,7 +99,18 @@ class SubscriptionService
             $this->subscriptionRepository->save($subscription);
             $this->domainSession->flush();
 
+            $params = [
+                'subscription' =>
+                    $this->subscriptionDTOAssembler->toArray($subscription),
+                'customer' => [
+                    'id' => $customer->getId(),
+                    'email' => $customer->getEmail(),
+                ]
+            ];
+
+            $paymentLink = $this->paymentService->getPaymentLink($params);
             $result['subscription']['id'] = $subscription->getId();
+            $result['paymentLink'] = $paymentLink;
             $success = true;
         } catch (ValidationException $e) {
             $success = false;

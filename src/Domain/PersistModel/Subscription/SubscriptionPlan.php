@@ -2,6 +2,7 @@
 
 namespace Storytale\CustomerActivity\Domain\PersistModel\Subscription;
 
+use Storytale\CustomerActivity\Domain\DomainException;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
 class SubscriptionPlan extends AbstractEntity
@@ -33,6 +34,9 @@ class SubscriptionPlan extends AbstractEntity
     /** @var int */
     private int $status;
 
+    /** @var int|null */
+    private ?int $paddleId;
+
     public function __construct(string $name, float $price, Duration $duration, int $downloadLimit, int $status)
     {
         $this->name = $name;
@@ -40,6 +44,7 @@ class SubscriptionPlan extends AbstractEntity
         $this->duration = $duration;
         $this->downloadLimit = $downloadLimit;
         $this->status = $status;
+        $this->paddleId = null;
         parent::__construct();
     }
 
@@ -99,5 +104,22 @@ class SubscriptionPlan extends AbstractEntity
         if ($this->status !== $status) {
             $this->status = $status;
         }
+    }
+
+    public function initPaddleId(int $paddleId): void
+    {
+        if (empty($this->paddleId)) {
+            $this->paddleId = $paddleId;
+        } else {
+            throw new DomainException('Paddle id already isset in SubscriptionPlan id:' . $this->id ?? null);
+        }
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getPaddleId(): ?int
+    {
+        return $this->paddleId;
     }
 }

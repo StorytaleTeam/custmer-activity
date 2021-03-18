@@ -15,4 +15,20 @@ class Duration
         $this->label = $label;
         $this->count = $count;
     }
+
+    /**
+     * @return int
+     */
+    public function getCount(): int
+    {
+        return $this->count;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
 }

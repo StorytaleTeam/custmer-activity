@@ -116,4 +116,20 @@ class Customer extends AbstractEntity
         $this->likes[] = $customerLike;
         return true;
     }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
 }

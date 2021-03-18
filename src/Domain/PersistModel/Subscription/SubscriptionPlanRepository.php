@@ -14,4 +14,9 @@ interface SubscriptionPlanRepository
      * @return SubscriptionPlan|null
      */
     public function get(int $id): ?SubscriptionPlan;
+
+    /**
+     * @return SubscriptionPlan[]
+     */
+    public function getAll(): array;
 }

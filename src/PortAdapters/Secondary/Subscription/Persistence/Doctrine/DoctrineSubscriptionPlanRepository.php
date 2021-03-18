@@ -30,4 +30,9 @@ class DoctrineSubscriptionPlanRepository implements SubscriptionPlanRepository
     {
         $this->entityManager->persist($subscriptionPlan);
     }
+
+    public function getAll(): array
+    {
+        return $this->repository->findAll();
+    }
 }
