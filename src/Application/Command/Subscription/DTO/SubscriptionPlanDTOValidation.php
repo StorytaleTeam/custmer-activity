@@ -5,6 +5,7 @@ namespace Storytale\CustomerActivity\Application\Command\Subscription\DTO;
 use Storytale\CustomerActivity\Application\ApplicationException;
 use Storytale\CustomerActivity\Application\DTOValidation;
 use Storytale\CustomerActivity\Application\ValidationException;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Duration;
 
 class SubscriptionPlanDTOValidation implements DTOValidation
 {
@@ -25,6 +26,8 @@ class SubscriptionPlanDTOValidation implements DTOValidation
         }
         if (empty($dto->getDurationLabel())) {
             throw new ValidationException('Need not empty `duration_label` param.');
+        } elseif (!in_array($dto->getDurationLabel(), Duration::AVAILABLE_LABEL)) {
+            throw new ValidationException('Unsupported value for `duration_label` param.');
         }
         if (empty($dto->getDownloadLimit())) {
             throw new ValidationException('Need not empty `downloadLimit` param.');

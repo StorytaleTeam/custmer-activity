@@ -4,6 +4,8 @@ namespace Storytale\CustomerActivity\Domain\PersistModel\Subscription;
 
 class Duration
 {
+    public const AVAILABLE_LABEL = ['day', 'month'];
+
     /** @var string */
     private string $label;
 
