@@ -312,6 +312,12 @@
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerFactory"/>
         </service>
+
+        <service id="storytale.customerActivity.application.command.subscription.externalEvent.onPaymentWasSuccessHandler" class="Storytale\CustomerActivity\Application\Command\Subscription\ExternalEvent\OnPaymentWasSuccessHandler">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionProcessingService"/>
+        </service>
         <!--  ExternalEvent handler END -->
 
         <!-- Repository -->

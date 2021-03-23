@@ -28,10 +28,10 @@ class SubscriptionProcessingService
         $this->isModeratorCanChangeSubscriptionPlanSpecification = $isModeratorCanChangeSubscriptionPlanSpecification;
     }
 
-    public function prolongation(Customer $customer)
-    {
-
-    }
+//    public function prolongation(Customer $customer)
+//    {
+//
+//    }
 
     /**
      * @param SubscriptionPlan $subscriptionPlan
@@ -53,13 +53,27 @@ class SubscriptionProcessingService
         return $this->subscriptionFactory->buildFromSubscriptionPlan($subscriptionPlan, $customer);
     }
 
-    public function changePlan(Customer $customer, SubscriptionPlan $subscriptionPlan)
+    public function wasPaid(Subscription $subscription): void
     {
+        if (!in_array($subscription->getStatus(), [Subscription::STATUS_NEW, Subscription::STATUS_WAITING_PAYMENT])) {
+            throw new DomainException('The subscription ' . $subscription->getId()
+                . ' has already been paid for before. Re-payment is not possible.');
+        }
 
+        if ($subscription->getCustomer()->getActualSubscription() instanceof Subscription) {
+            $subscription->changeStatus(Subscription::STATUS_PAID);
+        } else {
+            $subscription->activate();
+        }
     }
 
-    public function earlyProlongation(Customer $customer)
-    {
-
-    }
+//    public function changePlan(Customer $customer, SubscriptionPlan $subscriptionPlan)
+//    {
+//
+//    }
+//
+//    public function earlyProlongation(Customer $customer)
+//    {
+//
+//    }
 }

@@ -35,6 +35,7 @@ class OnNewUserWasRegisteredHandler implements ExternalEventHandler
             $customerData = $event->jsonSerialize();
             $customerData = $customerData['user'] ?? null;
             if (empty($customerData)) {
+                /** @todo логировать, без остановки скрипта */
                 throw new ApplicationException('Get NewUserWasRegistered event with empty data.');
             }
 

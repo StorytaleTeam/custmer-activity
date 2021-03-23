@@ -161,4 +161,40 @@ class Subscription extends AbstractEntity
     {
         return $this->subscriptionPlan;
     }
+
+    /**
+     * @return Customer
+     */
+    public function getCustomer(): Customer
+    {
+        return $this->customer;
+    }
+
+    public function changeStatus(int $status): void
+    {
+        if ($this->status !== $status) {
+            $this->status = $status;
+        }
+    }
+
+    /**
+     * @throws DomainException
+     */
+    public function activate(): void
+    {
+        if ($this->customer->getActualSubscription() instanceof Subscription) {
+            throw new DomainException('Subscription ' . $this->id
+                . ' activation is not possible. User already has an active subscription');
+        }
+
+        if (!in_array($this->status, [self::STATUS_NEW, self::STATUS_WAITING_PAYMENT])) {
+            throw new DomainException('Reactivation of the subscription '
+            . $this->id .'is not possible');
+        }
+
+        $this->status = self::STATUS_ACTIVE;
+
+        $this->startDate = new \DateTime();
+        $this->endDate = (new \DateTime())->modify('+' . $this->duration->getCount() . ' ' . $this->duration->getLabel());
+    }
 }
