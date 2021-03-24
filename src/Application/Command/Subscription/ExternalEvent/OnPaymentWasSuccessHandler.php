@@ -49,7 +49,7 @@ class OnPaymentWasSuccessHandler implements ExternalEventHandler
                     /** @todo логировать, без остановки скрипта */
                     throw new ValidationException('Payment received for a non-existent subscription. Unable to process payment.');
                 }
-                $this->subscriptionProcessingService->wasPaid($subscription);
+                $this->subscriptionProcessingService->wasPaid($subscription, $paymentData['amount']);
                 $this->domainSession->flush();
             } else {
                 /** @todo логировать сообщение о пустом параметре */

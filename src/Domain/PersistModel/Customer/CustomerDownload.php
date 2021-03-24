@@ -3,7 +3,7 @@
 namespace Storytale\CustomerActivity\Domain\PersistModel\Customer;
 
 use Storytale\CustomerActivity\Domain\DomainException;
-use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
 class CustomerDownload extends AbstractEntity
@@ -14,8 +14,8 @@ class CustomerDownload extends AbstractEntity
     /** @var Customer|null */
     private ?Customer $customer;
 
-    /** @var Subscription|null */
-    private ?Subscription $subscription;
+    /** @var Membership|null */
+    private ?Membership $membership;
 
     /** @var int */
     private int $illustrationId;
@@ -37,7 +37,7 @@ class CustomerDownload extends AbstractEntity
         $this->reDownloadCount = $reDownloadCount;
         $this->lastDownloadDate = $lastDownloadDate;
         $this->customer = $customer;
-        $this->subscription = null;
+        $this->membership = null;
         parent::__construct();
     }
 
@@ -56,23 +56,23 @@ class CustomerDownload extends AbstractEntity
     }
 
     /**
-     * @return Subscription|null
+     * @return Membership|null
      */
-    public function getSubscription(): ?Subscription
+    public function getMembership(): ?Membership
     {
-        return $this->subscription;
+        return $this->membership;
     }
 
     /**
-     * @param Subscription $subscription
+     * @param Membership $membership
      * @throws DomainException
      */
-    public function setSubscription(Subscription $subscription): void
+    public function setMembership(Membership $membership): void
     {
-        if (empty($this->subscription)) {
-            $this->subscription = $subscription;
+        if (empty($this->membership)) {
+            $this->membership = $membership;
         } else {
-            throw new DomainException('Subscription already isset.');
+            throw new DomainException('Membership already isset.');
         }
     }
 }

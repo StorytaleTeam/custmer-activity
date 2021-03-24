@@ -17,21 +17,21 @@ class SubscriptionProcessingService
     /** @var SpecificationInterface */
     private SpecificationInterface $isModeratorCanChangeSubscriptionPlanSpecification;
 
+    /** @var MembershipFactory */
+    private MembershipFactory $membershipFactory;
+
     public function __construct(
         SubscriptionFactory $subscriptionFactory,
         SpecificationInterface $isCustomerCanChangeSubscriptionPlanSpecification,
-        SpecificationInterface $isModeratorCanChangeSubscriptionPlanSpecification
+        SpecificationInterface $isModeratorCanChangeSubscriptionPlanSpecification,
+        MembershipFactory $membershipFactory
     )
     {
         $this->subscriptionFactory = $subscriptionFactory;
         $this->isCustomerCanChangeSubscriptionPlanSpecification = $isCustomerCanChangeSubscriptionPlanSpecification;
         $this->isModeratorCanChangeSubscriptionPlanSpecification = $isModeratorCanChangeSubscriptionPlanSpecification;
+        $this->membershipFactory = $membershipFactory;
     }
-
-//    public function prolongation(Customer $customer)
-//    {
-//
-//    }
 
     /**
      * @param SubscriptionPlan $subscriptionPlan
@@ -53,27 +53,14 @@ class SubscriptionProcessingService
         return $this->subscriptionFactory->buildFromSubscriptionPlan($subscriptionPlan, $customer);
     }
 
-    public function wasPaid(Subscription $subscription): void
+    public function wasPaid(Subscription $subscription, float $amountReceived): void
     {
-        if (!in_array($subscription->getStatus(), [Subscription::STATUS_NEW, Subscription::STATUS_WAITING_PAYMENT])) {
-            throw new DomainException('The subscription ' . $subscription->getId()
-                . ' has already been paid for before. Re-payment is not possible.');
-        }
-
-        if ($subscription->getCustomer()->getActualSubscription() instanceof Subscription) {
-            $subscription->changeStatus(Subscription::STATUS_PAID);
-        } else {
+        /** @todo Нужна защита на случай, когда сумма сщета меньше стоимости подписки */
+        if ($subscription->getStatus() === Subscription::STATUS_NEW) {
             $subscription->activate();
         }
-    }
 
-//    public function changePlan(Customer $customer, SubscriptionPlan $subscriptionPlan)
-//    {
-//
-//    }
-//
-//    public function earlyProlongation(Customer $customer)
-//    {
-//
-//    }
+        $membership = $this->membershipFactory->build($subscription, $amountReceived);
+        $subscription->addMembership($membership);
+    }
 }

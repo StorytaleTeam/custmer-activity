@@ -9,19 +9,27 @@ use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
     /** @var SubscriptionPlanDTOAssembler */
     private SubscriptionPlanDTOAssembler $subscriptionPlanDTOAssembler;
 
-    public function __construct(SubscriptionPlanDTOAssembler $subscriptionPlanDTOAssembler)
+    /** @var MembershipDTOAssembler */
+    private MembershipDTOAssembler $membershipDTOAssembler;
+
+    public function __construct(
+        SubscriptionPlanDTOAssembler $subscriptionPlanDTOAssembler,
+        MembershipDTOAssembler $membershipDTOAssembler
+    )
     {
         $this->subscriptionPlanDTOAssembler = $subscriptionPlanDTOAssembler;
+        $this->membershipDTOAssembler = $membershipDTOAssembler;
     }
 
         public function toArray(Subscription $subscription): array
     {
         return [
             'id' => $subscription->getId(),
-            'name' => $subscription->getName(),
-            'price' => $subscription->getPrice(),
+            'status' => $subscription->getStatus(),
             'subscriptionPlan' =>
                 $this->subscriptionPlanDTOAssembler->toArray($subscription->getSubscriptionPlan()),
+            'membership' => empty($subscription->getCurrentMembership()) ? null
+                : $this->membershipDTOAssembler->toArray($subscription->getCurrentMembership()),
         ];
     }
 }

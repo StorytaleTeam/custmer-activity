@@ -9,13 +9,11 @@ class SubscriptionFactory
     public function buildFromSubscriptionPlan(SubscriptionPlan $subscriptionPlan, Customer $customer)
     {
         return new Subscription(
-            $subscriptionPlan->getName(),
-            $subscriptionPlan->getDuration(),
-            $subscriptionPlan->getDownloadLimit(),
-            $subscriptionPlan->getPrice(),
             $customer,
             $subscriptionPlan,
-            Subscription::STATUS_NEW
+            Subscription::STATUS_NEW,
+            0,
+            true
         );
     }
 }

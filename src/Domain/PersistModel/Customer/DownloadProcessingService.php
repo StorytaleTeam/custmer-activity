@@ -3,6 +3,7 @@
 namespace Storytale\CustomerActivity\Domain\PersistModel\Customer;
 
 use Storytale\CustomerActivity\Domain\DomainException;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 
 class DownloadProcessingService
@@ -26,10 +27,11 @@ class DownloadProcessingService
         $isAlreadyDownloaded = false;
 
         $actualSubscribe = $customer->getActualSubscription();
-        if ($actualSubscribe instanceof Subscription) {
+        $currentMembership = $actualSubscribe instanceof Subscription ? $actualSubscribe->getCurrentMembership() : null;
+        if ($currentMembership instanceof Membership) {
             $isAlreadyDownloaded = $customer->isAlreadyDownloaded($illustrationId);
             if (!$isAlreadyDownloaded) {
-                if ($actualSubscribe->getDownloadRemaining() > 0) {
+                if ($currentMembership->getDownloadRemaining() > 0) {
                     $hasUnusedDownloads = true;
                 }
             }

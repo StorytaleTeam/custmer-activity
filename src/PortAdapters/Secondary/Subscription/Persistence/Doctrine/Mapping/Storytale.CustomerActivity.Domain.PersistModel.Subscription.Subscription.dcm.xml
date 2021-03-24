@@ -5,17 +5,20 @@
             <generator strategy="IDENTITY"/>
         </id>
         <field name="createdDate" type="datetime" column="created_date"/>
-        <field name="name" column="name"/>
-        <embedded name="duration" class="Duration" column-prefix="duration_"/>
-        <field name="price" type="float"/>
-        <field name="downloadLimit" type="integer" column="download_limit"/>
         <field name="status" type="integer" column="status"/>
-        <field name="startDate" type="datetime" column="start_date" nullable="true"/>
-        <field name="endDate" type="datetime" column="end_date" nullable="true"/>
-        <one-to-many field="downloads" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload" mapped-by="subscription"/>
+        <field name="autoRenewal" type="boolean" column="auto_renewal"/>
+        <field name="currentMembershipCycle" type="integer" column="current_membership_cycle"/>
+
+        <one-to-many field="memberships" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership" mapped-by="subscription">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+        </one-to-many>
+
         <many-to-one field="customer" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer" inversed-by="subscriptions">
             <join-column name="customer_id" referenced-column-name="id"/>
         </many-to-one>
+
         <many-to-one field="subscriptionPlan" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan" inversed-by="subscriptions">
             <join-column name="subscription_plan_id" referenced-column-name="id"/>
         </many-to-one>

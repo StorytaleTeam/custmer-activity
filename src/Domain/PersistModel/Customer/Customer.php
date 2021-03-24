@@ -62,16 +62,10 @@ class Customer extends AbstractEntity
      */
     public function getActualSubscription(): ?Subscription
     {
-        $nowDate = new \DateTime();
         /** @var Subscription $subscription */
         foreach ($this->subscriptions as $subscription) {
             if ($subscription->getStatus() === Subscription::STATUS_ACTIVE) {
-                if (
-                    ($subscription->getStartDate() instanceof \DateTime) && $subscription->getStartDate() <= $nowDate &&
-                    ($subscription->getEndDate() instanceof \DateTime) && $subscription->getEndDate() > $nowDate
-                ) {
-                    return $subscription;
-                }
+                return $subscription;
             }
         }
 

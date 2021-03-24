@@ -9,32 +9,12 @@ use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
 class Subscription extends AbstractEntity
 {
-    public const STATUS_NEW                 = 1;
-    public const STATUS_WAITING_PAYMENT     = 2;
-    public const STATUS_PAID                = 3;
-    public const STATUS_ACTIVE              = 4;
-    public const STATUS_SPENT_LIMIT         = 5;
-    public const STATUS_DURATION_EXPIRED    = 6;
-    public const STATUS_CANCELED_BY_ADMIN   = 7;
-    public const STATUS_PAUSED              = 8;
+    public const STATUS_NEW = 1;
+    public const STATUS_ACTIVE = 2;
+    public const STATUS_STOPPED = 3;
 
     /** @var int */
     private int $id;
-
-    /** @var string */
-    private string $name;
-
-    /** @var float */
-    private float $price;
-
-    /** @var Duration */
-    private Duration $duration;
-
-    /** @var int */
-    private int $downloadLimit;
-
-    /** @var array */
-    private $downloads;
 
     /** @var int */
     private int $status;
@@ -45,39 +25,33 @@ class Subscription extends AbstractEntity
     /** @var SubscriptionPlan */
     private SubscriptionPlan $subscriptionPlan;
 
-    /** @var \DateTime|null */
-    private ?\DateTime $startDate;
+    /** @var array|null */
+    private $memberships;
 
-    /** @var \DateTime|null */
-    private ?\DateTime $endDate;
+    /** @var int */
+    private int $currentMembershipCycle;
+
+    /** @var bool */
+    private bool $autoRenewal;
 
     /**
      * Subscription constructor.
-     * @param string $name
-     * @param Duration $duration
-     * @param int $downloadLimit
-     * @param float $price
      * @param Customer $customer
      * @param SubscriptionPlan $subscriptionPlan
      * @param int $status
-     * @param \DateTime|null $startDate
-     * @param \DateTime|null $endDate
+     * @param int $currentMembershipCycle
+     * @param bool $autoRenewal
      */
     public function __construct(
-        string $name, Duration $duration, int $downloadLimit, float $price,
         Customer $customer, SubscriptionPlan $subscriptionPlan,
-        int $status, ?\DateTime $startDate = null, ?\DateTime $endDate = null
+        int $status, int $currentMembershipCycle, bool $autoRenewal
     )
     {
-        $this->name = $name;
-        $this->duration = $duration;
-        $this->downloadLimit = $downloadLimit;
-        $this->price = $price;
         $this->customer = $customer;
         $this->subscriptionPlan = $subscriptionPlan;
         $this->status = $status;
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
+        $this->currentMembershipCycle = $currentMembershipCycle;
+        $this->autoRenewal = $autoRenewal;
         parent::__construct();
     }
 
@@ -90,22 +64,6 @@ class Subscription extends AbstractEntity
     }
 
     /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    /**
      * @return int
      */
     public function getStatus(): int
@@ -113,28 +71,28 @@ class Subscription extends AbstractEntity
         return $this->status;
     }
 
-    /**
-     * @return int
-     */
-    public function getDownloadRemaining(): int
+    public function getCurrentMembership(): ?Membership
     {
-        return $this->downloadLimit - count($this->downloads);
+        $currentMembership = null;
+        $nowDate = new \DateTime();
+
+        /** @var Membership $membership */
+        foreach ($this->memberships as $membership) {
+            if (
+                $membership->getCycleNumber() === $this->currentMembershipCycle
+                && $membership->getEndDate() > $nowDate
+            ) {
+                $currentMembership = $membership;
+                break;
+            }
+        }
+
+        return $currentMembership;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getStartDate(): ?\DateTime
+    public function activate(): void
     {
-        return $this->startDate;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getEndDate(): ?\DateTime
-    {
-        return $this->endDate;
+        $this->status = self::STATUS_ACTIVE;
     }
 
     /**
@@ -143,15 +101,12 @@ class Subscription extends AbstractEntity
      */
     public function newDownload(CustomerDownload $customerDownload): void
     {
-        if ($this->getDownloadRemaining() < 1) {
-            throw new DomainException('Download limit reached.');
+        $currentMembership = $this->getCurrentMembership();
+        if ($currentMembership instanceof Membership) {
+            $currentMembership->newDownload($customerDownload);
+        } else {
+            throw new DomainException('There is no active membership for this subscription.');
         }
-        if ($customerDownload->getSubscription() !== null) {
-            throw new DomainException('Download already assign to subscription.');
-        }
-        $customerDownload->setSubscription($this);
-
-        $this->downloads[] = $customerDownload;
     }
 
     /**
@@ -170,31 +125,24 @@ class Subscription extends AbstractEntity
         return $this->customer;
     }
 
-    public function changeStatus(int $status): void
+    public function addMembership(Membership $membership): void
     {
-        if ($this->status !== $status) {
-            $this->status = $status;
+        /** @todo нужно проверять доступен ли тарифный план */
+        if ($this->autoRenewal) {
+            $membership->paid();
+            $this->memberships[] = $membership;
+            if (!$this->getCurrentMembership() instanceof Membership) {
+                $this->currentMembershipCycle++;
+                $membership->activate($this->currentMembershipCycle);
+            }
+        } else {
+            /** @todo need alert to manager */
+            throw new DomainException('There was an attempt to add a Membership to a stopped Subscription ' . $this->id);
         }
     }
 
-    /**
-     * @throws DomainException
-     */
-    public function activate(): void
+    public function isAutoRenewal(): bool
     {
-        if ($this->customer->getActualSubscription() instanceof Subscription) {
-            throw new DomainException('Subscription ' . $this->id
-                . ' activation is not possible. User already has an active subscription');
-        }
-
-        if (!in_array($this->status, [self::STATUS_NEW, self::STATUS_WAITING_PAYMENT])) {
-            throw new DomainException('Reactivation of the subscription '
-            . $this->id .'is not possible');
-        }
-
-        $this->status = self::STATUS_ACTIVE;
-
-        $this->startDate = new \DateTime();
-        $this->endDate = (new \DateTime())->modify('+' . $this->duration->getCount() . ' ' . $this->duration->getLabel());
+        return $this->autoRenewal;
     }
 }

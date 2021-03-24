@@ -11,8 +11,8 @@
         <many-to-one field="customer" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer" inversed-by="downloads">
             <join-column name="customer_id" referenced-column-name="id"/>
         </many-to-one>
-        <many-to-one field="subscription" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription" inversed-by="downloads">
-            <join-column name="subscription_id" referenced-column-name="id"/>
+        <many-to-one field="membership" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership" inversed-by="downloads">
+            <join-column name="membership_id" referenced-column-name="id"/>
         </many-to-one>
     </entity>
 </doctrine-mapping>

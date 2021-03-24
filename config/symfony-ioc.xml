@@ -281,8 +281,10 @@
         <!-- DTO Assembler -->
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionDTOAssembler">
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler"/>
         </service>
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOAssembler"/>
+        <service id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\MembershipDTOAssembler"/>
         <!-- DTO Assembler END -->
 
         <!-- Query -->
@@ -349,6 +351,7 @@
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.specification.isCustomerCanChangeSubscriptionPlanSpecification"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.specification.isModeratorCanChangeSubscriptionPlanSpecification"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.membershipFactory"/>
         </service>
 
         <service id="storytale.customerActivity.domain.persistModel.customer.downloadProcessingService" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\DownloadProcessingService">
@@ -362,6 +365,7 @@
         <service id="storytale.customerActivity.domain.persistModel.customer.customerFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.customer.customerDownloadFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownloadFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.customer.customerLikeFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerLikeFactory"/>
+        <service id="storytale.customerActivity.domain.persistModel.subscription.membershipFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\MembershipFactory"/>
         <!-- Factory END -->
 
         <!-- PortAdapter service -->
