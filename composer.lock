@@ -1971,7 +1971,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:StorytaleTeam/contracts-sk.git",
-                "reference": "0cbbb4e5b8ab9b2731dc0612a0ac5a70b063c236"
+                "reference": "cafdc80369efd36c14ca0a799315bba1527b1d73"
             },
             "require": {
                 "ext-json": "*",
@@ -1992,7 +1992,7 @@
                 }
             ],
             "description": "Shared contracts definition",
-            "time": "2021-03-23T15:46:14+00:00"
+            "time": "2021-03-25T13:42:03+00:00"
         },
         {
             "name": "storytale/port-adapter-sk",

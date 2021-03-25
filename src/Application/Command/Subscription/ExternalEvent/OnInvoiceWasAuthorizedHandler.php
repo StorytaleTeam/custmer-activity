@@ -5,13 +5,14 @@ namespace Storytale\CustomerActivity\Application\Command\Subscription\ExternalEv
 use Storytale\Contracts\EventBus\ExternalEvent;
 use Storytale\Contracts\EventBus\ExternalEventHandler;
 use Storytale\Contracts\Persistence\DomainSession;
+use Storytale\Contracts\SharedEvents\Payment\InvoiceWasAuthorizedEvent;
 use Storytale\CustomerActivity\Application\ApplicationException;
 use Storytale\CustomerActivity\Application\ValidationException;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionProcessingService;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionRepository;
 
-class OnPaymentWasSuccessHandler implements ExternalEventHandler
+class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
 {
     /** @var SubscriptionRepository */
     private SubscriptionRepository $subscriptionRepository;
@@ -35,25 +36,24 @@ class OnPaymentWasSuccessHandler implements ExternalEventHandler
 
     public function handler(ExternalEvent $event): void
     {
-        /** @todo change instance!!!! */
-        if ($event instanceof ExternalEvent) {
-            $paymentData = $event->jsonSerialize();
-            $paymentData = $paymentData['paymentData'] ?? null;
+        if ($event instanceof InvoiceWasAuthorizedEvent) {
+            $paymentData = $event->getData();
             if (empty($paymentData)) {
                 /** @todo логировать, без остановки скрипта */
-                throw new ApplicationException('Get event with empty data.');
+                throw new ApplicationException('Get InvoiceWasAuthorizedEvent event with empty data.');
             }
-            if (isset($paymentData['storytale']['subscriptionId'])) {
-                $subscription = $this->subscriptionRepository->get($paymentData['storytale']['subscriptionId']);
+            if (isset($paymentData['invoice']['subscriptionId'])) {
+                $subscription = $this->subscriptionRepository->get($paymentData['invoice']['subscriptionId']);
                 if (!$subscription instanceof Subscription) {
                     /** @todo логировать, без остановки скрипта */
                     throw new ValidationException('Payment received for a non-existent subscription. Unable to process payment.');
                 }
-                $this->subscriptionProcessingService->wasPaid($subscription, $paymentData['amount']);
+                $this->subscriptionProcessingService->wasPaid($subscription, $paymentData['invoice']['amount']);
                 $this->domainSession->flush();
             } else {
                 /** @todo логировать сообщение о пустом параметре */
             }
         }
+//        var_dump($paymentData);die;
     }
 }
