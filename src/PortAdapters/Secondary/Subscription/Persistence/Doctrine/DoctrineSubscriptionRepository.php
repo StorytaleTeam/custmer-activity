@@ -21,13 +21,32 @@ class DoctrineSubscriptionRepository implements SubscriptionRepository
         $this->repository = $entityManager->getRepository(Subscription::class);
     }
 
+    public function save(Subscription $subscription): void
+    {
+        $this->entityManager->persist($subscription);
+    }
+
     public function get(int $id): ?Subscription
     {
         return $this->repository->find($id);
     }
 
-    public function save(Subscription $subscription): void
+    public function getForProlongate(int $limit): array
     {
-        $this->entityManager->persist($subscription);
+        $qb = $this->repository->createQueryBuilder('s')
+            ->leftJoin(
+                's.memberships', 'm', 'WITH',
+                's.id = m.subscription AND s.currentMembershipCycle = m.cycleNumber'
+            )
+            ->where('s.autoRenewal = true')
+            ->andWhere('m.endDate <= :today')
+            ->andWhere('s.status = :statusActive')
+            ->setParameters([
+                'today' => new \DateTime(),
+                'statusActive' => 2,
+            ]);
+
+
+        return $qb->getQuery()->execute();
     }
 }

@@ -410,6 +410,11 @@
             <argument type="service" id="storytale.portAdapters.secondary.serviceClient.paddle.paddleServiceClient"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler"/>
         </service>
+
+        <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\ProlongateSubscriptionCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\ProlongateSubscriptionCommand" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+        </service>
         <!-- Console command END -->
     </services>
 </container>

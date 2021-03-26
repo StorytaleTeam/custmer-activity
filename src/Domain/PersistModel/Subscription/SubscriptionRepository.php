@@ -14,4 +14,10 @@ interface SubscriptionRepository
      * @return Subscription|null
      */
     public function get(int $id): ?Subscription;
+
+    /**
+     * @param int $limit
+     * @return Subscription[]
+     */
+    public function getForProlongate(int $limit): array;
 }

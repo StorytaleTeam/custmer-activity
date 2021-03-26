@@ -148,8 +148,11 @@ class Membership extends AbstractEntity
             throw new DomainException('Download already assign to membership.');
         }
         $customerDownload->setMembership($this);
-
         $this->downloads[] = $customerDownload;
+
+        if ($this->getDownloadRemaining() < 1) {
+            $this->status = self::STATUS_SPENT_LIMIT;
+        }
     }
 
     public function activate(int $cycleNumber)
@@ -173,5 +176,10 @@ class Membership extends AbstractEntity
             throw new DomainException('Retrying payment for membership ' . $this->id);
         }
         $this->status = self::STATUS_PAID;
+    }
+
+    public function expire(): void
+    {
+        $this->status = self::STATUS_DURATION_EXPIRED;
     }
 }

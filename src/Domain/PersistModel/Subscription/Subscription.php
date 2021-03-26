@@ -80,7 +80,7 @@ class Subscription extends AbstractEntity
         foreach ($this->memberships as $membership) {
             if (
                 $membership->getCycleNumber() === $this->currentMembershipCycle
-                && $membership->getEndDate() > $nowDate
+                && $membership->getEndDate() <= $nowDate
             ) {
                 $currentMembership = $membership;
                 break;
@@ -132,13 +132,47 @@ class Subscription extends AbstractEntity
             $membership->paid();
             $this->memberships[] = $membership;
             if (!$this->getCurrentMembership() instanceof Membership) {
-                $this->currentMembershipCycle++;
-                $membership->activate($this->currentMembershipCycle);
+                $this->startNewMembership($membership);
             }
         } else {
             /** @todo need alert to manager */
             throw new DomainException('There was an attempt to add a Membership to a stopped Subscription ' . $this->id);
         }
+    }
+
+    public function expireMembership(): void
+    {
+        $currentMembership = $this->getCurrentMembership();
+        if ($currentMembership instanceof Membership) {
+            $currentMembership->expire();
+        }
+
+        $nextMembership = null;
+        /** @var Membership $membership */
+        foreach ($this->memberships as $membership) {
+            if (
+                $membership->getStatus() === Membership::STATUS_PAID
+                && $membership->getStartDate() === null
+                && $membership->getEndDate() === null
+                && $membership->getCycleNumber() === null
+            ) {
+                $nextMembership = $membership;
+                break;
+            }
+        }
+
+        if ($nextMembership instanceof $membership) {
+            $this->startNewMembership($membership);
+        } else if (!$this->autoRenewal) {
+            /** нужно убедиться что не будут списываться деньги */
+            $this->status = self::STATUS_STOPPED;
+        }
+    }
+
+    public function startNewMembership(Membership $membership)
+    {
+        $this->currentMembershipCycle++;
+        $membership->activate($this->currentMembershipCycle);
     }
 
     public function isAutoRenewal(): bool
