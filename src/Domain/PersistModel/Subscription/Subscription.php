@@ -80,7 +80,7 @@ class Subscription extends AbstractEntity
         foreach ($this->memberships as $membership) {
             if (
                 $membership->getCycleNumber() === $this->currentMembershipCycle
-                && $membership->getEndDate() <= $nowDate
+                && $membership->getEndDate() > $nowDate
             ) {
                 $currentMembership = $membership;
                 break;
