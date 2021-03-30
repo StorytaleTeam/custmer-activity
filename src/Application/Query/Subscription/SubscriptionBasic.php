@@ -37,22 +37,32 @@ class SubscriptionBasic implements \JsonSerializable
     /** @var string|null */
     private ?string $endDate;
 
+    /** @var int|null */
+    private ?int $membershipId;
+
     public function jsonSerialize()
     {
         return [
             'id' => $this->id ?? null,
-            'name' => $this->name ?? null,
-            'price' => $this->price ?? null,
-            'durationCount' => $this->durationCount ?? null,
-            'durationLabel' => $this->durationLabel ?? null,
-            'downloadLimit' => $this->downloadLimit ?? null,
-            'downloadRemaining' => $this->downloadRemaining ?? null,
             'status' => $this->status ?? null,
             'customer' => [
                 'id' => $this->customerId ?? null,
             ],
-            'startDate' => $this->startDate ?? null,
-            'endDate' => $this->endDate ?? null,
+            'subscriptionPlan' => [
+                'name' => $this->name ?? null,
+                'price' => $this->price ?? null,
+                'durationCount' => $this->durationCount ?? null,
+                'durationLabel' => $this->durationLabel ?? null,
+
+            ],
+            'currentMembership' => [
+                'id' => $this->membershipId ?? null,
+                'startDate' => $this->startDate ?? null,
+                'endDate' => $this->endDate ?? null,
+                'downloadLimit' => $this->downloadLimit ?? null,
+                'downloadRemaining' => $this->downloadRemaining ?? null,
+
+            ],
         ];
     }
 }

@@ -13,12 +13,6 @@ interface SubscriptionDataProvider
     public function findAllByCustomer(int $customerId, int $count, int $page): array;
 
     /**
-     * @param int $customerId
-     * @return SubscriptionBasic|null
-     */
-    public function findActualForCustomer(int $customerId): ?SubscriptionBasic;
-
-    /**
      * @param int $count
      * @param int $page
      * @param array|null $params
