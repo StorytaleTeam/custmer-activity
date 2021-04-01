@@ -51,4 +51,33 @@ class SubscriptionCustomerController extends AbstractRestfulController
 
         return new JsonModel($response);
     }
+
+    public function delete($id)
+    {
+        $customerId = $this->params()->fromQuery('customerId');
+        if (empty($customerId)) {
+            return new JsonModel(['success' => false, 'message' => 'Need not empty `customerId` param.']);
+        }
+
+        $response = $this->subscriptionService->unsigning($id, $customerId);
+
+        return new JsonModel($response->jsonSerialize());
+    }
+
+    public function get($id)
+    {
+        $customerId = $this->params()->fromQuery('customerId');
+        if (empty($customerId)) {
+            return new JsonModel(['success' => false, 'message' => 'Need not empty `customerId` param.']);
+        }
+
+        $subscription = $this->subscriptionDataProvider->findOneForCustomer($id, $customerId);
+
+        return new JsonModel([
+            'success' => true,
+            'result' => [
+                'subscription' => $subscription,
+            ],
+        ]);
+    }
 }

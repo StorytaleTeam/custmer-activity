@@ -7,6 +7,9 @@ class SubscriptionBasic implements \JsonSerializable
     /** @var int|null */
     private ?int $id;
 
+    /** @var int|null */
+    private ?int $planInd;
+
     /** @var string|null */
     private ?string $name;
 
@@ -49,6 +52,7 @@ class SubscriptionBasic implements \JsonSerializable
                 'id' => $this->customerId ?? null,
             ],
             'subscriptionPlan' => [
+                'id' => $this->planId ?? null,
                 'name' => $this->name ?? null,
                 'price' => $this->price ?? null,
                 'durationCount' => $this->durationCount ?? null,

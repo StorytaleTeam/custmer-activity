@@ -109,8 +109,37 @@ class SubscriptionService
             ];
 
             $paymentLink = $this->paymentService->getPaymentLink($params);
-            $result['subscription']['id'] = $subscription->getId();
+            $result['subscription'] = $this->subscriptionDTOAssembler->toArray($subscription);
             $result['paymentLink'] = $paymentLink;
+            $success = true;
+        } catch (ValidationException $e) {
+            $success = false;
+            $message = $e->getMessage();
+        }
+
+        return new OperationResponse($success, $result, $message);
+    }
+
+    public function unsigning(int $subscriptionId, int $customerId): OperationResponse
+    {
+        $result = null;
+        $message = null;
+
+        try {
+            $subscription = $this->subscriptionRepository->get($subscriptionId);
+            if (
+                !$subscription instanceof Subscription
+                || !$subscription->getCustomer() instanceof Customer
+                || $subscription->getCustomer()->getId() !== $customerId
+            ) {
+                throw new ValidationException('Subscription with this params not found.');
+            }
+
+            $subscription->unsign();
+
+            /** @todo cancle payment in paddle */
+
+            $this->domainSession->flush();
             $success = true;
         } catch (ValidationException $e) {
             $success = false;

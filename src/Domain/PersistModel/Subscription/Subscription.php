@@ -179,4 +179,9 @@ class Subscription extends AbstractEntity
     {
         return $this->autoRenewal;
     }
+
+    public function unsign()
+    {
+        $this->autoRenewal = false;
+    }
 }

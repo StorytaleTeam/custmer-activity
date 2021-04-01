@@ -31,6 +31,7 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
 
                 'sp.name',
                 'sp.price',
+                'sp.id'                         => 'planId',
                 'sp.duration_label'             => 'durationLabel',
                 'sp.duration_count'             => 'durationCount',
             ])
@@ -38,6 +39,21 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
             ->join('LEFT', 'memberships AS m', 's.id = m.subscription_id '
                 . 'AND s.current_membership_cycle = m.cycle_number')
             ->join('LEFT', 'subscription_plans AS sp', 's.subscription_plan_id = sp.id');
+    }
+
+    public function findOneForCustomer(int $subscriptionId, int $customerId): ?SubscriptionBasic
+    {
+        $select = $this->prepareShortSelect()
+            ->where('s.id = :id')
+            ->where('s.customer_id = :customerId')
+            ->bindValues([
+                'id' => $subscriptionId,
+                'customerId' => $customerId,
+            ]);
+
+        $response = $this->executeStatement($select->getStatement(), $select->getBindValues(), SubscriptionBasic::class);
+
+        return $response[0] ?? null;
     }
 
     public function findAllByCustomer(int $customerId, int $count, int $page): array
