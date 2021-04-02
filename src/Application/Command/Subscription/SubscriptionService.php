@@ -83,6 +83,12 @@ class SubscriptionService
                 throw new ValidationException('Customer with this id not found.');
             }
 
+            $currentSubscription = $customer->getActualSubscription();
+            if ($currentSubscription instanceof Subscription) {
+                /** @todo cancel payment in paddle */
+                $currentSubscription->cancel();
+            }
+
             try {
                 $subscription = $this->subscriptionProcessingService->signing(
                     $subscriptionPlan, $customer, $isActorModerator

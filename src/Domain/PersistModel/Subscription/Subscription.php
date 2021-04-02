@@ -183,5 +183,14 @@ class Subscription extends AbstractEntity
     public function unsign()
     {
         $this->autoRenewal = false;
+        if ($this->status = self::STATUS_NEW) {
+            $this->cancel();
+        }
+    }
+
+    public function cancel()
+    {
+        $this->status = self::STATUS_STOPPED;
+        $this->autoRenewal = false;
     }
 }
