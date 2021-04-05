@@ -262,6 +262,7 @@
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionSigningDTOValidation"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.payment.storytalePaymentService"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService"/>
         </service>
 
         <service id="storytale.customerActivity.application.command.download.downloadService" class="Storytale\CustomerActivity\Application\Command\Download\DownloadService">
@@ -403,6 +404,12 @@
         </service>
         <!-- Service client END -->
 
+        <!-- Port adapter -->
+        <service id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Paddle\PaddleSubscriptionService">
+            <argument type="service" id="storytale.portAdapters.secondary.serviceClient.paddle.paddleServiceClient"/>
+        </service>
+        <!-- Port adapter END -->
+
         <!-- Console command -->
         <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\SubscriptionPlan\SyncWithPaddleCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\SubscriptionPlan\SyncWithPaddleCommand" public="true">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionPlanRepository"/>
@@ -416,5 +423,6 @@
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
         </service>
         <!-- Console command END -->
+
     </services>
 </container>

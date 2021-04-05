@@ -18,6 +18,7 @@ use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionProcessingService;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionRepository;
 use Storytale\CustomerActivity\PortAdapters\Secondary\Payment\PaymentService;
+use Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Paddle\PaddleSubscriptionService;
 
 class SubscriptionService
 {
@@ -45,6 +46,9 @@ class SubscriptionService
     /** @var SubscriptionDTOAssembler */
     private SubscriptionDTOAssembler $subscriptionDTOAssembler;
 
+    /** @var PaddleSubscriptionService */
+    private PaddleSubscriptionService $paddleSubscriptionService;
+
     public function __construct(
         SubscriptionProcessingService $subscriptionProcessingService,
         SubscriptionPlanRepository $subscriptionPlanRepository,
@@ -53,7 +57,8 @@ class SubscriptionService
         SubscriptionRepository $subscriptionRepository,
         DTOValidation $subscriptionSigningDTOValidation,
         PaymentService $paymentService,
-        SubscriptionDTOAssembler $subscriptionDTOAssembler
+        SubscriptionDTOAssembler $subscriptionDTOAssembler,
+        PaddleSubscriptionService $paddleSubscriptionService
     )
     {
         $this->subscriptionProcessingService = $subscriptionProcessingService;
@@ -64,6 +69,7 @@ class SubscriptionService
         $this->subscriptionSigningDTOValidation = $subscriptionSigningDTOValidation;
         $this->paymentService = $paymentService;
         $this->subscriptionDTOAssembler = $subscriptionDTOAssembler;
+        $this->paddleSubscriptionService = $paddleSubscriptionService;
     }
 
     public function signing(SubscriptionSigningDTO $subscriptionSigningDTO, bool $isActorModerator = false): OperationResponse
@@ -142,8 +148,12 @@ class SubscriptionService
             }
 
             $subscription->unsign();
-
-            /** @todo cancle payment in paddle */
+            if ($subscription->getPaddleId() !== null) {
+                $this->paddleSubscriptionService->cancelSubscription($subscription->getPaddleId());
+            } else {
+                /** @todo логировать ошибку */
+                throw new ApplicationException('Attempt cancel subscription with empty paddleId.');
+            }
 
             $this->domainSession->flush();
             $success = true;

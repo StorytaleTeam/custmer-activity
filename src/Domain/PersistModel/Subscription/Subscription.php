@@ -34,6 +34,9 @@ class Subscription extends AbstractEntity
     /** @var bool */
     private bool $autoRenewal;
 
+    /** @var string|null */
+    private ?string $paddleId;
+
     /**
      * Subscription constructor.
      * @param Customer $customer
@@ -41,10 +44,12 @@ class Subscription extends AbstractEntity
      * @param int $status
      * @param int $currentMembershipCycle
      * @param bool $autoRenewal
+     * @param string|null $paddleId
      */
     public function __construct(
         Customer $customer, SubscriptionPlan $subscriptionPlan,
-        int $status, int $currentMembershipCycle, bool $autoRenewal
+        int $status, int $currentMembershipCycle, bool $autoRenewal,
+        ?string $paddleId = null
     )
     {
         $this->customer = $customer;
@@ -52,6 +57,7 @@ class Subscription extends AbstractEntity
         $this->status = $status;
         $this->currentMembershipCycle = $currentMembershipCycle;
         $this->autoRenewal = $autoRenewal;
+        $this->paddleId = $paddleId;
         parent::__construct();
     }
 
@@ -192,5 +198,26 @@ class Subscription extends AbstractEntity
     {
         $this->status = self::STATUS_STOPPED;
         $this->autoRenewal = false;
+    }
+
+    /**
+     * @param string $paddleId
+     * @throws DomainException
+     */
+    public function initPaddleId(string $paddleId): void
+    {
+        if ($paddleId === null) {
+            $this->paddleId = $paddleId;
+        } else {
+            throw new DomainException('PaddleId already init in subscription '  . $this->id);
+        }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPaddleId(): ?string
+    {
+        return $this->paddleId;
     }
 }

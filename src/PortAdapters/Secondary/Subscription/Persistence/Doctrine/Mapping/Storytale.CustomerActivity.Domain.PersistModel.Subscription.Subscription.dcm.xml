@@ -8,6 +8,7 @@
         <field name="status" type="integer" column="status"/>
         <field name="autoRenewal" type="boolean" column="auto_renewal"/>
         <field name="currentMembershipCycle" type="integer" column="current_membership_cycle"/>
+        <field name="paddleId" column="paddle_id" nullable="true"/>
 
         <one-to-many field="memberships" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership" mapped-by="subscription">
             <cascade>
