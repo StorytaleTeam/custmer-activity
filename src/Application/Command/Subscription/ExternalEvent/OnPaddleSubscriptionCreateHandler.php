@@ -33,11 +33,13 @@ class OnPaddleSubscriptionCreateHandler implements ExternalEventHandler
             if ($alertName === self::EVENT_NAME_PADDLE_CREATE_SUBSCRIPTION) {
                 $subscriptionId = $event->getStorytaleData()['subscriptionId'] ?? null;
                 if (empty($subscriptionId)) {
-                    throw new ApplicationException('Get paddle event with empty subscriptionId param.');
+                    /**  @todo Логировать без остановки скрипта */
+//                    throw new ApplicationException('Get paddle event with empty subscriptionId param.');
                 }
                 $subscription = $this->subscriptionRepository->get($subscriptionId);
                 if (!$subscription instanceof Subscription) {
-                    throw new ApplicationException('Get paddle event for not existing subscription.');
+                    /**  @todo Логировать без остановки скрипта */
+//                    throw new ApplicationException('Get paddle event for not existing subscription.');
                 }
 
                 $paddleSubscriptionId = $event->getPaddleData()['subscription_id'] ?? null;
