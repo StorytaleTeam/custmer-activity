@@ -135,6 +135,7 @@
             <argument type="collection">
                 <argument key="account.user.newUserWasRegistered" type="service" id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasRegisteredHandler"/>
                 <argument key="payment.invoice.invoiceWasAuthorized" type="service" id="storytale.customerActivity.application.command.subscription.externalEvent.onInvoiceWasAuthorizedHandler"/>
+                <argument key="event.paddle.generalized" type="service" id="storytale.customerActivity.application.command.subscription.externalEvent.onPaddleSubscriptionCreateHandler"/>
             </argument>
         </service>
 
@@ -142,6 +143,7 @@
             <argument type="collection">
                 <argument key="account.user.newUserWasRegistered">Storytale\Contracts\SharedEvents\User\NewUserWasRegistered</argument>
                 <argument key="payment.invoice.invoiceWasAuthorized">Storytale\Contracts\SharedEvents\Payment\InvoiceWasAuthorizedEvent</argument>
+                <argument key="event.paddle.generalized">Storytale\Contracts\SharedEvents\Payment\Paddle\GeneralizedPaddleEvent</argument>
             </argument>
         </service>
 
@@ -322,6 +324,11 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionProcessingService"/>
+        </service>
+
+        <service id="storytale.customerActivity.application.command.subscription.externalEvent.onPaddleSubscriptionCreateHandler" class="Storytale\CustomerActivity\Application\Command\Subscription\ExternalEvent\OnPaddleSubscriptionCreateHandler">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
         </service>
         <!--  ExternalEvent handler END -->
 

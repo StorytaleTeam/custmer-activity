@@ -206,7 +206,7 @@ class Subscription extends AbstractEntity
      */
     public function initPaddleId(string $paddleId): void
     {
-        if ($paddleId === null) {
+        if ($this->paddleId === null) {
             $this->paddleId = $paddleId;
         } else {
             throw new DomainException('PaddleId already init in subscription '  . $this->id);
