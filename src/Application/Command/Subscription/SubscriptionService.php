@@ -91,8 +91,10 @@ class SubscriptionService
 
             $currentSubscription = $customer->getActualSubscription();
             if ($currentSubscription instanceof Subscription) {
-                /** @todo cancel payment in paddle */
                 $currentSubscription->cancel();
+                if ($currentSubscription->getPaddleId() !== null) {
+                    $this->paddleSubscriptionService->cancelSubscription($currentSubscription->getPaddleId());
+                }
             }
 
             try {

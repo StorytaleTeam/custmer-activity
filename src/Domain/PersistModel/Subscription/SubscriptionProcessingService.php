@@ -56,6 +56,8 @@ class SubscriptionProcessingService
     public function wasPaid(Subscription $subscription, float $amountReceived): void
     {
         /** @todo Нужна защита на случай, когда сумма сщета меньше стоимости подписки */
+
+        /** @todo нужно проверять что у кастомера нет активной подписки */
         if ($subscription->getStatus() === Subscription::STATUS_NEW) {
             $subscription->activate();
         }

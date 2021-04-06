@@ -23,6 +23,7 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
+                'sp.paddle_id' => 'paddleId',
             ])
             ->where('sp.id = :id')
             ->bindValue('id', $id)
@@ -47,6 +48,7 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
+                'sp.paddle_id' => 'paddleId',
             ])
             ->from('subscription_plans AS sp');
 
@@ -65,6 +67,7 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
+                'sp.paddle_id' => 'paddleId',
             ])
             ->from('subscription_plans AS sp')
             ->where('sp.status = :statusPublic')

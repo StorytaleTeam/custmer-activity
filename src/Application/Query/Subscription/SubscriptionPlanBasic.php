@@ -25,6 +25,9 @@ class SubscriptionPlanBasic implements \JsonSerializable
     /** @var int|null */
     private ?int $status;
 
+    /** @var string|null */
+    private ?string $paddleId;
+
     public function jsonSerialize()
     {
         return [
@@ -35,6 +38,7 @@ class SubscriptionPlanBasic implements \JsonSerializable
             'durationCount' => $this->durationCount ?? null,
             'durationLabel' => $this->durationLabel ?? null,
             'status' => $this->status ?? null,
+            'paddleId' => $this->paddleId ?? null,
         ];
     }
 }

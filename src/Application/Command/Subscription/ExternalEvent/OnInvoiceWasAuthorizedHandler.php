@@ -54,6 +54,5 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
                 /** @todo логировать сообщение о пустом параметре */
             }
         }
-//        var_dump($paymentData);die;
     }
 }
