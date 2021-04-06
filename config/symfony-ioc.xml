@@ -253,6 +253,7 @@
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionPlanFactory"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOValidation"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.specification.isSubscriptionPlanCanMoveToStatusSpecification"/>
         </service>
 
         <service id="storytale.customerActivity.application.command.subscription.subscriptionService" class="Storytale\CustomerActivity\Application\Command\Subscription\SubscriptionService">
@@ -354,6 +355,7 @@
         <service id="storytale.customerActivity.domain.persistModel.subscription.specification.isCustomerCanChangeSubscriptionPlanSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\IsCustomerCanChangeSubscriptionPlanSpecification"/>
         <service id="storytale.customerActivity.domain.persistModel.subscription.specification.isModeratorCanChangeSubscriptionPlanSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\IsModeratorCanChangeSubscriptionPlanSpecification"/>
         <service id="storytale.customerActivity.domain.persistModel.subscription.specification.subscriptionCanBeProlongatedSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\SubscriptionCanBeProlongatedSpecification"/>
+        <service id="storytale.customerActivity.domain.persistModel.subscription.specification.isSubscriptionPlanCanMoveToStatusSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\IsSubscriptionPlanCanMoveToStatusSpecification" />
         <!-- Specification END -->
 
         <!-- DomainService -->

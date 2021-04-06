@@ -19,6 +19,9 @@ class SubscriptionPlanDTO
     /** @var int|null */
     private ?int $downloadLimit;
 
+    /** @var int|null */
+    private ?int $status;
+
     public function __construct(array $data)
     {
         $this->name = $data['name'] ? trim($data['name']) : null;
@@ -26,6 +29,7 @@ class SubscriptionPlanDTO
         $this->durationCount = $data['duration_count'] ?? null;
         $this->durationLabel = $data['duration_label'] ?? null;
         $this->downloadLimit = $data['downloadLimit'] ?? null;
+        $this->status = $data['status'] ?? null;
     }
 
     /**
@@ -66,5 +70,13 @@ class SubscriptionPlanDTO
     public function getDownloadLimit(): ?int
     {
         return $this->downloadLimit;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getStatus(): ?int
+    {
+        return $this->status;
     }
 }
