@@ -182,4 +182,12 @@ class Membership extends AbstractEntity
     {
         $this->status = self::STATUS_DURATION_EXPIRED;
     }
+
+    /**
+     * @return Subscription
+     */
+    public function getSubscription(): Subscription
+    {
+        return $this->subscription;
+    }
 }

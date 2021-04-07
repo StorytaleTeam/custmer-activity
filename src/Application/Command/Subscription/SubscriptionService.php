@@ -2,7 +2,11 @@
 
 namespace Storytale\CustomerActivity\Application\Command\Subscription;
 
+use Storytale\Contracts\EventBus\EventBus;
 use Storytale\Contracts\Persistence\DomainSession;
+use Storytale\Contracts\SharedEvents\Subscription\SubscriptionWasCanceledEvent;
+use Storytale\Contracts\SharedEvents\Subscription\SubscriptionWasCreatedEvent;
+use Storytale\Contracts\SharedEvents\Subscription\SubscriptionWasUnsubscribeEvent;
 use Storytale\CustomerActivity\Application\ApplicationException;
 use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionDTOAssembler;
 use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionSigningDTO;
@@ -49,6 +53,9 @@ class SubscriptionService
     /** @var PaddleSubscriptionService */
     private PaddleSubscriptionService $paddleSubscriptionService;
 
+    /** @var EventBus */
+    private EventBus $eventBus;
+
     public function __construct(
         SubscriptionProcessingService $subscriptionProcessingService,
         SubscriptionPlanRepository $subscriptionPlanRepository,
@@ -58,7 +65,8 @@ class SubscriptionService
         DTOValidation $subscriptionSigningDTOValidation,
         PaymentService $paymentService,
         SubscriptionDTOAssembler $subscriptionDTOAssembler,
-        PaddleSubscriptionService $paddleSubscriptionService
+        PaddleSubscriptionService $paddleSubscriptionService,
+        EventBus $eventBus
     )
     {
         $this->subscriptionProcessingService = $subscriptionProcessingService;
@@ -70,9 +78,10 @@ class SubscriptionService
         $this->paymentService = $paymentService;
         $this->subscriptionDTOAssembler = $subscriptionDTOAssembler;
         $this->paddleSubscriptionService = $paddleSubscriptionService;
+        $this->eventBus = $eventBus;
     }
 
-    public function signing(SubscriptionSigningDTO $subscriptionSigningDTO, bool $isActorModerator = false): OperationResponse
+    public function subscribe(SubscriptionSigningDTO $subscriptionSigningDTO, bool $isActorModerator = false): OperationResponse
     {
         $result = null;
         $message = null;
@@ -95,6 +104,9 @@ class SubscriptionService
                 if ($currentSubscription->getPaddleId() !== null) {
                     $this->paddleSubscriptionService->cancelSubscription($currentSubscription->getPaddleId());
                 }
+
+                $subscriptionData = $this->subscriptionDTOAssembler->toArray($currentSubscription);
+                $this->eventBus->fire(new SubscriptionWasCanceledEvent(['subscription' => $subscriptionData]));
             }
 
             try {
@@ -121,9 +133,10 @@ class SubscriptionService
                     'email' => $customer->getEmail(),
                 ]
             ];
-
             $paymentLink = $this->paymentService->getPaymentLink($params);
-            $result['subscription'] = $this->subscriptionDTOAssembler->toArray($subscription);
+
+            $this->eventBus->fire(new SubscriptionWasCreatedEvent($params));
+            $result['subscription'] = $params['subscription'] ?? null;
             $result['paymentLink'] = $paymentLink;
             $success = true;
         } catch (ValidationException $e) {
@@ -134,7 +147,7 @@ class SubscriptionService
         return new OperationResponse($success, $result, $message);
     }
 
-    public function unsigning(int $subscriptionId, int $customerId): OperationResponse
+    public function unsubscribe(int $subscriptionId, int $customerId): OperationResponse
     {
         $result = null;
         $message = null;
@@ -149,15 +162,20 @@ class SubscriptionService
                 throw new ValidationException('Subscription with this params not found.');
             }
 
-            $subscription->unsign();
+            $subscription->unsubscribe();
             if ($subscription->getPaddleId() !== null) {
                 $this->paddleSubscriptionService->cancelSubscription($subscription->getPaddleId());
             } else {
-                /** @todo логировать ошибку */
-                throw new ApplicationException('Attempt cancel subscription with empty paddleId.');
+                /**
+                 * @todo логировать ошибку
+                 * Attempt cancel subscription with empty paddleId.
+                 */
             }
+            $subscriptionData = $this->subscriptionDTOAssembler->toArray($subscription);
 
             $this->domainSession->flush();
+            $this->eventBus->fire(new SubscriptionWasUnsubscribeEvent(['subscription' => $subscriptionData]));
+
             $success = true;
         } catch (ValidationException $e) {
             $success = false;

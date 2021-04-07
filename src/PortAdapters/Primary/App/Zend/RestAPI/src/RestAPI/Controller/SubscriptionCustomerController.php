@@ -27,7 +27,7 @@ class SubscriptionCustomerController extends AbstractRestfulController
         $subscriptionSigningDTO = new SubscriptionSigningDTO($data);
 
         /** @Annotation The second argument CANNOT be TRUE */
-        $response = $this->subscriptionService->signing($subscriptionSigningDTO);
+        $response = $this->subscriptionService->subscribe($subscriptionSigningDTO);
 
         return new JsonModel($response->jsonSerialize());
     }
@@ -59,7 +59,7 @@ class SubscriptionCustomerController extends AbstractRestfulController
             return new JsonModel(['success' => false, 'message' => 'Need not empty `customerId` param.']);
         }
 
-        $response = $this->subscriptionService->unsigning($id, $customerId);
+        $response = $this->subscriptionService->unsubscribe($id, $customerId);
 
         return new JsonModel($response->jsonSerialize());
     }

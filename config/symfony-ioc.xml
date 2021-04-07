@@ -266,6 +266,7 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.payment.storytalePaymentService"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService"/>
+            <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
         </service>
 
         <service id="storytale.customerActivity.application.command.download.downloadService" class="Storytale\CustomerActivity\Application\Command\Download\DownloadService">
@@ -325,6 +326,9 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionProcessingService"/>
+            <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
         </service>
 
         <service id="storytale.customerActivity.application.command.subscription.externalEvent.onPaddleSubscriptionCreateHandler" class="Storytale\CustomerActivity\Application\Command\Subscription\ExternalEvent\OnPaddleSubscriptionCreateHandler">
@@ -430,6 +434,9 @@
         <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\ProlongateSubscriptionCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\ProlongateSubscriptionCommand" public="true">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
         </service>
         <!-- Console command END -->
 
