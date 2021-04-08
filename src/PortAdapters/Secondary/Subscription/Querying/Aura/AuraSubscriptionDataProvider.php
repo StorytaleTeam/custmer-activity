@@ -56,13 +56,19 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
         return $response[0] ?? null;
     }
 
-    public function findAllByCustomer(int $customerId, int $count, int $page): array
+    public function findListForCustomer(int $customerId, int $count, int $page, array $params = []): array
     {
         $select = $this->prepareShortSelect()
             ->where('s.customer_id = :customerId')
             ->limit($count)
             ->offset($count * ($page - 1))
             ->bindValue('customerId' , $customerId);
+
+        if (isset($params['status'])) {
+            $select
+                ->where('s.status = :status')
+                ->bindValue('status', $params['status']);
+        }
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), SubscriptionBasic::class);
     }

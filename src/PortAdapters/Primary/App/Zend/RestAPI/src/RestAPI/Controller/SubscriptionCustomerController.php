@@ -34,14 +34,15 @@ class SubscriptionCustomerController extends AbstractRestfulController
 
     public function getList()
     {
-        $page = $this->params()->fromQuery('page', 1);
-        $count = $this->params()->fromQuery('count', 50);
-        $customerId = $this->params()->fromQuery('customerId');
+        $params = $this->params()->fromQuery(null, []);
+        $page =  $params['page'] ?? 1;
+        $count = $params['count'] ?? 50;
+        $customerId = $params['customerId'] ?? null;
         if (empty($customerId)) {
             return new JsonModel(['success' => false, 'message' => 'Need not empty `customerId` param.']);
         }
 
-        $subscriptions = $this->subscriptionDataProvider->findAllByCustomer($customerId, $count ,$page);
+        $subscriptions = $this->subscriptionDataProvider->findListForCustomer($customerId, $count ,$page, $params);
         $response = [
             'success' => true,
             'result' => [

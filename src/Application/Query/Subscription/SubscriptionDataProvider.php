@@ -15,9 +15,10 @@ interface SubscriptionDataProvider
      * @param int $customerId
      * @param int $count
      * @param int $page
+     * @param array $params
      * @return SubscriptionBasic[]
      */
-    public function findAllByCustomer(int $customerId, int $count, int $page): array;
+    public function findListForCustomer(int $customerId, int $count, int $page, array $params = []): array;
 
     /**
      * @param int $count
