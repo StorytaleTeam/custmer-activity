@@ -2,6 +2,7 @@
 
 namespace Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Querying\Aura;
 
+use Aura\SqlQuery\Common\SelectInterface;
 use Storytale\CustomerActivity\Application\Query\Subscription\SubscriptionPlanBasic;
 use Storytale\CustomerActivity\Application\Query\Subscription\SubscriptionPlanDataProvider;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan;
@@ -10,6 +11,25 @@ use Storytale\PortAdapters\Secondary\DataBase\Sql\StorytaleTeam\AbstractAuraData
 class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
     implements SubscriptionPlanDataProvider
 {
+    private function prepareFulSelectForCustomer(): SelectInterface
+    {
+        return $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'sp.id',
+                'sp.name',
+                'sp.price',
+                'sp.created_date'   => 'createdDate',
+                'sp.duration_count' => 'durationCount',
+                'sp.duration_label' => 'durationLabel',
+                'sp.download_limit' => 'downloadLimit',
+                'sp.paddle_id'      => 'paddleId',
+            ])
+            ->from('subscription_plans AS sp')
+            ->where('sp.status = :statusPublic')
+            ->bindValue('statusPublic', SubscriptionPlan::STATUS_PUBLIC);
+    }
+
     public function find(int $id): ?SubscriptionPlanBasic
     {
         $select = $this->queryFactory
@@ -57,22 +77,20 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
 
     public function findListForCustomer(): array
     {
-        $select = $this->queryFactory
-            ->newSelect()
-            ->cols([
-                'sp.id',
-                'sp.created_date' => 'createdDate',
-                'sp.name',
-                'sp.price',
-                'sp.duration_count' => 'durationCount',
-                'sp.duration_label' => 'durationLabel',
-                'sp.download_limit' => 'downloadLimit',
-                'sp.paddle_id' => 'paddleId',
-            ])
-            ->from('subscription_plans AS sp')
-            ->where('sp.status = :statusPublic')
-            ->bindValue('statusPublic', SubscriptionPlan::STATUS_PUBLIC);
+        $select = $this->prepareFulSelectForCustomer();
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), SubscriptionPlanBasic::class);
+    }
+
+    public function findOneForCustomer(int $id): ?SubscriptionPlanBasic
+    {
+        $select = $this->prepareFulSelectForCustomer()
+            ->where('sp.id = :id')
+            ->bindValue('id', $id);
+
+        $response = $this->executeStatement($select->getStatement(), $select->getBindValues(), SubscriptionPlanBasic::class);
+        $response = count($response) > 0 ? $response[0] : null;
+
+        return $response;
     }
 }

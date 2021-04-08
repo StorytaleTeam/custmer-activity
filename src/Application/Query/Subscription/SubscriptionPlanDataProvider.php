@@ -19,4 +19,10 @@ interface SubscriptionPlanDataProvider
      * @return SubscriptionPlanBasic[]
      */
     public function findListForCustomer(): array;
+
+    /**
+     * @param int $id
+     * @return SubscriptionPlanBasic|null
+     */
+    public function findOneForCustomer(int $id): ?SubscriptionPlanBasic;
 }

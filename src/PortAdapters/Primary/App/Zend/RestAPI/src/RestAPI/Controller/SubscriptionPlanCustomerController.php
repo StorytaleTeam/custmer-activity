@@ -26,4 +26,15 @@ class SubscriptionPlanCustomerController extends AbstractRestfulController
 
         return new JsonModel($response);
     }
+
+    public function get($id)
+    {
+        $subscriptionPlan = $this->subscriptionPlanDataProvider->findOneForCustomer($id);
+        $response = [
+            'success' => true,
+            'result' => ['subscriptionPlan' => $subscriptionPlan],
+        ];
+
+        return new JsonModel($response);
+    }
 }
