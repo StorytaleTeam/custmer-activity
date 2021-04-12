@@ -7,6 +7,9 @@ class SubscriptionBasic implements \JsonSerializable
     /** @var int|null */
     private ?int $id;
 
+    /** @var bool|null */
+    private ?bool $autoRenewal;
+
     /** @var int|null */
     private ?int $planInd;
 
@@ -48,6 +51,7 @@ class SubscriptionBasic implements \JsonSerializable
         return [
             'id' => $this->id ?? null,
             'status' => $this->status ?? null,
+            'autoRenewal' => $this->autoRenewal ?? null,
             'customer' => [
                 'id' => $this->customerId ?? null,
             ],

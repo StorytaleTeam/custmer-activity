@@ -16,6 +16,7 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
             ->newSelect()
             ->cols([
                 's.id',
+                's.auto_renewal'                => 'autoRenewal',
                 's.customer_id'                 => 'customerId',
                 's.subscription_plan_id'        => 'subscriptionPlanId',
                 's.created_date'                => 'createdDate',
