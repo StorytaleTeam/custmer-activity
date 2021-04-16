@@ -28,6 +28,9 @@ class SubscriptionPlanBasic implements \JsonSerializable
     /** @var string|null */
     private ?string $paddleId;
 
+    /** @var string|null */
+    private ?string $createdDate;
+
     public function jsonSerialize()
     {
         return [
@@ -39,6 +42,7 @@ class SubscriptionPlanBasic implements \JsonSerializable
             'durationLabel' => $this->durationLabel ?? null,
             'status' => $this->status ?? null,
             'paddleId' => $this->paddleId ?? null,
+            'createdDate' => $this->createdDate ?? null,
         ];
     }
 }
