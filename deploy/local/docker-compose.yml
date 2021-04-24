@@ -32,3 +32,15 @@ services:
       - "7009:80"
     volumes:
       - "./nginx:/etc/nginx/conf.d"
+
+  subscriber_customer-activity:
+    container_name: subscriber.customer-activity
+    build:
+      context: ./
+      dockerfile: subscriber/Dockerfile
+    env_file: ./../../config/.env
+    restart: always
+    cap_add:
+      - ALL
+    volumes:
+      - "./../../:/www/"
