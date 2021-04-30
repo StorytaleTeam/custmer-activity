@@ -9,6 +9,7 @@ use RestAPI\Controller\SubscriptionCustomerController;
 use RestAPI\Controller\DownloadController;
 use RestAPI\Controller\DownloadCustomerController;
 use RestAPI\Controller\LikeCustomerController;
+use RestAPI\Controller\IllustrationController;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 
@@ -140,6 +141,19 @@ return [
                             ],
                             'defaults' => [
                                 'controller' => LikeCustomerController::class,
+                                'action' => null,
+                            ],
+                        ],
+                    ],
+                    'illustration' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/illustration/:action',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => IllustrationController::class,
                                 'action' => null,
                             ],
                         ],

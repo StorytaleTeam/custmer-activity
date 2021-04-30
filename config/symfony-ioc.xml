@@ -240,6 +240,10 @@
             <argument type="service" id="storytale.customerActivity.application.command.customer.likeService"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraCustomerDataProvider"/>
         </service>
+
+        <service id="RestAPI\Controller\IllustrationController" class="RestAPI\Controller\IllustrationController" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.illustration.querying.aura.auraIllustrationDataProvider"/>
+        </service>
         <!--Controllers end-->
 
         <!-- DTO Validation -->
@@ -306,6 +310,11 @@
         </service>
 
         <service id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraSubscriptionPlanDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Querying\Aura\AuraSubscriptionPlanDataProvider">
+            <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
+            <argument type="service" id="AuraPgSQLQueryFactory"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.illustration.querying.aura.auraIllustrationDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Illustration\Querying\Aura\AuraIllustrationDataProvider">
             <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
             <argument type="service" id="AuraPgSQLQueryFactory"/>
         </service>
