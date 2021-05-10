@@ -44,3 +44,15 @@ services:
       - ALL
     volumes:
       - "./../../:/www/"
+
+  cron_customer-activity:
+    container_name: cron.customer-activity
+    build:
+      context: ./
+      dockerfile: cron/Dockerfile
+    env_file: ./../../config/.env
+    restart: always
+    cap_add:
+      - ALL
+    volumes:
+      - "./../../:/www/"

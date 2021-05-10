@@ -31,7 +31,7 @@ class DoctrineSubscriptionRepository implements SubscriptionRepository
         return $this->repository->find($id);
     }
 
-    public function getForProlongate(int $limit): array
+    public function getForProlongate(): array
     {
         $qb = $this->repository->createQueryBuilder('s')
             ->leftJoin(

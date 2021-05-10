@@ -48,7 +48,8 @@ class ProlongateSubscriptionCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $subscriptions = $this->subscriptionRepository->getForProlongate(10);
+        $output->write((new \DateTime())->format(\DateTime::ATOM) . ' ');
+        $subscriptions = $this->subscriptionRepository->getForProlongate();
         $output->write('Find ' . count($subscriptions) . " subscriptions for prolongation. \n");
 
         foreach ($subscriptions as $subscription) {
