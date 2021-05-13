@@ -2,7 +2,10 @@
 
 namespace Storytale\CustomerActivity\Application\Command\Customer;
 
+use Storytale\Contracts\EventBus\EventBus;
 use Storytale\Contracts\Persistence\DomainSession;
+use Storytale\Contracts\SharedEvents\User\Customer\CustomerLikeIllustrationEvent;
+use Storytale\Contracts\SharedEvents\User\Customer\CustomerUnlikeIllustrationEvent;
 use Storytale\CustomerActivity\Application\OperationResponse;
 use Storytale\CustomerActivity\Application\ValidationException;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
@@ -25,15 +28,20 @@ class LikeService
     /** @var CustomerLikeFactory */
     private CustomerLikeFactory $likeFactory;
 
+    /** @var EventBus */
+    private EventBus $eventBus;
+
     public function __construct(
         LikeRepository $likeRepository, DomainSession $domainSession,
-        CustomerRepository $customerRepository, CustomerLikeFactory $customerLikeFactory
+        CustomerRepository $customerRepository, CustomerLikeFactory $customerLikeFactory,
+        EventBus $eventBus
     )
     {
         $this->likeRepository = $likeRepository;
         $this->domainSession = $domainSession;
         $this->customerRepository = $customerRepository;
         $this->likeFactory = $customerLikeFactory;
+        $this->eventBus = $eventBus;
     }
 
     public function likeAction(int $customerId, int $illustrationId): OperationResponse
@@ -60,6 +68,17 @@ class LikeService
                 $action = 'like';
             }
             $this->domainSession->flush();
+
+            $eventData = [
+                'illustration' => [
+                    'id' => $illustrationId,
+                ],
+            ];
+            if ($action === 'like') {
+                $this->eventBus->fire(new CustomerLikeIllustrationEvent($eventData));
+            } elseif ($action === 'unlike') {
+                $this->eventBus->fire(new CustomerUnlikeIllustrationEvent($eventData));
+            }
 
             $result['action'] = $action;
             $success = true;

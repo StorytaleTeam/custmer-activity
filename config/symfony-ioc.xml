@@ -286,6 +286,7 @@
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerLikeFactory"/>
+            <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
         </service>
         <!-- Command end -->
 
