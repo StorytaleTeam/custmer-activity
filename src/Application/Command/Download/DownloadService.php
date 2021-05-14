@@ -49,13 +49,18 @@ class DownloadService
     {
         $result = null;
         $message = null;
+        $code = null;
 
         try {
             $customer = $this->customerRepository->get($customerId);
             if (!$customer instanceof Customer) {
                 throw new ValidationException('Customer with this id not found.');
             }
-            if ($this->downloadProcessingService->getDownloadPass($customer, $illustrationId)) {
+            try {
+                $this->downloadProcessingService->getDownloadPass($customer, $illustrationId);
+            } catch (DomainException $e) {
+                throw new ValidationException($e->getMessage(), $e->getCode());
+            }
 
                 $illustrationData = $this->remoteIllustrationDataProvider->getZip($illustrationId);
                 if (!isset($illustrationData['zip']) || empty($illustrationData['zip'])) {
@@ -65,7 +70,7 @@ class DownloadService
                 try {
                     $isNewDownload = $this->downloadProcessingService->trackDownload($customer, $illustrationId);
                 } catch (DomainException $e) {
-                    throw new ValidationException($e->getMessage());
+                    throw new ValidationException($e->getMessage(), $e->getCode());
                 }
 
                 $this->domainSession->flush();
@@ -73,21 +78,15 @@ class DownloadService
                 if ($isNewDownload) {
                     $this->eventBus->fire(new IllustrationWasDownload($illustrationData['illustration'] ?? []));
                 }
-
-
                 $result['zip'] = $illustrationData['zip'];
-            } else {
-                throw new ValidationException('Check your subscription.');
-            }
-
-
 
             $success = true;
         } catch (ValidationException $e) {
             $success = false;
             $message = $e->getMessage();
+            $code = $e->getCode();
         }
 
-        return new OperationResponse($success, $result, $message);
+        return new OperationResponse($success, $result, $message, $code);
     }
 }

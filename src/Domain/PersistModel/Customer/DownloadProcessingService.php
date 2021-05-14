@@ -20,24 +20,27 @@ class DownloadProcessingService
      * @param Customer $customer
      * @param int $illustrationId
      * @return bool
+     * @throws DomainException
      */
     public function getDownloadPass(Customer $customer, int $illustrationId): bool
     {
-        $hasUnusedDownloads = false;
-        $isAlreadyDownloaded = false;
-
         $actualSubscribe = $customer->getActualSubscription();
-        $currentMembership = $actualSubscribe instanceof Subscription ? $actualSubscribe->getCurrentMembership() : null;
-        if ($currentMembership instanceof Membership) {
-            $isAlreadyDownloaded = $customer->isAlreadyDownloaded($illustrationId);
-            if (!$isAlreadyDownloaded) {
-                if ($currentMembership->getDownloadRemaining() > 0) {
-                    $hasUnusedDownloads = true;
-                }
+        if (!$actualSubscribe instanceof Subscription) {
+            throw new DomainException('You have not actual subscription.', 109001001);
+        }
+        $currentMembership = $actualSubscribe->getCurrentMembership();
+        if (!$currentMembership instanceof Membership) {
+            throw new DomainException('You have not actual membership.', 109001002);
+        }
+
+        $isAlreadyDownloaded = $customer->isAlreadyDownloaded($illustrationId);
+        if (!$isAlreadyDownloaded) {
+            if ($currentMembership->getDownloadRemaining() < 1) {
+                throw new DomainException('Downloads limit reached.', 109001003);
             }
         }
 
-        return $isAlreadyDownloaded || $hasUnusedDownloads;
+        return true;
     }
 
     /**
