@@ -29,15 +29,19 @@ class Customer extends AbstractEntity
     /** @var string|null */
     private ?string $name;
 
+    /** @var int|null */
+    private ?int $oldId;
+
     public function __construct(
         int $id, string $email, bool $subscriptionAutoRenewal,
-        ?string $name = null
+        ?string $name = null, ?int $oldId = null
     )
     {
         $this->id = $id;
         $this->email = $email;
         $this->subscriptionAutoRenewal = $subscriptionAutoRenewal;
         $this->name = $name;
+        $this->oldId = $oldId;
         parent::__construct();
     }
 
@@ -125,5 +129,13 @@ class Customer extends AbstractEntity
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getOldId(): ?int
+    {
+        return $this->oldId;
     }
 }

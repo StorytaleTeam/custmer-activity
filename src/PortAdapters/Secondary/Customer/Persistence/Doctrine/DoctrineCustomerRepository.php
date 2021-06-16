@@ -26,6 +26,11 @@ class DoctrineCustomerRepository implements CustomerRepository
         return $this->repository->find($id);
     }
 
+    public function getByOldId(int $oldId): ?Customer
+    {
+        return $this->repository->findOneBy(['oldId' => $oldId]);
+    }
+
     public function save(Customer $customer): void
     {
         $this->entityManager->persist($customer);

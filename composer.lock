@@ -1971,7 +1971,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:StorytaleTeam/contracts-sk.git",
-                "reference": "721c37e0f34ae8ceed60a7dfc591ae0589f7c936"
+                "reference": "f6fc06e5eda0c576f49c3f363d63078aa5f3208d"
             },
             "require": {
                 "ext-json": "*",
@@ -1992,7 +1992,7 @@
                 }
             ],
             "description": "Shared contracts definition",
-            "time": "2021-05-13T13:28:19+00:00"
+            "time": "2021-06-16T08:41:31+00:00"
         },
         {
             "name": "storytale/port-adapter-sk",
@@ -2000,7 +2000,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:StorytaleTeam/port-adapter-sk.git",
-                "reference": "23824bc8eb89c631922acadaeb4ed67c7c317d8b"
+                "reference": "1e345fe5af302b9f0ad0b25bc5acf9cb489936c2"
             },
             "require": {
                 "doctrine/migrations": "~2.2.1",
@@ -2034,7 +2034,7 @@
                 }
             ],
             "description": "Main port adapters",
-            "time": "2021-04-30T19:26:19+00:00"
+            "time": "2021-06-10T08:28:53+00:00"
         },
         {
             "name": "symfony/config",

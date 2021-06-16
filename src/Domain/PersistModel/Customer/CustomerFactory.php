@@ -10,7 +10,8 @@ class CustomerFactory
             $data['id'],
             $data['email'],
             true,
-            $data['name']
+            $data['name'],
+            $data['oldId']
         );
     }
 }

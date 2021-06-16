@@ -8,6 +8,7 @@
         <field name="name" column="name" nullable="true"/>
         <field name="createdDate" type="datetime" column="created_date"/>
         <field name="subscriptionAutoRenewal" type="boolean" column="subscription_auto_renewal"/>
+        <field name="oldId" column="old_id" type="integer" nullable="true"/>
 
         <one-to-many field="likes" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerLike" mapped-by="customer">
             <cascade>

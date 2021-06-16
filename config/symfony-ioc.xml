@@ -136,6 +136,7 @@
                 <argument key="account.user.newUserWasRegistered" type="service" id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasRegisteredHandler"/>
                 <argument key="payment.invoice.invoiceWasAuthorized" type="service" id="storytale.customerActivity.application.command.subscription.externalEvent.onInvoiceWasAuthorizedHandler"/>
                 <argument key="event.paddle.generalized" type="service" id="storytale.customerActivity.application.command.subscription.externalEvent.onPaddleSubscriptionCreateHandler"/>
+                <argument key="account.user.newUserWasMigratedEvent" type="service" id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasMigratedEventHandler"/>
             </argument>
         </service>
 
@@ -144,6 +145,7 @@
                 <argument key="account.user.newUserWasRegistered">Storytale\Contracts\SharedEvents\User\NewUserWasRegistered</argument>
                 <argument key="payment.invoice.invoiceWasAuthorized">Storytale\Contracts\SharedEvents\Payment\InvoiceWasAuthorizedEvent</argument>
                 <argument key="event.paddle.generalized">Storytale\Contracts\SharedEvents\Payment\Paddle\GeneralizedPaddleEvent</argument>
+                <argument key="account.user.newUserWasMigratedEvent">Storytale\Contracts\SharedEvents\User\NewUserWasMigratedEvent</argument>
             </argument>
         </service>
 
@@ -327,6 +329,12 @@
 
         <!--  ExternalEvent handler -->
         <service id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasRegisteredHandler" class="Storytale\CustomerActivity\Application\Command\Customer\ExternalEvent\OnNewUserWasRegisteredHandler">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerFactory"/>
+        </service>
+
+        <service id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasMigratedEventHandler" class="Storytale\CustomerActivity\Application\Command\Customer\ExternalEvent\OnNewUserWasMigratedEventHandler">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerFactory"/>

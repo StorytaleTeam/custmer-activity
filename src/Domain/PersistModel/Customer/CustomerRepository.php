@@ -14,4 +14,10 @@ interface CustomerRepository
      * @return Customer|null
      */
     public function get(int $id): ?Customer;
+
+    /**
+     * @param int $oldId
+     * @return Customer|null
+     */
+    public function getByOldId(int $oldId): ?Customer;
 }
