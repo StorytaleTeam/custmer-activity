@@ -159,10 +159,20 @@
             <argument type="string">pgsql</argument>
         </service>
 
+        <service id="AuraMySQLQueryFactory" class="Aura\SqlQuery\QueryFactory">
+            <argument type="string">mysql</argument>
+        </service>
+
         <service id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection" class="Storytale\PortAdapters\Secondary\DataBase\Sql\StorytaleTeam\StorytalePdoConnection">
             <argument>pgsql:dbname=%env(DB_PSQL_CONNECTION_SLAVE_DBNAME)%;host=%env(DB_PSQL_CONNECTION_SLAVE_HOST)%;port=%env(DB_PSQL_CONNECTION_SLAVE_PORT)%</argument>
             <argument>%env(DB_PSQL_CONNECTION_SLAVE_USER)%</argument>
             <argument>%env(DB_PSQL_CONNECTION_SLAVE_PASSWORD)%</argument>
+        </service>
+
+        <service id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection_for_old_db" class="Storytale\PortAdapters\Secondary\DataBase\Sql\StorytaleTeam\StorytalePdoConnection">
+            <argument>mysql:dbname=%env(DB_PSQL_CONNECTION_OLD_DBNAME)%;host=%env(DB_PSQL_CONNECTION_OLD_HOST)%;port=%env(DB_PSQL_CONNECTION_OLD_PORT)%</argument>
+            <argument>%env(DB_PSQL_CONNECTION_OLD_USER)%</argument>
+            <argument>%env(DB_PSQL_CONNECTION_OLD_PASSWORD)%</argument>
         </service>
 
         <!-- Logger start -->
@@ -325,6 +335,11 @@
         <service id="storytale.customerActivity.portAdapters.secondary.illustration.querying.storytale.storytaleRemoteIllustrationDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Illustration\Querying\Storytale\StorytaleRemoteIllustrationDataProvider">
             <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
         </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraOldCustomerDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Querying\Aura\AuraOldCustomerDataProvider">
+            <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection_for_old_db"/>
+            <argument type="service" id="AuraMySQLQueryFactory"/>
+        </service>
         <!-- Query END -->
 
         <!--  ExternalEvent handler -->
@@ -455,6 +470,24 @@
             <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
+        </service>
+
+        <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Customer\MigrateOldLikesCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Customer\MigrateOldLikesCommand" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraOldCustomerDataProvider"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineLikeRepository"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerLikeFactory"/>
+            <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
+        </service>
+
+        <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Customer\MigrateOldDownloadsCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Customer\MigrateOldDownloadsCommand" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraOldCustomerDataProvider"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.downloadProcessingService"/>
+            <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
+            <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
         </service>
         <!-- Console command END -->
 

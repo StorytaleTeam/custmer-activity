@@ -4,8 +4,9 @@ namespace Storytale\CustomerActivity\Domain\PersistModel\Customer;
 
 class CustomerDownloadFactory
 {
-    public function create(int $illustrationId, Customer $customer): CustomerDownload
+    public function create(int $illustrationId, Customer $customer, ?\DateTime $createdDate = null): CustomerDownload
     {
-        return new CustomerDownload($illustrationId, $customer, new \DateTime(), 0);
+        $createdDate = $createdDate ?? new \DateTime();
+        return new CustomerDownload($illustrationId, $customer, $createdDate, 0);
     }
 }

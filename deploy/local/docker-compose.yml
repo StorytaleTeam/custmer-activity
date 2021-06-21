@@ -12,7 +12,7 @@ services:
 
   fpm_customer-activity:
     container_name: fpm.customer-activity
-    image: ewwgenn/storytale:fpm7.4_LOCAL
+    image: ewwgenn/fpm_with_auth7.4:1.02
     env_file: ./../../config/.env
     restart: always
     cap_add:

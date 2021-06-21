@@ -102,6 +102,27 @@ class Customer extends AbstractEntity
         return $isNewDownload;
     }
 
+    /**
+     * @param CustomerDownload $newDownload
+     * @deprecated
+     */
+    public function migrateDownload(CustomerDownload $newDownload): void
+    {
+        $isNewDownload = true;
+
+        /** @var CustomerDownload $download */
+        foreach ($this->downloads as $download) {
+            if ($download->getIllustrationId() === $newDownload->getIllustrationId()) {
+                $download->reDownload($newDownload);
+                $isNewDownload = false;
+                break;
+            }
+        }
+        if ($isNewDownload) {
+            $this->downloads[] = $newDownload;
+        }
+    }
+
     public function like(CustomerLike $customerLike): bool
     {
         /** @var CustomerLike $like */

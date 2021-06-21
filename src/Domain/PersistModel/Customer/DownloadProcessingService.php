@@ -55,4 +55,15 @@ class DownloadProcessingService
         $newDownload = $this->customerDownloadFactory->create($illustrationId, $customer);
         return $customer->trackDownload($newDownload);
     }
+
+    /**
+     * @param Customer $customer
+     * @param int $illustrationId
+     * @param \DateTime|null $createdDate
+     */
+    public function migrateDownload(Customer $customer, int $illustrationId, ?\DateTime $createdDate = null): void
+    {
+        $newDownload = $this->customerDownloadFactory->create($illustrationId, $customer, $createdDate);
+        $customer->migrateDownload($newDownload);
+    }
 }

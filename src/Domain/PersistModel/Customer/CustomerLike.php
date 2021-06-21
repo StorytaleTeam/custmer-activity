@@ -15,11 +15,11 @@ class CustomerLike extends AbstractEntity
     /** @var int */
     private int $illustrationId;
 
-    public function __construct(Customer $customer, int $illustrationId)
+    public function __construct(Customer $customer, int $illustrationId, ?\DateTime $createdDate = null)
     {
         $this->customer = $customer;
         $this->illustrationId = $illustrationId;
-        parent::__construct();
+        parent::__construct($createdDate);
     }
 
     /**

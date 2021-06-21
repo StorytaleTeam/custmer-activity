@@ -38,7 +38,7 @@ class CustomerDownload extends AbstractEntity
         $this->lastDownloadDate = $lastDownloadDate;
         $this->customer = $customer;
         $this->membership = null;
-        parent::__construct();
+        parent::__construct($lastDownloadDate);
     }
 
     /**
@@ -49,10 +49,14 @@ class CustomerDownload extends AbstractEntity
         return $this->illustrationId;
     }
 
-    public function reDownload(): void
+    public function reDownload(?CustomerDownload $customerDownload = null): void
     {
         $this->reDownloadCount++;
-        $this->lastDownloadDate = new \DateTime();
+        if ($customerDownload instanceof CustomerDownload) {
+            $this->lastDownloadDate = $customerDownload->lastDownloadDate;
+        } else {
+            $this->lastDownloadDate = new \DateTime();
+        }
     }
 
     /**
