@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "96498eff4cd304ffffec1310feb6afbc",
+    "content-hash": "de5a0c1e8eb1fbd78ad845239a17e5e3",
     "packages": [
         {
             "name": "aura/sqlquery",
@@ -1970,7 +1970,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git@github.com:StorytaleTeam/contracts-sk.git",
+                "url": "ssh://git@git.jetbrains.space/craftwork/stor/contracts-sk.git",
                 "reference": "07b2d2873fa99653fbc7036b3511db32706b3baf"
             },
             "require": {
@@ -1999,8 +1999,8 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git@github.com:StorytaleTeam/port-adapter-sk.git",
-                "reference": "4f4017eed65b9b34ba20793b1e020ec20da95705"
+                "url": "ssh://git@git.jetbrains.space/craftwork/stor/port-adapter-sk.git",
+                "reference": "092ff1b0d4093a2957ec1f3b4d133c175d81a579"
             },
             "require": {
                 "doctrine/migrations": "~2.2.1",
@@ -2034,7 +2034,7 @@
                 }
             ],
             "description": "Main port adapters",
-            "time": "2021-06-21T12:33:09+00:00"
+            "time": "2021-06-22T18:25:36+00:00"
         },
         {
             "name": "symfony/config",

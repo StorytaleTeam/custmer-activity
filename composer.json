@@ -24,12 +24,12 @@
     },
     "repositories": [
         {
-            "type": "git",
-            "url": "git@github.com:StorytaleTeam/port-adapter-sk.git"
+            "type": "vcs",
+            "url": "ssh://git@git.jetbrains.space/craftwork/stor/contracts-sk.git"
         },
         {
-            "type": "git",
-            "url": "git@github.com:StorytaleTeam/contracts-sk.git"
+            "type": "vcs",
+            "url": "ssh://git@git.jetbrains.space/craftwork/stor/port-adapter-sk.git"
         }
     ]
 }
