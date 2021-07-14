@@ -12,6 +12,7 @@ use RestAPI\Controller\LikeCustomerController;
 use RestAPI\Controller\IllustrationController;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
+use RestAPI\Controller\OrderController;
 
 return [
     'view_manager' => [
@@ -50,6 +51,19 @@ return [
                             ],
                             'defaults' => [
                                 'controller' => CustomerController::class,
+                                'action' => null,
+                            ],
+                        ],
+                    ],
+                    'order' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/order[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]*',
+                            ],
+                            'defaults' => [
+                                'controller' => OrderController::class,
                                 'action' => null,
                             ],
                         ],

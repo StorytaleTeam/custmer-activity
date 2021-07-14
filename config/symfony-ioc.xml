@@ -51,6 +51,7 @@
             <argument type="collection">
                 <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Customer/Persistence/Doctrine/Mapping/</argument>
                 <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Subscription/Persistence/Doctrine/Mapping/</argument>
+                <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Order/Persistence/Doctrine/Mapping/</argument>
             </argument>
         </service>
 
@@ -256,14 +257,23 @@
         <service id="RestAPI\Controller\IllustrationController" class="RestAPI\Controller\IllustrationController" public="true">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.illustration.querying.aura.auraIllustrationDataProvider"/>
         </service>
+
+        <service id="RestAPI\Controller\OrderController" class="RestAPI\Controller\OrderController" public="true">
+            <argument type="service" id="storytale.customerActivity.application.command.order.orderService"/>
+        </service>
         <!--Controllers end-->
 
-        <!-- DTO Validation -->
+    <!-- DTO Validation -->
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOValidation" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOValidation"/>
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionSigningDTOValidation" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionSigningDTOValidation"/>
-        <!-- DTO Validation END -->
+        <service id="storytale.customerActivity.application.command.order.dto.orderPositionDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\OrderPositionDTOValidation"/>
 
-        <!-- Command start -->
+        <service id="storytale.customerActivity.application.command.order.dto.createOrderDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\CreateOrderDTOValidation">
+            <argument type="service" id="storytale.customerActivity.application.command.order.dto.orderPositionDTOValidation"/>
+        </service>
+    <!-- DTO Validation END -->
+
+    <!-- Command start -->
         <service id="storytale.customerActivity.application.command.subscription.subscriptionPlanService" class="Storytale\CustomerActivity\Application\Command\Subscription\SubscriptionPlanService">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionPlanRepository"/>
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
@@ -300,18 +310,26 @@
             <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerLikeFactory"/>
             <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
         </service>
-        <!-- Command end -->
 
-        <!-- DTO Assembler -->
+        <service id="storytale.customerActivity.application.command.order.orderService" class="Storytale\CustomerActivity\Application\Command\Order\OrderService">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionPlanRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.order.productPositionFactory"/>
+            <argument type="service" id="storytale.customerActivity.application.command.order.dto.createOrderDTOValidation"/>
+        </service>
+    <!-- Command end -->
+
+    <!-- DTO Assembler -->
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionDTOAssembler">
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler"/>
         </service>
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOAssembler"/>
         <service id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\MembershipDTOAssembler"/>
-        <!-- DTO Assembler END -->
+    <!-- DTO Assembler END -->
 
-        <!-- Query -->
+    <!-- Query -->
         <service id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraCustomerDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Querying\Aura\AuraCustomerDataProvider">
             <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
             <argument type="service" id="AuraPgSQLQueryFactory"/>
@@ -340,9 +358,9 @@
             <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection_for_old_db"/>
             <argument type="service" id="AuraMySQLQueryFactory"/>
         </service>
-        <!-- Query END -->
+    <!-- Query END -->
 
-        <!--  ExternalEvent handler -->
+    <!--  ExternalEvent handler -->
         <service id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasRegisteredHandler" class="Storytale\CustomerActivity\Application\Command\Customer\ExternalEvent\OnNewUserWasRegisteredHandler">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
@@ -368,9 +386,9 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
         </service>
-        <!--  ExternalEvent handler END -->
+    <!--  ExternalEvent handler END -->
 
-        <!-- Repository -->
+    <!-- Repository -->
         <service id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Persistence\Doctrine\DoctrineCustomerRepository">
             <argument type="service" id="doctrine.orm.entityManager"/>
         </service>
@@ -386,16 +404,20 @@
         <service id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineLikeRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Persistence\Doctrine\DoctrineLikeRepository">
             <argument type="service" id="doctrine.orm.entityManager"/>
         </service>
-        <!-- Repository END -->
 
-        <!-- Specification -->
+        <service id="storytale.customerActivity.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Order\Persistence\Doctrine\DoctrineOrderRepository">
+            <argument type="service" id="doctrine.orm.entityManager"/>
+        </service>
+    <!-- Repository END -->
+
+    <!-- Specification -->
         <service id="storytale.customerActivity.domain.persistModel.subscription.specification.isCustomerCanChangeSubscriptionPlanSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\IsCustomerCanChangeSubscriptionPlanSpecification"/>
         <service id="storytale.customerActivity.domain.persistModel.subscription.specification.isModeratorCanChangeSubscriptionPlanSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\IsModeratorCanChangeSubscriptionPlanSpecification"/>
         <service id="storytale.customerActivity.domain.persistModel.subscription.specification.subscriptionCanBeProlongatedSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\SubscriptionCanBeProlongatedSpecification"/>
         <service id="storytale.customerActivity.domain.persistModel.subscription.specification.isSubscriptionPlanCanMoveToStatusSpecification" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Specification\IsSubscriptionPlanCanMoveToStatusSpecification" />
-        <!-- Specification END -->
+    <!-- Specification END -->
 
-        <!-- DomainService -->
+    <!-- DomainService -->
         <service id="storytale.customerActivity.domain.persistModel.subscription.subscriptionProcessingService" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionProcessingService">
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.specification.isCustomerCanChangeSubscriptionPlanSpecification"/>
@@ -406,24 +428,25 @@
         <service id="storytale.customerActivity.domain.persistModel.customer.downloadProcessingService" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\DownloadProcessingService">
             <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerDownloadFactory"/>
         </service>
-        <!-- DomainService END -->
+    <!-- DomainService END -->
 
-        <!-- Factory -->
+    <!-- Factory -->
         <service id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.subscription.subscriptionPlanFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlanFactory" />
         <service id="storytale.customerActivity.domain.persistModel.customer.customerFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.customer.customerDownloadFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownloadFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.customer.customerLikeFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerLikeFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.subscription.membershipFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\MembershipFactory"/>
-        <!-- Factory END -->
+        <service id="storytale.customerActivity.domain.persistModel.order.productPositionFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPositionFactory"/>
+    <!-- Factory END -->
 
-        <!-- PortAdapter service -->
+    <!-- PortAdapter service -->
         <service id="storytale.customerActivity.portAdapters.secondary.payment.storytalePaymentService" class="Storytale\CustomerActivity\PortAdapters\Secondary\Payment\StorytalePaymentService">
             <argument type="service" id="storytale.portAdapters.secondary.serviceClient.payment.paymentServiceClient"/>
         </service>
-        <!-- PortAdapter service END -->
+    <!-- PortAdapter service END -->
 
-        <!-- Service client -->
+    <!-- Service client -->
         <service id="zend.http.client" class="Zend\Http\Client">
             <call method="setOptions">
                 <argument type="collection">
