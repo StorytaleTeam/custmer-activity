@@ -19,14 +19,26 @@ class Order extends AbstractEntity
     /** @var ProductPosition[] */
     private $productPositions;
 
-    public function __construct()
+    public function __construct(Customer $customer, int $status)
     {
+        $this->customer = $customer;
+        $this->status = $status;
+        $this->productPositions = [];
         parent::__construct();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     public function addProduct(ProductPosition $productPosition)
     {
         $wasIncremented = false;
+        $productPosition->assignOrder($this);
         foreach ($this->productPositions as $addedPosition) {
             if (
                 $addedPosition->getProductType() === $productPosition->getProductType()
@@ -41,5 +53,13 @@ class Order extends AbstractEntity
         if (!$wasIncremented) {
             $this->productPositions[] = $productPosition;
         }
+    }
+
+    /**
+     * @return ProductPosition[]
+     */
+    public function getProductPositions()
+    {
+        return $this->productPositions;
     }
 }

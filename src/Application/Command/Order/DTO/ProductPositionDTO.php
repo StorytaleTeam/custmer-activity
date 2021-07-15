@@ -2,7 +2,7 @@
 
 namespace Storytale\CustomerActivity\Application\Command\Order\DTO;
 
-class OrderPositionDTO
+class ProductPositionDTO
 {
     /** @var string|null */
     private ?string $productType;

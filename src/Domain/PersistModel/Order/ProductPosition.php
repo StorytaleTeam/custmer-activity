@@ -2,8 +2,17 @@
 
 namespace Storytale\CustomerActivity\Domain\PersistModel\Order;
 
-class ProductPosition
+use Storytale\CustomerActivity\Domain\DomainException;
+use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
+
+class ProductPosition extends AbstractEntity
 {
+    /** @var int */
+    private int $id;
+
+    /** @var Order|null */
+    private ?Order $order;
+
     /** @var string */
     private string $displayName;
 
@@ -24,11 +33,13 @@ class ProductPosition
         int $productId, float $price, int $count
     )
     {
+        $this->order = null;
         $this->displayName = $displayName;
         $this->productType = $productType;
         $this->productId = $productId;
         $this->price = $price;
         $this->count = $count;
+        parent::__construct();
     }
 
     /**
@@ -74,6 +85,15 @@ class ProductPosition
     public function addOne()
     {
         $this->count++;
+    }
+
+    public function assignOrder(Order $order)
+    {
+        if ($this->order === null) {
+            $this->order = $order;
+        } else {
+            throw new DomainException('Order for ProductPositions already isset');
+        }
     }
 
 

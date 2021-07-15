@@ -266,10 +266,10 @@
     <!-- DTO Validation -->
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOValidation" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOValidation"/>
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionSigningDTOValidation" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionSigningDTOValidation"/>
-        <service id="storytale.customerActivity.application.command.order.dto.orderPositionDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\OrderPositionDTOValidation"/>
+        <service id="storytale.customerActivity.application.command.order.dto.productPositionDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\ProductPositionDTOValidation"/>
 
         <service id="storytale.customerActivity.application.command.order.dto.createOrderDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\CreateOrderDTOValidation">
-            <argument type="service" id="storytale.customerActivity.application.command.order.dto.orderPositionDTOValidation"/>
+            <argument type="service" id="storytale.customerActivity.application.command.order.dto.productPositionDTOValidation"/>
         </service>
     <!-- DTO Validation END -->
 
@@ -317,6 +317,9 @@
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.order.productPositionFactory"/>
             <argument type="service" id="storytale.customerActivity.application.command.order.dto.createOrderDTOValidation"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.order.orderFactory"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.storytaleProductPositionsService"/>
         </service>
     <!-- Command end -->
 
@@ -438,11 +441,17 @@
         <service id="storytale.customerActivity.domain.persistModel.customer.customerLikeFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerLikeFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.subscription.membershipFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\MembershipFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.order.productPositionFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPositionFactory"/>
+        <service id="storytale.customerActivity.domain.persistModel.order.orderFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Order\OrderFactory"/>
     <!-- Factory END -->
 
     <!-- PortAdapter service -->
         <service id="storytale.customerActivity.portAdapters.secondary.payment.storytalePaymentService" class="Storytale\CustomerActivity\PortAdapters\Secondary\Payment\StorytalePaymentService">
             <argument type="service" id="storytale.portAdapters.secondary.serviceClient.payment.paymentServiceClient"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.order.storytaleProductPositionsService" class="Storytale\CustomerActivity\PortAdapters\Secondary\Order\StorytaleProductPositionsService">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionPlanRepository"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.order.productPositionFactory"/>
         </service>
     <!-- PortAdapter service END -->
 

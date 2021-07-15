@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Order\Order" table="order">
+    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Order\Order" table="orders">
         <id name="id" type="integer" column="id">
             <generator strategy="IDENTITY"/>
         </id>
         <field name="createdDate" type="datetime" column="created_date"/>
-        <field name="status" type="integer"/>
+        <field name="status" type="integer" column="status"/>
+        <one-to-many field="productPositions" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPosition" mapped-by="order">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+        </one-to-many>
 
     </entity>
 </doctrine-mapping>

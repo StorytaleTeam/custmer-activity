@@ -2,12 +2,12 @@
 
 namespace Storytale\CustomerActivity\Application\Command\Order\DTO;
 
-use Storytale\CustomerActivity\Application\Command\Order\OrderService;
 use Storytale\CustomerActivity\Application\ValidationException;
+use Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPositionsService;
 
-class OrderPositionDTOValidation
+class ProductPositionDTOValidation
 {
-    public function validate(OrderPositionDTO $dto): bool
+    public function validate(ProductPositionDTO $dto): bool
     {
         if ($dto->getProductId() === null) {
             throw new ValidationException('Need not empty `id` param for product position.');
@@ -15,7 +15,7 @@ class OrderPositionDTOValidation
         if ($dto->getProductType() === null) {
             throw new ValidationException('Need not empty `type` param for product position.');
         }
-        if (!in_array($dto->getProductType(), OrderService::SUPPORTED_PRODUCT_TYPES)) {
+        if (!in_array($dto->getProductType(), ProductPositionsService::SUPPORTED_PRODUCT_TYPES)) {
             throw new ValidationException('Unsupported `type` param for product position.');
         }
         if ($dto->getCount() === null) {
