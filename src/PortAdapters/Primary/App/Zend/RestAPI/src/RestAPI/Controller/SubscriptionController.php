@@ -25,7 +25,7 @@ class SubscriptionController extends AbstractRestfulController
     public function create($data)
     {
         $subscriptionSigningDTO = new SubscriptionSigningDTO($data);
-        $response = $this->subscriptionService->subscribe($subscriptionSigningDTO, true);
+        $response = $this->subscriptionService->create($subscriptionSigningDTO, true);
 
         return new JsonModel($response->jsonSerialize());
     }

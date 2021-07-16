@@ -30,4 +30,9 @@ class DoctrineOrderRepository implements OrderRepository
     {
         return $this->repository->find($id);
     }
+
+    public function getByIdAndCustomer(int $orderId, int $customerId): ?Order
+    {
+        return $this->repository->findOneBy(['id' => $orderId, 'customer' => $customerId]);
+    }
 }

@@ -58,9 +58,9 @@ return [
                     'order' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => '/order[/:id]',
+                            'route' => '/order[/:action]',
                             'constraints' => [
-                                'id' => '[0-9]*',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ],
                             'defaults' => [
                                 'controller' => OrderController::class,

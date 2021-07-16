@@ -32,6 +32,9 @@ class Customer extends AbstractEntity
     /** @var int|null */
     private ?int $oldId;
 
+    /** @var array */
+    private $orders;
+
     public function __construct(
         int $id, string $email, bool $subscriptionAutoRenewal,
         ?string $name = null, ?int $oldId = null
@@ -42,6 +45,7 @@ class Customer extends AbstractEntity
         $this->subscriptionAutoRenewal = $subscriptionAutoRenewal;
         $this->name = $name;
         $this->oldId = $oldId;
+        $this->orders = [];
         parent::__construct();
     }
 

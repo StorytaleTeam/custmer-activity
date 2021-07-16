@@ -6,6 +6,11 @@
         </id>
         <field name="createdDate" type="datetime" column="created_date"/>
         <field name="status" type="integer" column="status"/>
+
+        <many-to-one field="customer" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer" inversed-by="orders">
+            <join-column name="customer_id" referenced-column-name="id"/>
+        </many-to-one>
+
         <one-to-many field="productPositions" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPosition" mapped-by="order">
             <cascade>
                 <cascade-persist/>

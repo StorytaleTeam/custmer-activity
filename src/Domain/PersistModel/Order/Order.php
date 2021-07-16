@@ -7,6 +7,10 @@ use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
 class Order extends AbstractEntity
 {
+    public const STATUS_NEW = 1;
+    public const STATUS_CONFIRMED = 2;
+    public const STATUS_PAID = 3;
+
     /** @var int */
     private int $id;
 
@@ -61,5 +65,10 @@ class Order extends AbstractEntity
     public function getProductPositions()
     {
         return $this->productPositions;
+    }
+
+    public function confirm()
+    {
+        $this->status = self::STATUS_CONFIRMED;
     }
 }

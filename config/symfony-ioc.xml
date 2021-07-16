@@ -267,6 +267,7 @@
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOValidation" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOValidation"/>
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionSigningDTOValidation" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionSigningDTOValidation"/>
         <service id="storytale.customerActivity.application.command.order.dto.productPositionDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\ProductPositionDTOValidation"/>
+        <service id="storytale.customerActivity.application.command.order.dto.confirmOrderDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\ConfirmOrderDTOValidation"/>
 
         <service id="storytale.customerActivity.application.command.order.dto.createOrderDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\CreateOrderDTOValidation">
             <argument type="service" id="storytale.customerActivity.application.command.order.dto.productPositionDTOValidation"/>
@@ -320,6 +321,7 @@
             <argument type="service" id="storytale.customerActivity.domain.persistModel.order.orderFactory"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.storytaleProductPositionsService"/>
+            <argument type="service" id="storytale.customerActivity.application.command.order.dto.confirmOrderDTOValidation"/>
         </service>
     <!-- Command end -->
 

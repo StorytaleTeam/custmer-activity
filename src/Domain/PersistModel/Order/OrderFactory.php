@@ -8,6 +8,6 @@ class OrderFactory
 {
     public function build(Customer $customer): Order
     {
-        return new Order($customer, 1);
+        return new Order($customer, Order::STATUS_NEW);
     }
 }

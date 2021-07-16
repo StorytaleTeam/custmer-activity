@@ -3,12 +3,15 @@
 namespace Storytale\CustomerActivity\Application\Command\Order;
 
 use Storytale\Contracts\Persistence\DomainSession;
+use Storytale\CustomerActivity\Application\Command\Order\DTO\ConfirmOrderDTO;
+use Storytale\CustomerActivity\Application\Command\Order\DTO\ConfirmOrderDTOValidation;
 use Storytale\CustomerActivity\Application\Command\Order\DTO\CreateOrderDTO;
 use Storytale\CustomerActivity\Application\Command\Order\DTO\CreateOrderDTOValidation;
 use Storytale\CustomerActivity\Application\OperationResponse;
 use Storytale\CustomerActivity\Application\ValidationException;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerRepository;
+use Storytale\CustomerActivity\Domain\PersistModel\Order\Order;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderFactory;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPositionFactory;
@@ -41,6 +44,9 @@ class OrderService
     /** @var ProductPositionsService */
     private ProductPositionsService $productPositionService;
 
+    /** @var ConfirmOrderDTOValidation */
+    private ConfirmOrderDTOValidation $confirmOrderDTOValidation;
+
     public function __construct(
         OrderRepository $orderRepository,
         SubscriptionPlanRepository $subscriptionPlanRepository,
@@ -49,7 +55,8 @@ class OrderService
         CreateOrderDTOValidation $createOrderDTOValidation,
         OrderFactory $orderFactory,
         CustomerRepository $customerRepository,
-        ProductPositionsService $productPositionService
+        ProductPositionsService $productPositionService,
+        ConfirmOrderDTOValidation $confirmOrderDTOValidation
     )
     {
         $this->orderRepository = $orderRepository;
@@ -60,6 +67,7 @@ class OrderService
         $this->orderFactory = $orderFactory;
         $this->customerRepository = $customerRepository;
         $this->productPositionService = $productPositionService;
+        $this->confirmOrderDTOValidation = $confirmOrderDTOValidation;
     }
 
     public function create(CreateOrderDTO $createOrderDTO): OperationResponse
@@ -93,4 +101,30 @@ class OrderService
         return new OperationResponse($success, $result, $message);
     }
 
+    public function confirm(ConfirmOrderDTO $confirmOrderDTO): OperationResponse
+    {
+        $result = null;
+        $message = null;
+
+        try {
+            $this->confirmOrderDTOValidation->validate($confirmOrderDTO);
+            $order = $this->orderRepository->getByIdAndCustomer($confirmOrderDTO->getOrderId(), $confirmOrderDTO->getCustomerId());
+            if (!$order instanceof Order) {
+                throw new ValidationException(
+                    'Order with id ' . $confirmOrderDTO->getOrderId()
+                    . ' not found for this customer.'
+                );
+            }
+
+            $order->confirm();
+            $this->domainSession->flush();
+
+            $success = true;
+        } catch (ValidationException $e) {
+            $message = $e->getMessage();
+            $success = false;
+        }
+
+        return new OperationResponse($success, $result, $message);
+    }
 }
