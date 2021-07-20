@@ -5,6 +5,7 @@ namespace Storytale\CustomerActivity\Domain\PersistModel\Subscription;
 use Storytale\CustomerActivity\Domain\DomainException;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload;
+use Storytale\CustomerActivity\Domain\PersistModel\Order\Order;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
 class Subscription extends AbstractEntity

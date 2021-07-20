@@ -11,6 +11,10 @@
             <join-column name="customer_id" referenced-column-name="id"/>
         </many-to-one>
 
+        <one-to-one field="subscription" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription">
+            <join-column name="subscription_id" referenced-column-name="id"/>
+        </one-to-one>
+
         <one-to-many field="productPositions" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPosition" mapped-by="order">
             <cascade>
                 <cascade-persist/>

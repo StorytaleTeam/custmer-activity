@@ -322,6 +322,8 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.storytaleProductPositionsService"/>
             <argument type="service" id="storytale.customerActivity.application.command.order.dto.confirmOrderDTOValidation"/>
+            <argument type="service" id="storytale.customerActivity.application.command.order.dto.orderDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository"/>
         </service>
     <!-- Command end -->
 
@@ -332,6 +334,10 @@
         </service>
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOAssembler"/>
         <service id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\MembershipDTOAssembler"/>
+        <service id="storytale.customerActivity.application.command.order.dto.productPositionDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Order\DTO\ProductPositionDTOAssembler"/>
+        <service id="storytale.customerActivity.application.command.order.dto.orderDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Order\DTO\OrderDTOAssembler">
+             <argument type="service" id="storytale.customerActivity.application.command.order.dto.productPositionDTOAssembler"/>
+        </service>
     <!-- DTO Assembler END -->
 
     <!-- Query -->
@@ -385,6 +391,9 @@
             <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.storytaleProductPositionsService"/>
         </service>
 
         <service id="storytale.customerActivity.application.command.subscription.externalEvent.onPaddleSubscriptionCreateHandler" class="Storytale\CustomerActivity\Application\Command\Subscription\ExternalEvent\OnPaddleSubscriptionCreateHandler">

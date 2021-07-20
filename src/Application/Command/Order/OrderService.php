@@ -7,6 +7,7 @@ use Storytale\CustomerActivity\Application\Command\Order\DTO\ConfirmOrderDTO;
 use Storytale\CustomerActivity\Application\Command\Order\DTO\ConfirmOrderDTOValidation;
 use Storytale\CustomerActivity\Application\Command\Order\DTO\CreateOrderDTO;
 use Storytale\CustomerActivity\Application\Command\Order\DTO\CreateOrderDTOValidation;
+use Storytale\CustomerActivity\Application\Command\Order\DTO\OrderDTOAssembler;
 use Storytale\CustomerActivity\Application\OperationResponse;
 use Storytale\CustomerActivity\Application\ValidationException;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
@@ -47,6 +48,9 @@ class OrderService
     /** @var ConfirmOrderDTOValidation */
     private ConfirmOrderDTOValidation $confirmOrderDTOValidation;
 
+    /** @var OrderDTOAssembler */
+    private OrderDTOAssembler $orderDTOAssembler;
+
     public function __construct(
         OrderRepository $orderRepository,
         SubscriptionPlanRepository $subscriptionPlanRepository,
@@ -56,7 +60,8 @@ class OrderService
         OrderFactory $orderFactory,
         CustomerRepository $customerRepository,
         ProductPositionsService $productPositionService,
-        ConfirmOrderDTOValidation $confirmOrderDTOValidation
+        ConfirmOrderDTOValidation $confirmOrderDTOValidation,
+        OrderDTOAssembler $orderDTOAssembler
     )
     {
         $this->orderRepository = $orderRepository;
@@ -68,6 +73,7 @@ class OrderService
         $this->customerRepository = $customerRepository;
         $this->productPositionService = $productPositionService;
         $this->confirmOrderDTOValidation = $confirmOrderDTOValidation;
+        $this->orderDTOAssembler = $orderDTOAssembler;
     }
 
     public function create(CreateOrderDTO $createOrderDTO): OperationResponse
@@ -91,7 +97,7 @@ class OrderService
             $this->orderRepository->save($order);
             $this->domainSession->flush();
 
-            $result['order']['id'] = $order->getId();
+            $result['order'] = $this->orderDTOAssembler->toArray($order);
             $success = true;
         } catch (ValidationException $e) {
             $message = $e->getMessage();

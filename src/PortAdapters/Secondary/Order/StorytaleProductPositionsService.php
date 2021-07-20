@@ -29,14 +29,19 @@ class StorytaleProductPositionsService implements ProductPositionsService
 
     public function getProductByProductPosition(ProductPosition $productPosition)
     {
-        // TODO: Implement getProductByProductPosition() method.
+        $product = null;
+        if ($productPosition->getProductType() === ProductPositionsService::PRODUCT_TYPE_SUBSCRIPTION_PLAN) {
+            $product = $this->subscriptionPlanRepository->get($productPosition->getProductId());
+        }
+
+        return $product;
     }
 
     public function getProductPositionByDTO(ProductPositionDTO $productPositionDTO): ?ProductPosition
     {
         $productPosition = null;
         switch ($productPositionDTO->getProductType()) {
-            case 'subscriptionPlan':
+            case ProductPositionsService::PRODUCT_TYPE_SUBSCRIPTION_PLAN:
                 $product = $this->subscriptionPlanRepository->get($productPositionDTO->getProductId());
                 if (!$product instanceof SubscriptionPlan) {
                     throw new ValidationException("Plan with this id not found.");

@@ -6,7 +6,11 @@ use Storytale\CustomerActivity\Application\Command\Order\DTO\ProductPositionDTO;
 
 interface ProductPositionsService
 {
-    public const SUPPORTED_PRODUCT_TYPES = ['subscriptionPlan'];
+    public const PRODUCT_TYPE_SUBSCRIPTION_PLAN = 'subscriptionPlan';
+
+    public const SUPPORTED_PRODUCT_TYPES = [
+        self::PRODUCT_TYPE_SUBSCRIPTION_PLAN,
+    ];
 
     /**
      * @param ProductPositionDTO $productPositionDTO

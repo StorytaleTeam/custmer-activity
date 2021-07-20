@@ -3,6 +3,7 @@
 namespace Storytale\CustomerActivity\Domain\PersistModel\Order;
 
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
 class Order extends AbstractEntity
@@ -23,11 +24,15 @@ class Order extends AbstractEntity
     /** @var ProductPosition[] */
     private $productPositions;
 
+    /** @var Subscription|null */
+    private ?Subscription $subscription;
+
     public function __construct(Customer $customer, int $status)
     {
         $this->customer = $customer;
         $this->status = $status;
         $this->productPositions = [];
+        $this->subscription = null;
         parent::__construct();
     }
 
@@ -37,6 +42,22 @@ class Order extends AbstractEntity
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @return Subscription|null
+     */
+    public function getSubscription(): ?Subscription
+    {
+        return $this->subscription;
+    }
+
+    /**
+     * @return Customer|null
+     */
+    public function getCustomer(): ?Customer
+    {
+        return $this->customer;
     }
 
     public function addProduct(ProductPosition $productPosition)
@@ -70,5 +91,19 @@ class Order extends AbstractEntity
     public function confirm()
     {
         $this->status = self::STATUS_CONFIRMED;
+    }
+
+    public function calculateTotalPrice(): float
+    {
+        $totalPrice = 0;
+        $this->map(
+            function (ProductPosition $productPosition) use (&$totalPrice)
+            {
+                $totalPrice += $productPosition->getPrice()*$productPosition->getCount();
+            },
+            $this->productPositions
+        );
+
+        return $totalPrice;
     }
 }
