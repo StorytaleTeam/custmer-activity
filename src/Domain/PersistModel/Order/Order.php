@@ -27,13 +27,32 @@ class Order extends AbstractEntity
     /** @var Subscription|null */
     private ?Subscription $subscription;
 
+    /** @var float */
+    private float $totalPrice;
+
     public function __construct(Customer $customer, int $status)
     {
         $this->customer = $customer;
         $this->status = $status;
         $this->productPositions = [];
         $this->subscription = null;
+        $this->totalPrice = 0;
         parent::__construct();
+    }
+
+    private function recalculateTotalPrice(): float
+    {
+        $totalPrice = 0;
+        $this->map(
+            function (ProductPosition $productPosition) use (&$totalPrice)
+            {
+                $totalPrice += $productPosition->getPrice()*$productPosition->getCount();
+            },
+            $this->productPositions
+        );
+        $this->totalPrice = $totalPrice;
+
+        return $this->totalPrice;
     }
 
     /**
@@ -60,6 +79,11 @@ class Order extends AbstractEntity
         return $this->customer;
     }
 
+    public function getTotalPrice(): float
+    {
+        return $this->totalPrice;
+    }
+
     public function addProduct(ProductPosition $productPosition)
     {
         $wasIncremented = false;
@@ -78,6 +102,7 @@ class Order extends AbstractEntity
         if (!$wasIncremented) {
             $this->productPositions[] = $productPosition;
         }
+        $this->recalculateTotalPrice();
     }
 
     /**
@@ -91,19 +116,5 @@ class Order extends AbstractEntity
     public function confirm()
     {
         $this->status = self::STATUS_CONFIRMED;
-    }
-
-    public function calculateTotalPrice(): float
-    {
-        $totalPrice = 0;
-        $this->map(
-            function (ProductPosition $productPosition) use (&$totalPrice)
-            {
-                $totalPrice += $productPosition->getPrice()*$productPosition->getCount();
-            },
-            $this->productPositions
-        );
-
-        return $totalPrice;
     }
 }

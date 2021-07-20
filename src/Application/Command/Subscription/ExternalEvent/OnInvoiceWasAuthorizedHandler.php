@@ -118,7 +118,7 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
             $oldMembership = $subscription->getCurrentMembership();
             $oldMembershipId = $oldMembership instanceof Membership ? $oldMembership->getId() : null;
 
-            if ($order->calculateTotalPrice() === $paymentData['invoice']['amount']) {
+            if ($order->getTotalPrice() === $paymentData['invoice']['amount']) {
                 $this->subscriptionProcessingService->wasPaid($subscription, $paymentData['invoice']['amount']);
             }
             $this->domainSession->flush();

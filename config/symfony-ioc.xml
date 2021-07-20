@@ -261,6 +261,10 @@
         <service id="RestAPI\Controller\OrderController" class="RestAPI\Controller\OrderController" public="true">
             <argument type="service" id="storytale.customerActivity.application.command.order.orderService"/>
         </service>
+
+        <service id="RestAPI\Controller\OrderCustomerController" class="RestAPI\Controller\OrderCustomerController" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.querying.aura.auraOrderDataProvider"/>
+        </service>
         <!--Controllers end-->
 
     <!-- DTO Validation -->
@@ -368,6 +372,11 @@
         <service id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraOldCustomerDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Querying\Aura\AuraOldCustomerDataProvider">
             <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection_for_old_db"/>
             <argument type="service" id="AuraMySQLQueryFactory"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.order.querying.aura.auraOrderDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Order\Querying\Aura\AuraOrderDataProvider">
+            <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
+            <argument type="service" id="AuraPgSQLQueryFactory"/>
         </service>
     <!-- Query END -->
 
