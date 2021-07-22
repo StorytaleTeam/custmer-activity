@@ -42,7 +42,8 @@ class AuraOrderDataProvider extends AbstractAuraDataProvider
                         opp.id,
                         opp.price,
                         opp.count,
-                        opp.display_name AS displayName
+                        opp.display_name AS displayName,
+                        opp.product_id AS productId
                     FROM order_product_positions AS opp
                     WHERE opp.order_id = o.id) AS tmp
                  )'                         => 'productPositions',
