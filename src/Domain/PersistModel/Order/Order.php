@@ -117,4 +117,9 @@ class Order extends AbstractEntity
     {
         $this->status = self::STATUS_CONFIRMED;
     }
+
+    public function wasPaid()
+    {
+        $this->status = self::STATUS_PAID;
+    }
 }
