@@ -7,7 +7,7 @@
         <field name="createdDate" type="datetime" column="created_date"/>
         <field name="displayName" column="display_name"/>
         <field name="productType" column="product_type"/>
-        <field name="productId" column="product_id"/>
+        <field name="productId" type="integer" column="product_id"/>
         <field name="price" type="float"/>
         <field name="count" type="integer"/>
         <many-to-one field="order" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Order\Order" inversed-by="productPositions">
