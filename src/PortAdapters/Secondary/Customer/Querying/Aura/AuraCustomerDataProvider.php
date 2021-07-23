@@ -67,7 +67,6 @@ class AuraCustomerDataProvider extends AbstractAuraDataProvider
             ->bindValue('customerId', $customerId);
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), CustomerDownloadBasic::class);
-
     }
 
     public function findListForAdmin(int $count, int $page, ?array $params = null): array

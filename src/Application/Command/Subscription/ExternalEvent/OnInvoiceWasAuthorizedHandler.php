@@ -8,10 +8,18 @@ use Storytale\Contracts\EventBus\ExternalEventHandler;
 use Storytale\Contracts\Persistence\DomainSession;
 use Storytale\Contracts\SharedEvents\Payment\InvoiceWasAuthorizedEvent;
 use Storytale\Contracts\SharedEvents\Subscription\Membership\MembershipWasActivatedEvent;
+use Storytale\Contracts\SharedEvents\Subscription\SubscriptionWasCreatedEvent;
+use Storytale\CustomerActivity\Application\ApplicationException;
 use Storytale\CustomerActivity\Application\Command\Subscription\DTO\MembershipDTOAssembler;
 use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionDTOAssembler;
+use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
+use Storytale\CustomerActivity\Domain\PersistModel\Order\Order;
+use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
+use Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPositionsService;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionFactory;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionProcessingService;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionRepository;
 
@@ -35,13 +43,25 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
     /** @var SubscriptionDTOAssembler */
     private SubscriptionDTOAssembler $subscriptionDTOAssembler;
 
+    /** @var OrderRepository */
+    private OrderRepository $orderRepository;
+
+    /** @var SubscriptionFactory */
+    private SubscriptionFactory $subscriptionFactory;
+
+    /** @var ProductPositionsService */
+    private ProductPositionsService $productPositionService;
+
     public function __construct(
         SubscriptionRepository $subscriptionRepository,
         DomainSession $domainSession,
         SubscriptionProcessingService $subscriptionProcessingService,
         EventBus $eventBus,
         MembershipDTOAssembler $membershipDTOAssembler,
-        SubscriptionDTOAssembler $subscriptionDTOAssembler
+        SubscriptionDTOAssembler $subscriptionDTOAssembler,
+        OrderRepository $orderRepository,
+        SubscriptionFactory $subscriptionFactory,
+        ProductPositionsService $productPositionService
     )
     {
         $this->subscriptionRepository = $subscriptionRepository;
@@ -50,6 +70,9 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         $this->eventBus = $eventBus;
         $this->membershipDTOAssembler = $membershipDTOAssembler;
         $this->subscriptionDTOAssembler = $subscriptionDTOAssembler;
+        $this->orderRepository = $orderRepository;
+        $this->subscriptionFactory = $subscriptionFactory;
+        $this->productPositionService = $productPositionService;
     }
 
     public function handler(ExternalEvent $event): void
@@ -57,40 +80,77 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         if ($event instanceof InvoiceWasAuthorizedEvent) {
             $paymentData = $event->getData();
             if (empty($paymentData)) {
-                /**
-                 * @todo логировать, без остановки скрипта
-                 * Get InvoiceWasAuthorizedEvent event with empty data.
-                 */
-                return;
+                throw new ApplicationException('Get InvoiceWasAuthorizedEvent event with empty data.');
             }
-            if (isset($paymentData['invoice']['subscriptionId'])) {
-                $subscription = $this->subscriptionRepository->get($paymentData['invoice']['subscriptionId']);
-                if (!$subscription instanceof Subscription) {
-                    /**
-                     * @todo логировать, без остановки скрипта
-                     * Payment received for a non-existent subscription. Unable to process payment.
-                     */
-                    return;
-                }
-                $oldMembership = $subscription->getCurrentMembership();
-                $oldMembershipId = $oldMembership instanceof Membership ? $oldMembership->getId() : null;
-                $this->subscriptionProcessingService->wasPaid($subscription, $paymentData['invoice']['amount']);
-                $this->domainSession->flush();
+            $orderId = $paymentData['invoice']['orderId'] ?? null;
+            if ($orderId === null) {
+                throw new ApplicationException('Get InvoiceWasAuthorizedEvent with empty orderId');
+            }
 
-                $newMembership = $subscription->getCurrentMembership();
-                if (
-                    $newMembership instanceof Membership
-                    && $newMembership->getId() !== $oldMembershipId
-                    && $newMembership->getStatus() === Membership::STATUS_ACTIVE
-                ) {
-                    $this->eventBus->fire(new MembershipWasActivatedEvent([
-                        'membership' => $this->membershipDTOAssembler->toArray($newMembership),
-                        'subscription' => $this->subscriptionDTOAssembler->toArray($subscription),
-                    ]));
-                }
-            } else {
-                /** @todo логировать сообщение о пустом параметре */
+            $order = $this->orderRepository->get($orderId);
+            if (!$order instanceof Order) {
+                throw new ApplicationException("Order with id $orderId not found.");
             }
+            if (!$order->getCustomer() instanceof Customer) {
+                throw new ApplicationException('Not found customer for order '. $order->getId());
+            }
+
+            $subscriptionPlan = null;
+            foreach ($order->getProductPositions() as $productPosition) {
+                $product = $this->productPositionService->getProductByProductPosition($productPosition);
+                if ($product instanceof SubscriptionPlan) {
+                    $subscriptionPlan = $product;
+                    break;
+                }
+            }
+            if (!$subscriptionPlan instanceof SubscriptionPlan) {
+                throw new ApplicationException('Not found subscriptionPlan for order ' . $order->getId());
+            }
+
+            $subscriptionWasCreated = false;
+            $subscription = $order->getSubscription();
+            if (!$subscription instanceof Subscription) {
+                $subscriptionWasCreated = true;
+                $subscription = $this->subscriptionFactory
+                    ->buildFromSubscriptionPlan($subscriptionPlan, $order->getCustomer());
+                $this->subscriptionRepository->save($subscription);
+            }
+
+            $oldMembership = $subscription->getCurrentMembership();
+            $oldMembershipId = $oldMembership instanceof Membership ? $oldMembership->getId() : null;
+
+            if ($order->getTotalPrice() == $paymentData['invoice']['amount']) {
+                $order->wasPaid();
+                $this->subscriptionProcessingService->wasPaid($subscription, $paymentData['invoice']['amount']);
+            }
+            $this->domainSession->flush();
+
+            $newMembership = $subscription->getCurrentMembership();
+            if (
+                $newMembership instanceof Membership
+                && $newMembership->getId() !== $oldMembershipId
+                && $newMembership->getStatus() === Membership::STATUS_ACTIVE
+            ) {
+                $this->eventBus->fire(new MembershipWasActivatedEvent([
+                    'membership' => $this->membershipDTOAssembler->toArray($newMembership),
+                    'subscription' => $this->subscriptionDTOAssembler->toArray($subscription),
+                ]));
+            }
+
+            if ($subscriptionWasCreated === true) {
+                $params = [
+                    'subscription' =>
+                        $this->subscriptionDTOAssembler->toArray($subscription),
+                    'customer' => [
+                        'id' => $subscription->getCustomer()->getId(),
+                        'email' => $subscription->getCustomer()->getEmail(),
+                    ]
+                ];
+                $this->eventBus->fire(new SubscriptionWasCreatedEvent($params));
+            }
+
+        } else {
+            throw new ApplicationException('Invalid event type provided.');
         }
     }
 }

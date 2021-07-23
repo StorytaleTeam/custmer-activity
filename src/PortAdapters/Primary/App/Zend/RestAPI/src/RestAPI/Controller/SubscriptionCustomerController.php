@@ -2,7 +2,6 @@
 
 namespace RestAPI\Controller;
 
-use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionSigningDTO;
 use Storytale\CustomerActivity\Application\Command\Subscription\SubscriptionService;
 use Storytale\CustomerActivity\Application\Query\Subscription\SubscriptionDataProvider;
 use Zend\Mvc\Controller\AbstractRestfulController;
@@ -20,16 +19,6 @@ class SubscriptionCustomerController extends AbstractRestfulController
     {
         $this->subscriptionDataProvider = $subscriptionDataProvider;
         $this->subscriptionService = $subscriptionService;
-    }
-
-    public function create($data)
-    {
-        $subscriptionSigningDTO = new SubscriptionSigningDTO($data);
-
-        /** @Annotation The second argument CANNOT be TRUE */
-        $response = $this->subscriptionService->subscribe($subscriptionSigningDTO);
-
-        return new JsonModel($response->jsonSerialize());
     }
 
     public function getList()

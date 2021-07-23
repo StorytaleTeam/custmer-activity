@@ -81,7 +81,7 @@ class SubscriptionService
         $this->eventBus = $eventBus;
     }
 
-    public function subscribe(SubscriptionSigningDTO $subscriptionSigningDTO, bool $isActorModerator = false): OperationResponse
+    public function create(SubscriptionSigningDTO $subscriptionSigningDTO, bool $isActorModerator = false): OperationResponse
     {
         $result = null;
         $message = null;
