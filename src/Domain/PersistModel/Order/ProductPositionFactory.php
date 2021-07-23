@@ -20,7 +20,7 @@ class ProductPositionFactory
     {
         return new ProductPosition(
             $subscriptionPlan->getName(),
-            'SubscriptionPlan',
+            ProductPositionsService::PRODUCT_TYPE_SUBSCRIPTION_PLAN,
             $subscriptionPlan->getId(),
             $subscriptionPlan->getPrice(),
             1

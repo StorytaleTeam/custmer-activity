@@ -113,6 +113,7 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
                 $subscriptionWasCreated = true;
                 $subscription = $this->subscriptionFactory
                     ->buildFromSubscriptionPlan($subscriptionPlan, $order->getCustomer());
+                $this->subscriptionRepository->save($subscription);
             }
 
             $oldMembership = $subscription->getCurrentMembership();

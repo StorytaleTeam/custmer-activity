@@ -15,7 +15,7 @@ class ProductPositionDTOValidation
         if ($dto->getProductType() === null) {
             throw new ValidationException('Need not empty `type` param for product position.');
         }
-        if (!in_array($dto->getProductType(), ProductPositionsService::SUPPORTED_PRODUCT_TYPES)) {
+        if (!in_array($dto->getProductType(), ProductPositionsService::SUPPORTED_PRODUCT_TYPES, true)) {
             throw new ValidationException('Unsupported `type` param for product position.');
         }
         if ($dto->getCount() === null) {
