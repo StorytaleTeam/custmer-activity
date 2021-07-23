@@ -51,6 +51,7 @@ class AuraOrderDataProvider extends AbstractAuraDataProvider
             ->from('orders AS o')
             ->where('o.customer_id = :customerId')
             ->where('o.id = :orderId')
+            ->orderBy(['o.created_date DESC'])
             ->bindValue('customerId', $customerId)
             ->bindValue('orderId', $orderId);
 
