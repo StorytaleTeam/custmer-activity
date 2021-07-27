@@ -74,7 +74,7 @@ class SubscriptionProcessingService
         $actualSubscription = $subscription->getCustomer()->getActualSubscription();
         if ($actualSubscription instanceof Subscription) {
             $subscription->getCurrentMembership()->absorb($actualSubscription);
+            $actualSubscription->cancel();
         }
-        $actualSubscription->cancel();
     }
 }
