@@ -55,14 +55,26 @@ class SubscriptionProcessingService
 
     public function wasPaid(Subscription $subscription, float $amountReceived): void
     {
-        /** @todo Нужна защита на случай, когда сумма сщета меньше стоимости подписки */
-
-        /** @todo нужно проверять что у кастомера нет активной подписки */
-        if ($subscription->getStatus() === Subscription::STATUS_NEW) {
-            $subscription->activate();
-        }
-
         $membership = $this->membershipFactory->build($subscription, $amountReceived);
         $subscription->addMembership($membership);
+
+        if ($subscription->getStatus() === Subscription::STATUS_NEW) {
+            $this->activate($subscription);
+        }
+    }
+
+    public function activate(Subscription $subscription)
+    {
+        if ($subscription->getStatus() !== Subscription::STATUS_NEW) {
+            throw new DomainException('Only new subscription can be activated. SubscriptionId ' . $subscription->getId());
+        }
+
+        $subscription->activate();
+
+        $actualSubscription = $subscription->getCustomer()->getActualSubscription();
+        if ($actualSubscription instanceof Subscription) {
+            $subscription->getCurrentMembership()->absorb($actualSubscription);
+        }
+        $actualSubscription->cancel();
     }
 }
