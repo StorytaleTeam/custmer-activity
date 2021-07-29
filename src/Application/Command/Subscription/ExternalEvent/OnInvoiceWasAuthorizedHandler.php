@@ -143,8 +143,9 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
                 $oldCustomerSubscription instanceof Subscription
                 && ($oldCustomerSubscription->getId() !== $subscription->getId())
             ) {
-                if ($subscription->getPaddleId() !== null) {
-                    $this->paddleSubscriptionService->cancelSubscription($subscription->getPaddleId());
+                if ($oldCustomerSubscription->getPaddleId() !== null) {
+                    $this->paddleSubscriptionService
+                        ->cancelSubscription($oldCustomerSubscription->getPaddleId());
                 }
             }
 
