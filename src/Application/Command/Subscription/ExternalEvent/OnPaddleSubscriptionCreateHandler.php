@@ -65,49 +65,49 @@ class OnPaddleSubscriptionCreateHandler implements ExternalEventHandler
 
     public function handler(ExternalEvent $event): void
     {
-        if ($event instanceof GeneralizedPaddleEvent) {
-            $alertName = $event->getPaddleData()['alert_name'] ?? null;
-            if ($alertName === self::EVENT_NAME_PADDLE_CREATE_SUBSCRIPTION) {
-                $orderId = $event->getStorytaleData()['orderId'] ?? null;
-                if ($orderId === null) {
-                    throw new ApplicationException('Get OnPaddleSubscriptionCreateHandler with empty orderId');
-                }
-                $order = $this->orderRepository->get($orderId);
-                if (!$order instanceof Order) {
-                    throw new ApplicationException("Order with id $orderId not found.");
-                }
-                if (!$order->getCustomer() instanceof Customer) {
-                    throw new ApplicationException('Not found customer for order '. $order->getId());
-                }
-
-                $subscriptionWasCreated = false;
-                $subscription = $order->getSubscription();
-                if (!$subscription instanceof Subscription) {
-                    $subscriptionPlan = $this->getSubscriptionPlanFromOrder($order);
-                    $subscription = $this->subscriptionFactory
-                        ->buildFromSubscriptionPlan($subscriptionPlan, $order->getCustomer());
-                    $order->assignSubscription($subscription);
-                    $this->subscriptionRepository->save($subscription);
-                    $subscriptionWasCreated = true;
-                }
-
-                $paddleSubscriptionId = $event->getPaddleData()['subscription_id'] ?? null;
-                $subscription->initPaddleId($paddleSubscriptionId);
-                $this->domainSession->flush();
-
-                if ($subscriptionWasCreated === true) {
-                    $params = [
-                        'subscription' =>
-                            $this->subscriptionDTOAssembler->toArray($subscription),
-                        'customer' => [
-                            'id' => $subscription->getCustomer()->getId(),
-                            'email' => $subscription->getCustomer()->getEmail(),
-                        ]
-                    ];
-                    $this->eventBus->fire(new SubscriptionWasCreatedEvent($params));
-                }
-            }
-        }
+//        if ($event instanceof GeneralizedPaddleEvent) {
+//            $alertName = $event->getPaddleData()['alert_name'] ?? null;
+//            if ($alertName === self::EVENT_NAME_PADDLE_CREATE_SUBSCRIPTION) {
+//                $orderId = $event->getStorytaleData()['orderId'] ?? null;
+//                if ($orderId === null) {
+//                    throw new ApplicationException('Get OnPaddleSubscriptionCreateHandler with empty orderId');
+//                }
+//                $order = $this->orderRepository->get($orderId);
+//                if (!$order instanceof Order) {
+//                    throw new ApplicationException("Order with id $orderId not found.");
+//                }
+//                if (!$order->getCustomer() instanceof Customer) {
+//                    throw new ApplicationException('Not found customer for order '. $order->getId());
+//                }
+//
+//                $subscriptionWasCreated = false;
+//                $subscription = $order->getSubscription();
+//                if (!$subscription instanceof Subscription) {
+//                    $subscriptionPlan = $this->getSubscriptionPlanFromOrder($order);
+//                    $subscription = $this->subscriptionFactory
+//                        ->buildFromSubscriptionPlan($subscriptionPlan, $order->getCustomer());
+//                    $order->assignSubscription($subscription);
+//                    $this->subscriptionRepository->save($subscription);
+//                    $subscriptionWasCreated = true;
+//                }
+//
+//                $paddleSubscriptionId = $event->getPaddleData()['subscription_id'] ?? null;
+//                $subscription->initPaddleId($paddleSubscriptionId);
+//                $this->domainSession->flush();
+//
+//                if ($subscriptionWasCreated === true) {
+//                    $params = [
+//                        'subscription' =>
+//                            $this->subscriptionDTOAssembler->toArray($subscription),
+//                        'customer' => [
+//                            'id' => $subscription->getCustomer()->getId(),
+//                            'email' => $subscription->getCustomer()->getEmail(),
+//                        ]
+//                    ];
+//                    $this->eventBus->fire(new SubscriptionWasCreatedEvent($params));
+//                }
+//            }
+//        }
     }
 
     /**

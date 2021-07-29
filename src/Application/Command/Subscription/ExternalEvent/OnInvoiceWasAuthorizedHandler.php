@@ -122,6 +122,13 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
                 $subscription = $this->subscriptionFactory
                     ->buildFromSubscriptionPlan($subscriptionPlan, $order->getCustomer());
                 $order->assignSubscription($subscription);
+
+                $paddleSubscriptionId = $event->getPaddleData()['subscription_id'] ?? null;
+                if ($paddleSubscriptionId === null) {
+                    throw new ApplicationException('Get InvoiceWasAuthorizedEvent with empty paddle_subscription_id');
+                }
+                $subscription->initPaddleId($paddleSubscriptionId);
+
                 $this->subscriptionRepository->save($subscription);
                 $subscriptionWasCreated = true;
             }
