@@ -106,15 +106,17 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
             if (!$subscriptionPlan instanceof SubscriptionPlan) {
                 throw new ApplicationException('Not found subscriptionPlan for order ' . $order->getId());
             }
-            if ($order->getSubscription() instanceof Subscription) {
-                throw new ApplicationException('Subscription already exist for order ' . $order->getId());
-            }
 
-            $order->getCustomer()->getActualSubscription();
-            $subscriptionWasCreated = true;
-            $subscription = $this->subscriptionFactory
-                ->buildFromSubscriptionPlan($subscriptionPlan, $order->getCustomer());
-            $this->subscriptionRepository->save($subscription);
+            $subscriptionWasCreated = false;
+            $subscription = $order->getSubscription();
+            if (!$subscription instanceof Subscription) {
+                $subscriptionPlan = $this->getSubscriptionPlanFromOrder($order);
+                $subscription = $this->subscriptionFactory
+                    ->buildFromSubscriptionPlan($subscriptionPlan, $order->getCustomer());
+                $order->assignSubscription($subscription);
+                $this->subscriptionRepository->save($subscription);
+                $subscriptionWasCreated = true;
+            }
 
             $oldMembership = $subscription->getCurrentMembership();
             $oldMembershipId = $oldMembership instanceof Membership ? $oldMembership->getId() : null;
@@ -137,18 +139,42 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
                 ]));
             }
 
-            $params = [
-                'subscription' =>
-                    $this->subscriptionDTOAssembler->toArray($subscription),
-                'customer' => [
-                    'id' => $subscription->getCustomer()->getId(),
-                    'email' => $subscription->getCustomer()->getEmail(),
-                ]
-            ];
-            $this->eventBus->fire(new SubscriptionWasCreatedEvent($params));
-
+            if ($subscriptionWasCreated === true) {
+                $params = [
+                    'subscription' =>
+                        $this->subscriptionDTOAssembler->toArray($subscription),
+                    'customer' => [
+                        'id' => $subscription->getCustomer()->getId(),
+                        'email' => $subscription->getCustomer()->getEmail(),
+                    ]
+                ];
+                $this->eventBus->fire(new SubscriptionWasCreatedEvent($params));
+            }
         } else {
             throw new ApplicationException('Invalid event type provided.');
         }
+    }
+
+
+    /**
+     * @param Order $order
+     * @return SubscriptionPlan
+     * @throws ApplicationException
+     */
+    private function getSubscriptionPlanFromOrder(Order $order): SubscriptionPlan
+    {
+        $subscriptionPlan = null;
+        foreach ($order->getProductPositions() as $productPosition) {
+            $product = $this->productPositionService->getProductByProductPosition($productPosition);
+            if ($product instanceof SubscriptionPlan) {
+                $subscriptionPlan = $product;
+                break;
+            }
+        }
+        if (!$subscriptionPlan instanceof SubscriptionPlan) {
+            throw new ApplicationException('Not found subscriptionPlan for order ' . $order->getId());
+        }
+
+        return $subscriptionPlan;
     }
 }

@@ -6,7 +6,7 @@ use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 
 class SubscriptionFactory
 {
-    public function buildFromSubscriptionPlan(SubscriptionPlan $subscriptionPlan, Customer $customer)
+    public function buildFromSubscriptionPlan(SubscriptionPlan $subscriptionPlan, Customer $customer): Subscription
     {
         return new Subscription(
             $customer,

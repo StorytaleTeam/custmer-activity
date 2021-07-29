@@ -2,6 +2,7 @@
 
 namespace Storytale\CustomerActivity\Domain\PersistModel\Order;
 
+use Storytale\CustomerActivity\Domain\DomainException;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
@@ -103,6 +104,14 @@ class Order extends AbstractEntity
             $this->productPositions[] = $productPosition;
         }
         $this->recalculateTotalPrice();
+    }
+
+    public function assignSubscription(Subscription $subscription): void
+    {
+        if ($this->subscription instanceof Subscription) {
+            throw new DomainException('Subscription already exist in order ' . $this->id);
+        }
+        $this->subscription = $subscription;
     }
 
     /**
