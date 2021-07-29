@@ -22,6 +22,7 @@ use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionFact
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionProcessingService;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionRepository;
+use Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Paddle\PaddleSubscriptionService;
 
 class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
 {
@@ -52,6 +53,9 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
     /** @var ProductPositionsService */
     private ProductPositionsService $productPositionService;
 
+    /** @var PaddleSubscriptionService */
+    private PaddleSubscriptionService $paddleSubscriptionService;
+
     public function __construct(
         SubscriptionRepository $subscriptionRepository,
         DomainSession $domainSession,
@@ -61,7 +65,8 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         SubscriptionDTOAssembler $subscriptionDTOAssembler,
         OrderRepository $orderRepository,
         SubscriptionFactory $subscriptionFactory,
-        ProductPositionsService $productPositionService
+        ProductPositionsService $productPositionService,
+        PaddleSubscriptionService $paddleSubscriptionService
     )
     {
         $this->subscriptionRepository = $subscriptionRepository;
@@ -73,6 +78,7 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         $this->orderRepository = $orderRepository;
         $this->subscriptionFactory = $subscriptionFactory;
         $this->productPositionService = $productPositionService;
+        $this->paddleSubscriptionService = $paddleSubscriptionService;
     }
 
     public function handler(ExternalEvent $event): void
@@ -94,6 +100,8 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
             if (!$order->getCustomer() instanceof Customer) {
                 throw new ApplicationException('Not found customer for order '. $order->getId());
             }
+
+            $oldCustomerSubscription = $order->getCustomer()->getActualSubscription();
 
             $subscriptionPlan = null;
             foreach ($order->getProductPositions() as $productPosition) {
@@ -126,6 +134,19 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
                 $this->subscriptionProcessingService->wasPaid($subscription, $paymentData['invoice']['amount']);
             }
             $this->domainSession->flush();
+
+            /**
+             * @Annotation cancel subscription on paddle
+             * @todo переделать до доменных ивентах
+             */
+            if (
+                $oldCustomerSubscription instanceof Subscription
+                && ($oldCustomerSubscription->getId() !== $subscription->getId())
+            ) {
+                if ($subscription->getPaddleId() !== null) {
+                    $this->paddleSubscriptionService->cancelSubscription($subscription->getPaddleId());
+                }
+            }
 
             $newMembership = $subscription->getCurrentMembership();
             if (
