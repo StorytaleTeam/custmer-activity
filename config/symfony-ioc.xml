@@ -136,7 +136,6 @@
             <argument type="collection">
                 <argument key="account.user.newUserWasRegistered" type="service" id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasRegisteredHandler"/>
                 <argument key="payment.invoice.invoiceWasAuthorized" type="service" id="storytale.customerActivity.application.command.subscription.externalEvent.onInvoiceWasAuthorizedHandler"/>
-                <argument key="event.paddle.generalized" type="service" id="storytale.customerActivity.application.command.subscription.externalEvent.onPaddleSubscriptionCreateHandler"/>
                 <argument key="account.user.newUserWasMigratedEvent" type="service" id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasMigratedEventHandler"/>
             </argument>
         </service>
@@ -404,16 +403,6 @@
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.storytaleProductPositionsService"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService"/>
-        </service>
-
-        <service id="storytale.customerActivity.application.command.subscription.externalEvent.onPaddleSubscriptionCreateHandler" class="Storytale\CustomerActivity\Application\Command\Subscription\ExternalEvent\OnPaddleSubscriptionCreateHandler">
-            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
-            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
-            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory"/>
-            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository"/>
-            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.storytaleProductPositionsService"/>
-            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
-            <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
         </service>
     <!--  ExternalEvent handler END -->
 

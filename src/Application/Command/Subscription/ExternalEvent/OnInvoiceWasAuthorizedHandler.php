@@ -103,18 +103,6 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
 
             $oldCustomerSubscription = $order->getCustomer()->getActualSubscription();
 
-            $subscriptionPlan = null;
-            foreach ($order->getProductPositions() as $productPosition) {
-                $product = $this->productPositionService->getProductByProductPosition($productPosition);
-                if ($product instanceof SubscriptionPlan) {
-                    $subscriptionPlan = $product;
-                    break;
-                }
-            }
-            if (!$subscriptionPlan instanceof SubscriptionPlan) {
-                throw new ApplicationException('Not found subscriptionPlan for order ' . $order->getId());
-            }
-
             $subscriptionWasCreated = false;
             $subscription = $order->getSubscription();
             if (!$subscription instanceof Subscription) {
@@ -123,7 +111,7 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
                     ->buildFromSubscriptionPlan($subscriptionPlan, $order->getCustomer());
                 $order->assignSubscription($subscription);
 
-                $paddleSubscriptionId = $event->getPaddleData()['subscription_id'] ?? null;
+                $paddleSubscriptionId = $event->getData()['paddle']['subscription_id'] ?? null;
                 if ($paddleSubscriptionId === null) {
                     throw new ApplicationException('Get InvoiceWasAuthorizedEvent with empty paddle_subscription_id');
                 }
