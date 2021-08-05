@@ -3,9 +3,10 @@
 namespace Storytale\CustomerActivity\Domain\PersistModel\Subscription;
 
 use Storytale\CustomerActivity\Domain\DomainException;
+use Storytale\CustomerActivity\Domain\PersistModel\Product\AbstractProduct;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
-class SubscriptionPlan extends AbstractEntity
+class SubscriptionPlan extends AbstractProduct
 {
     public const STATUS_DRAFTED = 1;
     public const STATUS_PUBLIC = 2;
@@ -13,14 +14,8 @@ class SubscriptionPlan extends AbstractEntity
     public const STATUS_RENEWAL_ONLY = 4;
     public const STATUS_TRASHED = 5;
 
-    /** @var int */
-    private int $id;
-
     /** @var string */
     private string $name;
-
-    /** @var float */
-    private float $price;
 
     /** @var Duration */
     private Duration $duration;
@@ -45,15 +40,7 @@ class SubscriptionPlan extends AbstractEntity
         $this->downloadLimit = $downloadLimit;
         $this->status = $status;
         $this->paddleId = null;
-        parent::__construct();
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
+        parent::__construct($price, $price);
     }
 
     /**
@@ -62,14 +49,6 @@ class SubscriptionPlan extends AbstractEntity
     public function getName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPrice(): float
-    {
-        return $this->price;
     }
 
     /**
@@ -121,5 +100,10 @@ class SubscriptionPlan extends AbstractEntity
     public function getPaddleId(): ?int
     {
         return $this->paddleId;
+    }
+
+    public function getProductName(): string
+    {
+        return $this->name;
     }
 }

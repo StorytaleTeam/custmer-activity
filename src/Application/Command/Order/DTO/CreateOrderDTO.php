@@ -8,17 +8,17 @@ class CreateOrderDTO
     private ?int $customerId;
 
     /** @var array|null */
-    private ?array $productPositionsDTO;
+    private ?array $orderPositionsDTO;
 
     public function __construct(array $data)
     {
         $this->customerId = $data['customerId'] ?? null;
 
-        $this->productPositionsDTO = null;
-        if (isset($data['productPositions']) && is_array($data['productPositions'])) {
-            foreach ($data['productPositions'] as $position) {
+        $this->orderPositionsDTO = null;
+        if (isset($data['orderPositions']) && is_array($data['orderPositions'])) {
+            foreach ($data['orderPositions'] as $position) {
                 if (is_array($position)) {
-                    $this->productPositionsDTO[] = new ProductPositionDTO($position);
+                    $this->orderPositionsDTO[] = new OrderPositionDTO($position);
                 }
             }
         }
@@ -33,10 +33,10 @@ class CreateOrderDTO
     }
 
     /**
-     * @return array|null
+     * @return OrderPositionDTO[]|null
      */
-    public function getProductPositionsDTO(): ?array
+    public function getOrderPositionsDTO(): ?array
     {
-        return $this->productPositionsDTO;
+        return $this->orderPositionsDTO;
     }
 }

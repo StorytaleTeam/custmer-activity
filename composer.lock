@@ -1971,7 +1971,7 @@
             "source": {
                 "type": "git",
                 "url": "ssh://git@git.jetbrains.space/craftwork/stor/contracts-sk.git",
-                "reference": "07b2d2873fa99653fbc7036b3511db32706b3baf"
+                "reference": "e04b97976dbe8f7111ad83d65d14bb4148a4205f"
             },
             "require": {
                 "ext-json": "*",
@@ -1992,7 +1992,7 @@
                 }
             ],
             "description": "Shared contracts definition",
-            "time": "2021-06-21T10:03:41+00:00"
+            "time": "2021-07-20T17:13:19+00:00"
         },
         {
             "name": "storytale/port-adapter-sk",
@@ -2000,7 +2000,7 @@
             "source": {
                 "type": "git",
                 "url": "ssh://git@git.jetbrains.space/craftwork/stor/port-adapter-sk.git",
-                "reference": "1a9137ffb9a44b2aded2a8229572dbcbb87d8cf3"
+                "reference": "fc13b02def88b70bd05456a297f0d79ca796dd50"
             },
             "require": {
                 "doctrine/migrations": "~2.2.1",
@@ -2034,7 +2034,7 @@
                 }
             ],
             "description": "Main port adapters",
-            "time": "2021-07-20T16:56:44+00:00"
+            "time": "2021-07-26T16:52:29+00:00"
         },
         {
             "name": "symfony/config",
@@ -4400,5 +4400,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }

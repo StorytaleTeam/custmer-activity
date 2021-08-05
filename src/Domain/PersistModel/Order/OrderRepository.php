@@ -5,20 +5,20 @@ namespace Storytale\CustomerActivity\Domain\PersistModel\Order;
 interface OrderRepository
 {
     /**
-     * @param Order $order
+     * @param AbstractOrder $order
      */
-    public function save(Order $order): void;
+    public function save(AbstractOrder $order): void;
 
     /**
      * @param int $id
-     * @return Order|null
+     * @return AbstractOrder|null
      */
-    public function get(int $id): ?Order;
+    public function get(int $id): ?AbstractOrder;
 
     /**
      * @param int $orderId
      * @param int $customerId
-     * @return Order|null
+     * @return AbstractOrder|null
      */
-    public function getByIdAndCustomer(int $orderId, int $customerId): ?Order;
+    public function getByIdAndCustomer(int $orderId, int $customerId): ?AbstractOrder;
 }

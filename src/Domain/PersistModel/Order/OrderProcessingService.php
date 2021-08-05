@@ -2,7 +2,9 @@
 
 namespace Storytale\CustomerActivity\Domain\PersistModel\Order;
 
-class OrderProcessingService
+interface OrderProcessingService
 {
+    public function wasPaid(AbstractOrder $order);
+
 
 }

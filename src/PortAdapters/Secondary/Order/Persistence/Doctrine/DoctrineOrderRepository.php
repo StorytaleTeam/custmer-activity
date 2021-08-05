@@ -4,7 +4,7 @@ namespace Storytale\CustomerActivity\PortAdapters\Secondary\Order\Persistence\Do
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Storytale\CustomerActivity\Domain\PersistModel\Order\Order;
+use Storytale\CustomerActivity\Domain\PersistModel\Order\AbstractOrder;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
 
 class DoctrineOrderRepository implements OrderRepository
@@ -18,20 +18,20 @@ class DoctrineOrderRepository implements OrderRepository
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->repository = $entityManager->getRepository(Order::class);
+        $this->repository = $entityManager->getRepository(AbstractOrder::class);
     }
 
-    public function save(Order $order): void
+    public function save(AbstractOrder $order): void
     {
         $this->entityManager->persist($order);
     }
 
-    public function get(int $id): ?Order
+    public function get(int $id): ?AbstractOrder
     {
         return $this->repository->find($id);
     }
 
-    public function getByIdAndCustomer(int $orderId, int $customerId): ?Order
+    public function getByIdAndCustomer(int $orderId, int $customerId): ?AbstractOrder
     {
         return $this->repository->findOneBy(['id' => $orderId, 'customer' => $customerId]);
     }

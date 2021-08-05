@@ -13,13 +13,11 @@ use Storytale\CustomerActivity\Application\ApplicationException;
 use Storytale\CustomerActivity\Application\Command\Subscription\DTO\MembershipDTOAssembler;
 use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionDTOAssembler;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
-use Storytale\CustomerActivity\Domain\PersistModel\Order\Order;
+use Storytale\CustomerActivity\Domain\PersistModel\Order\AbstractOrder;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
-use Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPositionsService;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionFactory;
-use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionProcessingService;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionRepository;
 use Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Paddle\PaddleSubscriptionService;
@@ -50,9 +48,6 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
     /** @var SubscriptionFactory */
     private SubscriptionFactory $subscriptionFactory;
 
-    /** @var ProductPositionsService */
-    private ProductPositionsService $productPositionService;
-
     /** @var PaddleSubscriptionService */
     private PaddleSubscriptionService $paddleSubscriptionService;
 
@@ -65,7 +60,6 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         SubscriptionDTOAssembler $subscriptionDTOAssembler,
         OrderRepository $orderRepository,
         SubscriptionFactory $subscriptionFactory,
-        ProductPositionsService $productPositionService,
         PaddleSubscriptionService $paddleSubscriptionService
     )
     {
@@ -77,7 +71,6 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         $this->subscriptionDTOAssembler = $subscriptionDTOAssembler;
         $this->orderRepository = $orderRepository;
         $this->subscriptionFactory = $subscriptionFactory;
-        $this->productPositionService = $productPositionService;
         $this->paddleSubscriptionService = $paddleSubscriptionService;
     }
 
@@ -94,7 +87,7 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
             }
 
             $order = $this->orderRepository->get($orderId);
-            if (!$order instanceof Order) {
+            if (!$order instanceof AbstractOrder) {
                 throw new ApplicationException("Order with id $orderId not found.");
             }
             if (!$order->getCustomer() instanceof Customer) {
@@ -106,7 +99,7 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
             $subscriptionWasCreated = false;
             $subscription = $order->getSubscription();
             if (!$subscription instanceof Subscription) {
-                $subscriptionPlan = $this->getSubscriptionPlanFromOrder($order);
+//                $subscriptionPlan = ;
                 $subscription = $this->subscriptionFactory
                     ->buildFromSubscriptionPlan($subscriptionPlan, $order->getCustomer());
                 $order->assignSubscription($subscription);
@@ -170,28 +163,5 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         } else {
             throw new ApplicationException('Invalid event type provided.');
         }
-    }
-
-
-    /**
-     * @param Order $order
-     * @return SubscriptionPlan
-     * @throws ApplicationException
-     */
-    private function getSubscriptionPlanFromOrder(Order $order): SubscriptionPlan
-    {
-        $subscriptionPlan = null;
-        foreach ($order->getProductPositions() as $productPosition) {
-            $product = $this->productPositionService->getProductByProductPosition($productPosition);
-            if ($product instanceof SubscriptionPlan) {
-                $subscriptionPlan = $product;
-                break;
-            }
-        }
-        if (!$subscriptionPlan instanceof SubscriptionPlan) {
-            throw new ApplicationException('Not found subscriptionPlan for order ' . $order->getId());
-        }
-
-        return $subscriptionPlan;
     }
 }

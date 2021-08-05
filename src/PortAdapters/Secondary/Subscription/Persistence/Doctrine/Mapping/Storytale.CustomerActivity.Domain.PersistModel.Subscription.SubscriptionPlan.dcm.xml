@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan" table="subscription_plans">
-        <id name="id" type="integer" column="id">
-            <generator strategy="IDENTITY"/>
-        </id>
-        <field name="createdDate" type="datetime" column="created_date"/>
+<!--        <id name="id" type="integer" column="id">-->
+<!--            <generator strategy="AUTO"/>-->
+<!--        </id>-->
+<!--        <field name="createdDate" type="datetime" column="created_date"/>-->
         <field name="name" column="name"/>
         <embedded name="duration" class="Duration" column-prefix="duration_"/>
-        <field name="price" type="float"/>
+<!--        <field name="price" type="float"/>-->
         <field name="downloadLimit" type="integer" column="download_limit"/>
         <field name="status" type="integer" column="status"/>
         <field name="paddleId" type="integer" column="paddle_id" nullable="true"/>

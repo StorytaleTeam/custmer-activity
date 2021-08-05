@@ -6,12 +6,12 @@ use Storytale\CustomerActivity\Application\ValidationException;
 
 class CreateOrderDTOValidation
 {
-    /** @var ProductPositionDTOValidation */
-    private ProductPositionDTOValidation $productPositionDTOValidation;
+    /** @var OrderPositionDTOValidation */
+    private OrderPositionDTOValidation $orderPositionDTOValidation;
 
-    public function __construct(ProductPositionDTOValidation $productPositionDTOValidation)
+    public function __construct(OrderPositionDTOValidation $orderPositionDTOValidation)
     {
-        $this->productPositionDTOValidation = $productPositionDTOValidation;
+        $this->orderPositionDTOValidation = $orderPositionDTOValidation;
     }
 
     public function validate(CreateOrderDTO $dto): bool
@@ -19,11 +19,11 @@ class CreateOrderDTOValidation
         if ($dto->getCustomerId() === null) {
             throw new ValidationException('Need not empty `customerId` param.');
         }
-        if (!is_array($dto->getProductPositionsDTO()) || count($dto->getProductPositionsDTO()) === 0) {
-            throw new ValidationException('Need not empty `productPositions` array.');
+        if (!is_array($dto->getOrderPositionsDTO()) || count($dto->getOrderPositionsDTO()) === 0) {
+            throw new ValidationException('Need not empty `orderPositions` array.');
         }
-        foreach ($dto->getProductPositionsDTO() as $positionDTO) {
-            $this->productPositionDTOValidation->validate($positionDTO);
+        foreach ($dto->getOrderPositionsDTO() as $positionDTO) {
+            $this->orderPositionDTOValidation->validate($positionDTO);
         }
 
         return true;
