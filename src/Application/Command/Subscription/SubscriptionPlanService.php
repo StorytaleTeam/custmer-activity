@@ -67,6 +67,7 @@ class SubscriptionPlanService
 
             $this->compositeDomainEventHandler->handleArray($events);
 
+            /** @todo этот код не срабатывает :( */
             if (!empty($subscriptionPlanDTO->getStatus())) {
                 if ($this->isSubscriptionPlanCanMoveToStatusSpecification->isSatisfiedBy($subscriptionPlan, $subscriptionPlanDTO->getStatus())) {
                     $subscriptionPlan->changeStatus($subscriptionPlanDTO->getStatus());

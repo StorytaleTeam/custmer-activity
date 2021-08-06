@@ -339,7 +339,7 @@
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipHydrator"/>
         </service>
         <service id="storytale.customerActivity.application.command.subscription.dto.membershipHydrator" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\MembershipHydrator"/>
-        <service id="storytale.customerActivity.application.command.order.dto.orderHydrator" class="Storytale\CustomerActivity\Application\Command\Order\DTO\orderHydrator">
+        <service id="storytale.customerActivity.application.command.order.dto.orderHydrator" class="Storytale\CustomerActivity\Application\Command\Order\DTO\OrderHydrator">
             <argument type="service" id="storytale.customerActivity.application.command.order.dto.orderPositionHydrator"/>
         </service>
         <service id="storytale.customerActivity.application.command.order.dto.orderPositionHydrator" class="Storytale\CustomerActivity\Application\Command\Order\DTO\OrderPositionHydrator">

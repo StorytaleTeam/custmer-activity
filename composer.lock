@@ -1971,7 +1971,7 @@
             "source": {
                 "type": "git",
                 "url": "ssh://git@git.jetbrains.space/craftwork/stor/contracts-sk.git",
-                "reference": "9d2f1521d7b653f08ef7939c46f1970224dec6f6"
+                "reference": "3527371e2bd75b6a27b01e2da3c0ff774173a99d"
             },
             "require": {
                 "ext-json": "*",
@@ -1992,7 +1992,7 @@
                 }
             ],
             "description": "Shared contracts definition",
-            "time": "2021-08-06T13:08:27+00:00"
+            "time": "2021-08-06T14:02:40+00:00"
         },
         {
             "name": "storytale/port-adapter-sk",
