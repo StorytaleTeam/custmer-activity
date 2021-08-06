@@ -2,18 +2,18 @@
 
 namespace Storytale\CustomerActivity\Application\Command\Product\DTO;
 
-use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOAssembler;
+use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanHydrator;
 use Storytale\CustomerActivity\Domain\PersistModel\Product\ProductInterface;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan;
 
 class ProductHydrator
 {
-    /** @var SubscriptionPlanDTOAssembler */
-    private SubscriptionPlanDTOAssembler $subscriptionPlanDTOAssembler;
+    /** @var SubscriptionPlanHydrator */
+    private SubscriptionPlanHydrator $subscriptionPlanHydrator;
 
-    public function __construct(SubscriptionPlanDTOAssembler $subscriptionPlanDTOAssembler)
+    public function __construct(SubscriptionPlanHydrator $subscriptionPlanHydrator)
     {
-        $this->subscriptionPlanDTOAssembler = $subscriptionPlanDTOAssembler;
+        $this->subscriptionPlanHydrator = $subscriptionPlanHydrator;
     }
 
     public function toArray(ProductInterface $product): array
@@ -21,7 +21,7 @@ class ProductHydrator
         $productData = [];
         switch (true) {
             case $product instanceof SubscriptionPlan:
-                $productData = $this->subscriptionPlanDTOAssembler->toArray($product);
+                $productData = $this->subscriptionPlanHydrator->toArray($product);
                 break;
         }
 

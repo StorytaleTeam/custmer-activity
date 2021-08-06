@@ -2,12 +2,15 @@
 
 namespace Storytale\CustomerActivity\Domain\PersistModel\Subscription;
 
+use Storytale\Contracts\Domain\DomainEventCollection;
 use Storytale\CustomerActivity\Domain\DomainException;
 use Storytale\CustomerActivity\Domain\PersistModel\Product\AbstractProduct;
-use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Event\SubscriptionPlanWasCreated;
 
 class SubscriptionPlan extends AbstractProduct
 {
+    use DomainEventCollection;
+
     public const STATUS_DRAFTED = 1;
     public const STATUS_PUBLIC = 2;
     public const STATUS_PRIVATE = 3;
@@ -41,6 +44,7 @@ class SubscriptionPlan extends AbstractProduct
         $this->status = $status;
         $this->paddleId = null;
         parent::__construct($price, $price);
+        $this->raiseEvent(new SubscriptionPlanWasCreated($this));
     }
 
     /**

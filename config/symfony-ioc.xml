@@ -286,6 +286,7 @@
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionPlanFactory"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOValidation"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.specification.isSubscriptionPlanCanMoveToStatusSpecification"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.domainEvent.compositeDomainEventHandler"/>
         </service>
 
         <service id="storytale.customerActivity.application.command.subscription.subscriptionService" class="Storytale\CustomerActivity\Application\Command\Subscription\SubscriptionService">
@@ -296,7 +297,7 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
             <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionSigningDTOValidation"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.payment.storytalePaymentService"/>
-            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionHydrator"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService"/>
             <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
         </service>
@@ -332,13 +333,12 @@
     <!-- Command end -->
 
     <!-- Hydrator -->
-        <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionDTOAssembler">
-            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler"/>
-            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler"/>
+        <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanHydrator" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanHydrator"/>
+        <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionHydrator" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionHydrator">
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanHydrator"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipHydrator"/>
         </service>
-        <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTOAssembler"/>
-        <service id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\MembershipDTOAssembler"/>
-
+        <service id="storytale.customerActivity.application.command.subscription.dto.membershipHydrator" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\MembershipHydrator"/>
         <service id="storytale.customerActivity.application.command.order.dto.orderHydrator" class="Storytale\CustomerActivity\Application\Command\Order\DTO\orderHydrator">
             <argument type="service" id="storytale.customerActivity.application.command.order.dto.orderPositionHydrator"/>
         </service>
@@ -346,7 +346,7 @@
             <argument type="service" id="storytale.customerActivity.application.command.product.dto.productHydrator"/>
         </service>
         <service id="storytale.customerActivity.application.command.product.dto.productHydrator" class="Storytale\CustomerActivity\Application\Command\Product\DTO\ProductHydrator">
-            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanHydrator"/>
         </service>
     <!-- Hydrator END -->
 
@@ -404,8 +404,7 @@
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionProcessingService"/>
             <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
-            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler"/>
-            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipHydrator"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService"/>
@@ -507,23 +506,47 @@
         <!-- Port adapter -->
         <service id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Paddle\PaddleSubscriptionService">
             <argument type="service" id="storytale.portAdapters.secondary.serviceClient.paddle.paddleServiceClient"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanHydrator"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.domainEvent.compositeDomainEventHandler" class="Storytale\CustomerActivity\PortAdapters\Secondary\DomainEvent\CompositeDomainEventHandler">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.domainEvent.subscriptionPlanDomainEventHandler"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.domainEvent.membershipDomainEventHandler"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.domainEvent.subscriptionDomainEventHandler"/>
         </service>
         <!-- Port adapter END -->
+
+        <!-- Domain event handler -->
+        <service id="storytale.customerActivity.portAdapters.secondary.subscription.domainEvent.membershipDomainEventHandler" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\DomainEvent\MembershipDomainEventHandler">
+            <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipHydrator"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionHydrator"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.subscription.domainEvent.subscriptionDomainEventHandler" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\DomainEvent\SubscriptionDomainEventHandler">
+            <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionHydrator"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.subscription.domainEvent.subscriptionPlanDomainEventHandler" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\DomainEvent\SubscriptionPlanDomainEventHandler">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService"/>
+        </service>
+        <!-- Domain event handler END -->
 
         <!-- Console command -->
         <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\SubscriptionPlan\SyncWithPaddleCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\SubscriptionPlan\SyncWithPaddleCommand" public="true">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionPlanRepository"/>
-            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
-            <argument type="service" id="storytale.portAdapters.secondary.serviceClient.paddle.paddleServiceClient"/>
-            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionPlanDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService"/>
         </service>
 
         <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\ProlongateSubscriptionCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\ProlongateSubscriptionCommand" public="true">
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.portAdapters.secondary.eventBus.storytaleEventBus"/>
-            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipDTOAssembler"/>
-            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionDTOAssembler"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.membershipHydrator"/>
+            <argument type="service" id="storytale.customerActivity.application.command.subscription.dto.subscriptionHydrator"/>
         </service>
 
         <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Customer\MigrateOldLikesCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Customer\MigrateOldLikesCommand" public="true">

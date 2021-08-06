@@ -8,7 +8,7 @@ use Storytale\Contracts\SharedEvents\Subscription\SubscriptionWasCanceledEvent;
 use Storytale\Contracts\SharedEvents\Subscription\SubscriptionWasCreatedEvent;
 use Storytale\Contracts\SharedEvents\Subscription\SubscriptionWasUnsubscribeEvent;
 use Storytale\CustomerActivity\Application\ApplicationException;
-use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionDTOAssembler;
+use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionHydrator;
 use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionSigningDTO;
 use Storytale\CustomerActivity\Application\DTOValidation;
 use Storytale\CustomerActivity\Application\OperationResponse;
@@ -47,8 +47,8 @@ class SubscriptionService
     /** @var PaymentService */
     private PaymentService $paymentService;
 
-    /** @var SubscriptionDTOAssembler */
-    private SubscriptionDTOAssembler $subscriptionDTOAssembler;
+    /** @var SubscriptionHydrator */
+    private SubscriptionHydrator $subscriptionHydrator;
 
     /** @var PaddleSubscriptionService */
     private PaddleSubscriptionService $paddleSubscriptionService;
@@ -64,7 +64,7 @@ class SubscriptionService
         SubscriptionRepository $subscriptionRepository,
         DTOValidation $subscriptionSigningDTOValidation,
         PaymentService $paymentService,
-        SubscriptionDTOAssembler $subscriptionDTOAssembler,
+        SubscriptionHydrator $subscriptionHydrator,
         PaddleSubscriptionService $paddleSubscriptionService,
         EventBus $eventBus
     )
@@ -76,7 +76,7 @@ class SubscriptionService
         $this->subscriptionRepository = $subscriptionRepository;
         $this->subscriptionSigningDTOValidation = $subscriptionSigningDTOValidation;
         $this->paymentService = $paymentService;
-        $this->subscriptionDTOAssembler = $subscriptionDTOAssembler;
+        $this->subscriptionHydrator = $subscriptionHydrator;
         $this->paddleSubscriptionService = $paddleSubscriptionService;
         $this->eventBus = $eventBus;
     }
@@ -105,7 +105,7 @@ class SubscriptionService
                     $this->paddleSubscriptionService->cancelSubscription($currentSubscription->getPaddleId());
                 }
 
-                $subscriptionData = $this->subscriptionDTOAssembler->toArray($currentSubscription);
+                $subscriptionData = $this->subscriptionHydrator->toArray($currentSubscription);
                 $this->eventBus->fire(new SubscriptionWasCanceledEvent(['subscription' => $subscriptionData]));
             }
 
@@ -127,7 +127,7 @@ class SubscriptionService
 
             $params = [
                 'subscription' =>
-                    $this->subscriptionDTOAssembler->toArray($subscription),
+                    $this->subscriptionHydrator->toArray($subscription),
                 'customer' => [
                     'id' => $customer->getId(),
                     'email' => $customer->getEmail(),
@@ -171,7 +171,7 @@ class SubscriptionService
                  * Attempt cancel subscription with empty paddleId.
                  */
             }
-            $subscriptionData = $this->subscriptionDTOAssembler->toArray($subscription);
+            $subscriptionData = $this->subscriptionHydrator->toArray($subscription);
 
             $this->domainSession->flush();
             $this->eventBus->fire(new SubscriptionWasUnsubscribeEvent(['subscription' => $subscriptionData]));

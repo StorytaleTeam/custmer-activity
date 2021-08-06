@@ -2,13 +2,17 @@
 
 namespace Storytale\CustomerActivity\Domain\PersistModel\Subscription;
 
+use Storytale\Contracts\Domain\DomainEventCollection;
 use Storytale\CustomerActivity\Domain\DomainException;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Event\SubscriptionWasCreated;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
 class Subscription extends AbstractEntity
 {
+    use DomainEventCollection;
+
     public const STATUS_NEW = 1;
     public const STATUS_ACTIVE = 2;
     public const STATUS_STOPPED = 3;
@@ -59,6 +63,7 @@ class Subscription extends AbstractEntity
         $this->autoRenewal = $autoRenewal;
         $this->paddleId = $paddleId;
         parent::__construct();
+        $this->raiseEvent(new SubscriptionWasCreated($this));
     }
 
     /**

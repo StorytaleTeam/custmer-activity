@@ -24,6 +24,14 @@ abstract class AbstractProduct extends AbstractEntity
     }
 
     /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
      * @return float
      */
     public function getPrice(): float
