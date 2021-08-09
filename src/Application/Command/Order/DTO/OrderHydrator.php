@@ -26,6 +26,7 @@ class OrderHydrator
             'createdDate' => $order->getCreatedDate(),
             'totalPrice' => $order->getTotalPrice(),
             'orderPositions' => $orderPositions,
+            'status' => $order->getStatus(),
         ];
     }
 }
