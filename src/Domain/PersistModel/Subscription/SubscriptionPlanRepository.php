@@ -16,6 +16,13 @@ interface SubscriptionPlanRepository
     public function get(int $id): ?SubscriptionPlan;
 
     /**
+     * @param int $oldId
+     * @return SubscriptionPlan|null
+     * @deprecated
+     */
+    public function getByOldId(int $oldId): ?SubscriptionPlan;
+
+    /**
      * @return SubscriptionPlan[]
      */
     public function getAll(): array;

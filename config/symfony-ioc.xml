@@ -578,6 +578,8 @@
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraOldSubscriptionDataProvider"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.product.productBuilder"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.order.orderPositionFactory"/>
         </service>
         <!-- Console command END -->
 

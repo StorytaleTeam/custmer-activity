@@ -7,7 +7,9 @@ use Storytale\CustomerActivity\Application\Query\Subscription\OldSubscriptionDat
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerRepository;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderFactory;
+use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderPositionFactory;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
+use Storytale\CustomerActivity\PortAdapters\Secondary\Product\ProductBuilder;
 use Storytale\PortAdapters\Secondary\Console\AbstractMigrateCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,12 +31,20 @@ class MigrateOldOrdersCommand extends AbstractMigrateCommand
     /** @var CustomerRepository */
     private CustomerRepository $customerRepository;
 
+    /** @var ProductBuilder */
+    private ProductBuilder $productBuilder;
+
+    /** @var OrderPositionFactory */
+    private OrderPositionFactory $orderPositionFactory;
+
     public function __construct(
         OrderRepository $orderRepository,
         OrderFactory $orderFactory,
         DomainSession $domainSession,
         OldSubscriptionDataProvider $oldSubscriptionDataProvider,
-        CustomerRepository $customerRepository
+        CustomerRepository $customerRepository,
+        ProductBuilder $productBuilder,
+        OrderPositionFactory $orderPositionFactory
     )
     {
         $this->orderRepository = $orderRepository;
@@ -42,6 +52,8 @@ class MigrateOldOrdersCommand extends AbstractMigrateCommand
         $this->domainSession = $domainSession;
         $this->oldSubscriptionDataProvider = $oldSubscriptionDataProvider;
         $this->customerRepository = $customerRepository;
+        $this->productBuilder = $productBuilder;
+        $this->orderPositionFactory = $orderPositionFactory;
         parent::__construct('old:migrateOrder');
     }
 
@@ -60,16 +72,22 @@ class MigrateOldOrdersCommand extends AbstractMigrateCommand
             }
 
             foreach ($oldOrders as $oldOrder) {
-                $orderPosition = $this->oldSubscriptionDataProvider->getOrderProducts($oldOrder['ID']);
-                if (empty($orderPosition)) {
+                $oldOrderPosition = $this->oldSubscriptionDataProvider->getOrderProducts($oldOrder['ID']);
+                if (empty($oldOrderPosition)) {
                     $this->registerError('Get order with empty positions  ' . $oldOrder['ID'] ?? null);
                     continue;
                 }
-                $oldCustomerId = $orderPosition['customer_id'] ?? null;
+                $oldCustomerId = $oldOrderPosition['customer_id'] ?? null;
                 if ($oldCustomerId === null) {
                     $this->registerError('Get order with empty customer_id  ' . $oldOrder['ID'] ?? null);
                     continue;
                 }
+                $oldProductId = $oldOrderPosition['product_id'] ?? null;
+                if ($oldProductId === null) {
+                    $this->registerError('Get order with empty product_id  ' . $oldOrder['ID'] ?? null);
+                    continue;
+                }
+
                 $customer = $this->customerRepository->get($oldCustomerId);
                 if (!$customer instanceof Customer) {
                     $this->registerError('Not found customer for oldOrder ' . $oldOrder['ID'] ?? null);
@@ -83,12 +101,19 @@ class MigrateOldOrdersCommand extends AbstractMigrateCommand
                         $createdDate = null;
                     }
                 }
-                /** @todo build OrderPosition */
 
-                $order = $this->orderFactory->build($customer, $createdDate);
+                $orderPositions = [];
+                {
+                    $product = $this->productBuilder->buildSubscriptionPlanByOldId($oldProductId);
+                    $orderPositions[] = $this->orderPositionFactory->build($product);
+                }
+
+                $order = $this->orderFactory->build($customer, $orderPositions, $createdDate);
+                $this->orderRepository->save($order);
+                $this->domainSession->flush();
 
 
-                var_dump($order);die;
+                var_dump($order->getId());die;
             }
         }
     }
