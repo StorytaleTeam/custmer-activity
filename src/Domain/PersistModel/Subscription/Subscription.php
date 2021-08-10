@@ -57,6 +57,7 @@ class Subscription extends AbstractEntity
     )
     {
         $this->customer = $customer;
+        $customer->addSubscription($this);
         $this->subscriptionPlan = $subscriptionPlan;
         $this->status = $status;
         $this->currentMembershipCycle = $currentMembershipCycle;
