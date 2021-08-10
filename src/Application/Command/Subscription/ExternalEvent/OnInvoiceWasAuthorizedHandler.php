@@ -15,6 +15,7 @@ use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderSubscription;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionFactory;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionProcessingService;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionRepository;
@@ -101,7 +102,7 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         $subscription = $order->getSubscription();
         if (!$subscription instanceof Subscription) {
             $subscriptionPlan = $order->getSubscriptionPlan();
-            if (!$subscriptionPlan instanceof Subscription) {
+            if (!$subscriptionPlan instanceof SubscriptionPlan) {
                 throw new ApplicationException('Get order with empty subscriptionPlan');
             }
             $subscription = $this->subscriptionFactory

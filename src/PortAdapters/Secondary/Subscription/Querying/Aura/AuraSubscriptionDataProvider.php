@@ -30,8 +30,8 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
                 AS cd where cd.membership_id = m.id)' => 'downloadRemaining',
                 'm.download_limit'              => 'downloadLimit',
 
+                'p.price',
                 'sp.name',
-                'sp.price',
                 'sp.id'                         => 'planId',
                 'sp.duration_label'             => 'durationLabel',
                 'sp.duration_count'             => 'durationCount',
@@ -39,7 +39,8 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
             ->from('subscriptions AS s')
             ->join('LEFT', 'memberships AS m', 's.id = m.subscription_id '
                 . 'AND s.current_membership_cycle = m.cycle_number')
-            ->join('LEFT', 'subscription_plans AS sp', 's.subscription_plan_id = sp.id');
+            ->join('LEFT', 'subscription_plans AS sp', 's.subscription_plan_id = sp.id')
+            ->join('LEFT', 'products AS p', 'p.id = sp.id');
     }
 
     public function findOneForCustomer(int $subscriptionId, int $customerId): ?SubscriptionBasic
