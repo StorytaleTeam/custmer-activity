@@ -6,6 +6,7 @@ use Storytale\Contracts\Domain\DomainEventCollection;
 use Storytale\CustomerActivity\Domain\DomainException;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Event\SubscriptionWasCanceled;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Event\SubscriptionWasCreated;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
@@ -197,13 +198,17 @@ class Subscription extends AbstractEntity
         $this->autoRenewal = false;
         if ($this->status === self::STATUS_NEW) {
             $this->cancel();
+        } else {
+            $this->raiseEvent(new SubscriptionWasCanceled($this));
         }
     }
 
     public function cancel()
     {
+
         $this->status = self::STATUS_STOPPED;
         $this->autoRenewal = false;
+        $this->raiseEvent(new SubscriptionWasCanceled($this));
     }
 
     /**

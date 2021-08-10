@@ -81,6 +81,13 @@ class SubscriptionService
         $this->eventBus = $eventBus;
     }
 
+    /**
+     * @param SubscriptionSigningDTO $subscriptionSigningDTO
+     * @param bool $isActorModerator
+     * @return OperationResponse
+     * @throws ApplicationException
+     * @deprecated
+     */
     public function create(SubscriptionSigningDTO $subscriptionSigningDTO, bool $isActorModerator = false): OperationResponse
     {
         $result = null;
