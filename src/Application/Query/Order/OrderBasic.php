@@ -17,7 +17,7 @@ class OrderBasic implements \JsonSerializable
     private ?float $totalPrice;
 
     /** @var string|null */
-    private ?string $productPositions;
+    private ?string $orderPositions;
 
     public function jsonSerialize()
     {
@@ -28,8 +28,8 @@ class OrderBasic implements \JsonSerializable
             'totalPrice' => $this->totalPrice ?? null,
         ];
 
-        if (isset($this->productPositions)) {
-            $response['productPositions'] = json_decode($this->productPositions);
+        if (isset($this->orderPositions)) {
+            $response['orderPositions'] = json_decode($this->orderPositions);
         }
 
         return $response;

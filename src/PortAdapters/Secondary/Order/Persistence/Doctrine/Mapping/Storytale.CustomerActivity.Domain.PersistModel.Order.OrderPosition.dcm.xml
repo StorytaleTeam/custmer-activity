@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPosition" table="order_product_positions">
+    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Order\OrderPosition" table="order_positions">
         <id name="id" type="integer" column="id">
             <generator strategy="IDENTITY"/>
         </id>
         <field name="createdDate" type="datetime" column="created_date"/>
         <field name="displayName" column="display_name"/>
-        <field name="productType" column="product_type"/>
-        <field name="productId" type="integer" column="product_id"/>
-        <field name="price" type="float"/>
-        <field name="count" type="integer"/>
-        <many-to-one field="order" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Order\Order" inversed-by="productPositions">
+        <many-to-one field="order" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Order\AbstractOrder" inversed-by="orderPositions">
             <join-column name="order_id" referenced-column-name="id"/>
+        </many-to-one>
+        <many-to-one field="product" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Product\AbstractProduct">
+            <join-column name="product_id" referenced-column-name="id"/>
         </many-to-one>
     </entity>
 </doctrine-mapping>

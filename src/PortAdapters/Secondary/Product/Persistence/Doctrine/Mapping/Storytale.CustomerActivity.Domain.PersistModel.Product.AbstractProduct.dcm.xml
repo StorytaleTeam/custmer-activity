@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Product\AbstractProduct" inheritance-type="JOINED" table="products">
+        <discriminator-column name="doctrine_discr" type="string"/>
+        <discriminator-map>
+            <discriminator-mapping value="subscription_plan_product" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan"/>
+        </discriminator-map>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="createdDate" type="datetime" column="created_date"/>
+        <field name="totalPrice" type="float" column="total_price"/>
+        <field name="price" type="float" column="price"/>
+
+    </entity>
+</doctrine-mapping>

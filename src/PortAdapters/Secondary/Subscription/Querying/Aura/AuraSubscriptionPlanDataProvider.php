@@ -18,14 +18,15 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
             ->cols([
                 'sp.id',
                 'sp.name',
-                'sp.price',
-                'sp.created_date'   => 'createdDate',
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
                 'sp.paddle_id'      => 'paddleId',
+                'p.created_date'   => 'createdDate',
+                'p.price',
             ])
             ->from('subscription_plans AS sp')
+            ->join('LEFT', 'products AS p', 'p.id = sp.id')
             ->where('sp.status = :statusPublic')
             ->bindValue('statusPublic', SubscriptionPlan::STATUS_PUBLIC);
     }
@@ -36,18 +37,19 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
             ->newSelect()
             ->cols([
                 'sp.id',
-                'sp.created_date' => 'createdDate',
                 'sp.name',
-                'sp.price',
                 'sp.status',
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
                 'sp.paddle_id' => 'paddleId',
+                'p.created_date'   => 'createdDate',
+                'p.price',
             ])
             ->where('sp.id = :id')
             ->bindValue('id', $id)
-            ->from('subscription_plans AS sp');
+            ->from('subscription_plans AS sp')
+            ->join('LEFT', 'products AS p', 'p.id = sp.id');
 
         $response = $this->executeStatement($select->getStatement(), $select->getBindValues(), SubscriptionPlanBasic::class);;
         $response = count($response) > 0 ? $response[0] : null;
@@ -61,16 +63,17 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
             ->newSelect()
             ->cols([
                 'sp.id',
-                'sp.created_date' => 'createdDate',
                 'sp.name',
-                'sp.price',
                 'sp.status',
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
                 'sp.paddle_id' => 'paddleId',
+                'p.created_date'   => 'createdDate',
+                'p.price',
             ])
-            ->from('subscription_plans AS sp');
+            ->from('subscription_plans AS sp')
+            ->join('LEFT', 'products AS p', 'p.id = sp.id');
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), SubscriptionPlanBasic::class);
     }

@@ -4,7 +4,11 @@ namespace Storytale\CustomerActivity\Application\Command\Subscription\DTO;
 
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan;
 
-class SubscriptionPlanDTOAssembler
+/**
+ * Class SubscriptionPlanHydrator
+ * @package Storytale\CustomerActivity\Application\Command\Subscription\DTO
+ */
+class SubscriptionPlanHydrator
 {
     public function toArray(SubscriptionPlan $subscriptionPlan): array
     {

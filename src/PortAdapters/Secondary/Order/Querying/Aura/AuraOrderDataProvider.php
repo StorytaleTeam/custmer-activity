@@ -39,14 +39,12 @@ class AuraOrderDataProvider extends AbstractAuraDataProvider
                 '(SELECT json_agg (tmp)
                  FROM (
                     SELECT 
-                        opp.id,
-                        opp.price,
-                        opp.count,
-                        opp.display_name AS displayName,
-                        opp.product_id AS productId
-                    FROM order_product_positions AS opp
-                    WHERE opp.order_id = o.id) AS tmp
-                 )'                         => 'productPositions',
+                        op.id,
+                        op.display_name AS displayName,
+                        op.product_id AS productId
+                    FROM order_positions AS op
+                    WHERE op.order_id = o.id) AS tmp
+                 )'                         => 'orderPositions',
             ])
             ->from('orders AS o')
             ->where('o.customer_id = :customerId')
@@ -56,6 +54,8 @@ class AuraOrderDataProvider extends AbstractAuraDataProvider
             ->bindValue('orderId', $orderId);
 
         $response = $this->executeStatement($select->getStatement(), $select->getBindValues(), OrderBasic::class);
+//        $response = $this->executeStatement($select->getStatement(), $select->getBindValues());
+//        var_dump($response);die;
         $response = count($response) === 0 ? null : $response[0];
 
         return $response;

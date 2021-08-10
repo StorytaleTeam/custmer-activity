@@ -2,6 +2,8 @@
 
 namespace RestAPI\Controller;
 
+use Storytale\CustomerActivity\Application\Command\Order\DTO\ConfirmOrderDTO;
+use Storytale\CustomerActivity\Application\Command\Order\OrderService;
 use Storytale\CustomerActivity\Application\Query\Order\OrderDataProvider;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -11,9 +13,13 @@ class OrderCustomerController extends AbstractActionController
     /** @var OrderDataProvider */
     private OrderDataProvider $orderDataProvider;
 
-    public function __construct(OrderDataProvider $orderDataProvider)
+    /** @var OrderService */
+    private OrderService $orderService;
+
+    public function __construct(OrderDataProvider $orderDataProvider, OrderService $orderService)
     {
         $this->orderDataProvider = $orderDataProvider;
+        $this->orderService = $orderService;
     }
 
     public function listAction()
@@ -36,27 +42,10 @@ class OrderCustomerController extends AbstractActionController
 
     public function oneAction()
     {
-        $customerId = $this->params()->fromQuery('customerId');
-        $orderId = $this->params()->fromQuery('orderId');
-         if ($customerId !== null && $orderId !== null) {
-            $orders = $this->orderDataProvider->findOneForCustomer($customerId, $orderId);
-            $response = [
-                'success' => true,
-                'result' => [
-                    'order' => $orders,
-                ],
-            ];
-        } else {
-             switch (null) {
-                 case $customerId:
-                    $response = ['success' => false, 'message' => 'Need not empty customerId param.'];
-                    break;
-                 case $orderId:
-                    $response = ['success' => false, 'message' => 'Need not empty orderId param.'];
-                    break;
-             }
-        }
+        $data = $this->params()->fromQuery(null, []);
+        $confirmOrderDTO = new ConfirmOrderDTO($data);
+        $response = $this->orderService->getOne($confirmOrderDTO);
 
-        return new JsonModel($response);
+        return new JsonModel($response->jsonSerialize());
     }
 }

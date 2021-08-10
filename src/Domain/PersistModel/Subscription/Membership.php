@@ -129,6 +129,14 @@ class Membership extends AbstractEntity
     }
 
     /**
+     * @return Subscription
+     */
+    public function getSubscription(): Subscription
+    {
+        return $this->subscription;
+    }
+
+    /**
      * @param int $cycleNumber
      * @throws DomainException
      */
@@ -183,11 +191,10 @@ class Membership extends AbstractEntity
         $this->status = self::STATUS_DURATION_EXPIRED;
     }
 
-    /**
-     * @return Subscription
-     */
-    public function getSubscription(): Subscription
+    public function absorb(Subscription $subscription)
     {
-        return $this->subscription;
+        if ($subscription->getCurrentMembership() instanceof Membership) {
+            $this->downloadLimit += $subscription->getCurrentMembership()->getDownloadRemaining();
+        }
     }
 }

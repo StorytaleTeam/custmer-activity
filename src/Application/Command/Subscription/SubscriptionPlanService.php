@@ -2,6 +2,7 @@
 
 namespace Storytale\CustomerActivity\Application\Command\Subscription;
 
+use Storytale\Contracts\Domain\ICompositeDomainEventHandler;
 use Storytale\Contracts\Persistence\DomainSession;
 use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanDTO;
 use Storytale\CustomerActivity\Application\DTOValidation;
@@ -29,12 +30,16 @@ class SubscriptionPlanService
     /** @var IsSubscriptionPlanCanMoveToStatusSpecification */
     private IsSubscriptionPlanCanMoveToStatusSpecification $isSubscriptionPlanCanMoveToStatusSpecification;
 
+    /** @var ICompositeDomainEventHandler */
+    private ICompositeDomainEventHandler $compositeDomainEventHandler;
+
     public function __construct(
         SubscriptionPlanRepository $subscriptionPlanRepository,
         DomainSession $domainSession,
         SubscriptionPlanFactory $subscriptionPlanFactory,
         DTOValidation $subscriptionPlanDTOValidation,
-        IsSubscriptionPlanCanMoveToStatusSpecification $isSubscriptionPlanCanMoveToStatusSpecification
+        IsSubscriptionPlanCanMoveToStatusSpecification $isSubscriptionPlanCanMoveToStatusSpecification,
+        ICompositeDomainEventHandler $compositeDomainEventHandler
     )
     {
         $this->subscriptionPlanRepository = $subscriptionPlanRepository;
@@ -42,6 +47,7 @@ class SubscriptionPlanService
         $this->subscriptionPlanFactory = $subscriptionPlanFactory;
         $this->subscriptionPlanDTOValidation = $subscriptionPlanDTOValidation;
         $this->isSubscriptionPlanCanMoveToStatusSpecification = $isSubscriptionPlanCanMoveToStatusSpecification;
+        $this->compositeDomainEventHandler = $compositeDomainEventHandler;
     }
 
     public function create(SubscriptionPlanDTO $subscriptionPlanDTO): OperationResponse
@@ -57,16 +63,17 @@ class SubscriptionPlanService
                 throw new ValidationException('Error creating SubscriptionPlan');
             }
             $this->subscriptionPlanRepository->save($subscriptionPlan);
+            $events = $this->domainSession->flush();
 
-            /** @todo добавить синхронизацию с падл */
+            $this->compositeDomainEventHandler->handleArray($events);
 
+            /** @todo этот код не срабатывает :( */
             if (!empty($subscriptionPlanDTO->getStatus())) {
                 if ($this->isSubscriptionPlanCanMoveToStatusSpecification->isSatisfiedBy($subscriptionPlan, $subscriptionPlanDTO->getStatus())) {
                     $subscriptionPlan->changeStatus($subscriptionPlanDTO->getStatus());
                 }
             }
-
-            $this->domainSession->flush();
+            $events = $this->domainSession->flush();
 
             $result['subscriptionPlan']['id'] = $subscriptionPlan->getId();
             $success = true;

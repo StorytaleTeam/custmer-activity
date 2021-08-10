@@ -5,8 +5,8 @@ namespace Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Co
 use Storytale\Contracts\EventBus\EventBus;
 use Storytale\Contracts\Persistence\DomainSession;
 use Storytale\Contracts\SharedEvents\Subscription\Membership\MembershipWasActivatedEvent;
-use Storytale\CustomerActivity\Application\Command\Subscription\DTO\MembershipDTOAssembler;
-use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionDTOAssembler;
+use Storytale\CustomerActivity\Application\Command\Subscription\DTO\MembershipHydrator;
+use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionHydrator;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionRepository;
 use Symfony\Component\Console\Command\Command;
@@ -24,25 +24,25 @@ class ProlongateSubscriptionCommand extends Command
     /** @var EventBus */
     private EventBus $eventBus;
 
-    /** @var MembershipDTOAssembler */
-    private MembershipDTOAssembler $membershipDTOAssembler;
+    /** @var MembershipHydrator */
+    private MembershipHydrator $membershipHydrator;
 
-    /** @var SubscriptionDTOAssembler */
-    private SubscriptionDTOAssembler $subscriptionDTOAssembler;
+    /** @var SubscriptionHydrator */
+    private SubscriptionHydrator $subscriptionHydrator;
 
     public function __construct(
         SubscriptionRepository $subscriptionRepository,
         DomainSession $domainSession,
         EventBus $eventBus,
-        MembershipDTOAssembler $membershipDTOAssembler,
-        SubscriptionDTOAssembler $subscriptionDTOAssembler
+        MembershipHydrator $membershipHydrator,
+        SubscriptionHydrator $subscriptionHydrator
     )
     {
         $this->subscriptionRepository = $subscriptionRepository;
         $this->domainSession = $domainSession;
         $this->eventBus = $eventBus;
-        $this->membershipDTOAssembler = $membershipDTOAssembler;
-        $this->subscriptionDTOAssembler = $subscriptionDTOAssembler;
+        $this->membershipHydrator = $membershipHydrator;
+        $this->subscriptionHydrator = $subscriptionHydrator;
         parent::__construct('subscription:prolongate');
     }
 
@@ -65,8 +65,8 @@ class ProlongateSubscriptionCommand extends Command
                 && $newMembership->getStatus() === Membership::STATUS_ACTIVE
             ) {
                 $this->eventBus->fire(new MembershipWasActivatedEvent([
-                    'membership' => $this->membershipDTOAssembler->toArray($newMembership),
-                    'subscription' => $this->subscriptionDTOAssembler->toArray($subscription),
+                    'membership' => $this->membershipHydrator->toArray($newMembership),
+                    'subscription' => $this->subscriptionHydrator->toArray($subscription),
                 ]));
             }
         }

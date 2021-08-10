@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Order\Order" table="orders">
+    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Order\AbstractOrder" inheritance-type="SINGLE_TABLE" table="orders">
+        <discriminator-column name="doctrine_discr" type="string"/>
+        <discriminator-map>
+            <discriminator-mapping value="order_subscription" class="Storytale\CustomerActivity\Domain\PersistModel\Order\OrderSubscription"/>
+        </discriminator-map>
+
         <id name="id" type="integer" column="id">
             <generator strategy="IDENTITY"/>
         </id>
+
         <field name="createdDate" type="datetime" column="created_date"/>
         <field name="status" type="integer" column="status"/>
         <field name="totalPrice" type="float" column="total_price"/>
@@ -12,15 +18,10 @@
             <join-column name="customer_id" referenced-column-name="id"/>
         </many-to-one>
 
-        <one-to-one field="subscription" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription">
-            <join-column name="subscription_id" referenced-column-name="id"/>
-        </one-to-one>
-
-        <one-to-many field="productPositions" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Order\ProductPosition" mapped-by="order">
+        <one-to-many field="orderPositions" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Order\OrderPosition" mapped-by="order">
             <cascade>
                 <cascade-persist/>
             </cascade>
         </one-to-many>
-
     </entity>
 </doctrine-mapping>

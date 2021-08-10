@@ -2,7 +2,7 @@
 
 namespace Storytale\CustomerActivity\Application\Command\Order\DTO;
 
-class ProductPositionDTO
+class OrderPositionDTO
 {
     /** @var string|null */
     private ?string $productType;
@@ -17,7 +17,6 @@ class ProductPositionDTO
     {
         $this->productType = $data['type'] ?? null;
         $this->productId = $data['id'] ?? null;
-        $this->count = $data['count'] ?? null;
     }
 
     /**
@@ -34,13 +33,5 @@ class ProductPositionDTO
     public function getProductId(): ?int
     {
         return $this->productId;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getCount(): ?int
-    {
-        return $this->count;
     }
 }
