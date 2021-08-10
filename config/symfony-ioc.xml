@@ -378,6 +378,11 @@
             <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
             <argument type="service" id="AuraPgSQLQueryFactory"/>
         </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraOldSubscriptionDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Querying\Aura\AuraOldSubscriptionDataProvider">
+            <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection_for_old_db"/>
+            <argument type="service" id="AuraMySQLQueryFactory"/>
+        </service>
     <!-- Query END -->
 
     <!--  ExternalEvent handler -->
@@ -540,6 +545,14 @@
             <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.downloadProcessingService"/>
             <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
             <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
+        </service>
+
+        <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Order\MigrateOldOrdersCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Order\MigrateOldOrdersCommand" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.order.orderFactory"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraOldSubscriptionDataProvider"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
         </service>
         <!-- Console command END -->
 

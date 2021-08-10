@@ -30,14 +30,14 @@ class Order extends AbstractEntity
     /** @var float */
     private float $totalPrice;
 
-    public function __construct(Customer $customer, int $status)
+    public function __construct(Customer $customer, int $status, ?\DateTime $createdDate = null)
     {
         $this->customer = $customer;
         $this->status = $status;
         $this->productPositions = [];
         $this->subscription = null;
         $this->totalPrice = 0;
-        parent::__construct();
+        parent::__construct($createdDate);
     }
 
     private function recalculateTotalPrice(): float
