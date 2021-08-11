@@ -29,8 +29,13 @@ class OrderFactory
         return $order;
     }
 
-    public function buildOrderSubscription(Customer $customer, array $orderPositions, ?\DateTime $createdDate = null): OrderSubscription
+    public function buildOrderSubscription(
+        Customer $customer,
+        array $orderPositions,
+        ?\DateTime $createdDate = null,
+        ?int $oldId = null
+    ): OrderSubscription
     {
-        return new OrderSubscription($customer, OrderInterface::STATUS_NEW, $orderPositions, $createdDate);
+        return new OrderSubscription($customer, OrderInterface::STATUS_NEW, $orderPositions, $createdDate, $oldId);
     }
 }

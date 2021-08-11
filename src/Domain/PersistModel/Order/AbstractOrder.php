@@ -36,10 +36,12 @@ abstract class AbstractOrder extends AbstractEntity
      * @param int $status
      * @param array $orderPositions
      * @param \DateTime|null $createdDate
+     * @param int|null $oldId
      */
     public function __construct(
         Customer $customer, int $status,
-        array $orderPositions, ?\DateTime $createdDate
+        array $orderPositions, ?\DateTime $createdDate = null,
+        ?int $oldId = null
     )
     {
         foreach ($orderPositions as $orderPosition) {
@@ -50,7 +52,7 @@ abstract class AbstractOrder extends AbstractEntity
         $this->status = $status;
         $this->orderPositions = $orderPositions;
         $this->totalPrice = 0;
-        $this->oldId = null;
+        $this->oldId = $oldId;
         $this->recalculateTotalPrice();
         parent::__construct($createdDate);
     }
@@ -112,7 +114,7 @@ abstract class AbstractOrder extends AbstractEntity
     {
         $totalPrice = 0;
         $this->map(
-            function (OrderPosition $op) use (&$totalPrice) {$totalPrice += $op->getProduct()->getTotalPrice();},
+            function (OrderPosition $op) use (&$totalPrice) {$totalPrice += $op->getProduct()->getPrice();},
             $this->orderPositions
         );
         $this->totalPrice = $totalPrice;

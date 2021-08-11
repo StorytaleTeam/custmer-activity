@@ -6,6 +6,7 @@ use Storytale\Contracts\Persistence\DomainSession;
 use Storytale\CustomerActivity\Application\Query\Subscription\OldSubscriptionDataProvider;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerRepository;
+use Storytale\CustomerActivity\Domain\PersistModel\Order\AbstractOrder;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderFactory;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderPositionFactory;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
@@ -72,14 +73,26 @@ class MigrateOldOrdersCommand extends AbstractMigrateCommand
             }
 
             foreach ($oldOrders as $oldOrder) {
-                $oldOrderPosition = $this->oldSubscriptionDataProvider->getOrderProducts($oldOrder['ID']);
-                if (empty($oldOrderPosition)) {
-                    $this->registerError('Get order with empty positions  ' . $oldOrder['ID'] ?? null);
+                $sameOrder = $this->orderRepository->getByOldId($oldOrder['ID']);
+                if ($sameOrder instanceof AbstractOrder) {
+                    $this->alreadyExist();
                     continue;
                 }
-                $oldCustomerId = $oldOrderPosition['customer_id'] ?? null;
-                if ($oldCustomerId === null) {
-                    $this->registerError('Get order with empty customer_id  ' . $oldOrder['ID'] ?? null);
+                $oldOrderPosition = $this->oldSubscriptionDataProvider->getOrderProducts($oldOrder['ID']);
+                $orderMetas = $this->oldSubscriptionDataProvider->getMetaForPost($oldOrder['ID']);
+                foreach ($orderMetas as $orderMeta) {
+                    if ($orderMeta['meta_key'] === '_customer_user') {
+                        $oldCustomerId = $orderMeta['meta_value'] ?? null;
+
+                    }
+                }
+                if (empty($oldCustomerId)) {
+                    continue;
+                }
+
+
+                if (empty($oldOrderPosition)) {
+                    $this->registerError('Get order with empty positions  ' . $oldOrder['ID'] ?? null);
                     continue;
                 }
                 $oldProductId = $oldOrderPosition['product_id'] ?? null;
@@ -88,9 +101,9 @@ class MigrateOldOrdersCommand extends AbstractMigrateCommand
                     continue;
                 }
 
-                $customer = $this->customerRepository->get($oldCustomerId);
+                $customer = $this->customerRepository->getByOldId($oldCustomerId);
                 if (!$customer instanceof Customer) {
-                    $this->registerError('Not found customer for oldOrder ' . $oldOrder['ID'] ?? null);
+                    $this->registerError('Not found customer ' . $oldCustomerId . ' for oldOrder ' . $oldOrder['ID'] ?? null);
                     continue;
                 }
                 $createdDate = null;
@@ -103,18 +116,22 @@ class MigrateOldOrdersCommand extends AbstractMigrateCommand
                 }
 
                 $orderPositions = [];
-                {
+                try {
                     $product = $this->productBuilder->buildSubscriptionPlanByOldId($oldProductId);
                     $orderPositions[] = $this->orderPositionFactory->build($product);
+                } catch (\Exception $e) {
+                    $this->registerError($e->getMessage());
+                    continue;
                 }
 
-                $order = $this->orderFactory->build($customer, $orderPositions, $createdDate);
+                $order = $this->orderFactory->buildOrderSubscription($customer, $orderPositions, $createdDate, $oldOrder['ID']);
                 $this->orderRepository->save($order);
                 $this->domainSession->flush();
-
-
-                var_dump($order->getId());die;
+                $this->successSave();
             }
+            $this->domainSession->close();
         }
+
+        $this->finish();
     }
 }

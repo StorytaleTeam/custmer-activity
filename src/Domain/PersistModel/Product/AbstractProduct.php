@@ -14,8 +14,8 @@ abstract class AbstractProduct extends AbstractEntity
     /** @var float */
     protected float $price;
 
-    /** @var float */
-    protected float $totalPrice;
+    /** @var string */
+    protected string $name;
 
     /**
      * @var int|null
@@ -23,10 +23,10 @@ abstract class AbstractProduct extends AbstractEntity
      */
     protected ?int $oldId;
 
-    public function __construct(float $price, float $totalPrice)
+    public function __construct(float $price, string $name)
     {
         $this->price = $price;
-        $this->totalPrice = $totalPrice;
+        $this->name = $name;
         $this->oldId = null;
         parent::__construct();
     }
@@ -47,12 +47,9 @@ abstract class AbstractProduct extends AbstractEntity
         return $this->price;
     }
 
-    /**
-     * @return float
-     */
-    public function getTotalPrice(): float
+    public function getProductName(): string
     {
-        return $this->totalPrice;
+        return $this->name;
     }
 
     /**

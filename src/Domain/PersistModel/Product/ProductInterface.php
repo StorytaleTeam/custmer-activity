@@ -12,11 +12,6 @@ interface ProductInterface
     public function getPrice(): float;
 
     /**
-     * @return float
-     */
-    public function getTotalPrice(): float;
-
-    /**
      * @return string
      */
     public function getProductName(): string;

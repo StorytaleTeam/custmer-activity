@@ -11,7 +11,7 @@
         </id>
 
         <field name="createdDate" type="datetime" column="created_date"/>
-        <field name="totalPrice" type="float" column="total_price"/>
+        <field name="name"/>
         <field name="price" type="float" column="price"/>
         <field name="oldId" type="integer" column="old_id" nullable="true"/>
     </entity>
