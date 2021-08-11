@@ -31,6 +31,11 @@ class DoctrineSubscriptionRepository implements SubscriptionRepository
         return $this->repository->find($id);
     }
 
+    public function getByOldId(int $oldId): ?Subscription
+    {
+        return $this->repository->findOneBy(['oldId' => $oldId]);
+    }
+
     public function getForProlongate(): array
     {
         $qb = $this->repository->createQueryBuilder('s')

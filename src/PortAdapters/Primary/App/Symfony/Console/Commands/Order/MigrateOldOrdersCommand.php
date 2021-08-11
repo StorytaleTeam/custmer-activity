@@ -15,6 +15,11 @@ use Storytale\PortAdapters\Secondary\Console\AbstractMigrateCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class MigrateOldOrdersCommand
+ * @package Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Order
+ * @deprecated
+ */
 class MigrateOldOrdersCommand extends AbstractMigrateCommand
 {
     /** @var OrderRepository */
@@ -107,9 +112,9 @@ class MigrateOldOrdersCommand extends AbstractMigrateCommand
                     continue;
                 }
                 $createdDate = null;
-                if (isset($oldOrder['date_created'])) {
+                if (isset($oldOrder['post_date'])) {
                     try {
-                        $createdDate = new \DateTime($oldOrder['date_created']);
+                        $createdDate = new \DateTime($oldOrder['post_date']);
                     } catch (\Exception $e) {
                         $createdDate = null;
                     }

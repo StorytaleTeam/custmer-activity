@@ -13,8 +13,6 @@ class AuraOldSubscriptionDataProvider extends AbstractAuraDataProvider
         $select = $this->queryFactory
             ->newSelect()
             ->cols(['*'])
-//            ->from('wp_yith_ywsbs_activities_log AS a')
-//            ->join('LEFT', 'wp_posts as p', 'p.ID = a.order')
             ->from('wp_posts')
             ->orderBy(['ID'])
             ->where('post_type = \'shop_order\'')
@@ -41,7 +39,31 @@ class AuraOldSubscriptionDataProvider extends AbstractAuraDataProvider
 
     public function getSubscriptions(int $count, int $page): array
     {
-        // TODO: Implement getSubscriptions() method.
+        $select = $this->queryFactory
+            ->newSelect()
+            ->cols(['*'])
+            ->from('wp_posts')
+            ->orderBy(['ID'])
+            ->where('post_type = \'ywsbs_subscription\'')
+            ->limit($count)
+            ->page($page);
+
+        return $this->executeStatement($select->getStatement(), $select->getBindValues());
+    }
+
+    public function getMemberships(int $count, int $page): array
+    {
+        //_credits - оставшиеся лимиты
+        $select = $this->queryFactory
+            ->newSelect()
+            ->cols(['*'])
+            ->from('wp_posts')
+            ->orderBy(['ID'])
+            ->where('post_type = \'ywcmbs-membership\'')
+            ->limit($count)
+            ->page($page);
+
+        return $this->executeStatement($select->getStatement(), $select->getBindValues());
     }
 
     public function getMetaForPost(int $postId): array

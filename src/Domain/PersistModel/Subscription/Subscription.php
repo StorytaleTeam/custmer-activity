@@ -41,6 +41,9 @@ class Subscription extends AbstractEntity
     /** @var string|null */
     private ?string $paddleId;
 
+    /** @var int|null */
+    private ?int $oldId;
+
     /**
      * Subscription constructor.
      * @param Customer $customer
@@ -49,11 +52,18 @@ class Subscription extends AbstractEntity
      * @param int $currentMembershipCycle
      * @param bool $autoRenewal
      * @param string|null $paddleId
+     * @param int|null $oldId
+     * @param \DateTime|null $createdDate
      */
     public function __construct(
-        Customer $customer, SubscriptionPlan $subscriptionPlan,
-        int $status, int $currentMembershipCycle, bool $autoRenewal,
-        ?string $paddleId = null
+        Customer $customer,
+        SubscriptionPlan $subscriptionPlan,
+        int $status,
+        int $currentMembershipCycle,
+        bool $autoRenewal,
+        ?string $paddleId = null,
+        ?int $oldId = null,
+        ?\DateTime $createdDate = null
     )
     {
         $this->customer = $customer;
@@ -62,7 +72,8 @@ class Subscription extends AbstractEntity
         $this->currentMembershipCycle = $currentMembershipCycle;
         $this->autoRenewal = $autoRenewal;
         $this->paddleId = $paddleId;
-        parent::__construct();
+        $this->oldId = $oldId;
+        parent::__construct($createdDate);
         $this->raiseEvent(new SubscriptionWasCreated($this));
     }
 
