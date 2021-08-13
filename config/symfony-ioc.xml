@@ -413,6 +413,7 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.persistence.doctrine.doctrineOrderRepository"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.subscriptionFactory"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.paddle.paddleSubscriptionService"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.domainEvent.compositeDomainEventHandler"/>
         </service>
     <!--  ExternalEvent handler END -->
 

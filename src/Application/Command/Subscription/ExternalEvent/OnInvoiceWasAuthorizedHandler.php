@@ -2,6 +2,7 @@
 
 namespace Storytale\CustomerActivity\Application\Command\Subscription\ExternalEvent;
 
+use Storytale\Contracts\Domain\ICompositeDomainEventHandler;
 use Storytale\Contracts\EventBus\EventBus;
 use Storytale\Contracts\EventBus\ExternalEvent;
 use Storytale\Contracts\EventBus\ExternalEventHandler;
@@ -47,6 +48,9 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
     /** @var PaddleSubscriptionService */
     private PaddleSubscriptionService $paddleSubscriptionService;
 
+    /** @var ICompositeDomainEventHandler */
+    private ICompositeDomainEventHandler $compositeDomainEventHandler;
+
     public function __construct(
         SubscriptionRepository $subscriptionRepository,
         DomainSession $domainSession,
@@ -55,7 +59,8 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         MembershipHydrator $membershipHydrator,
         OrderRepository $orderRepository,
         SubscriptionFactory $subscriptionFactory,
-        PaddleSubscriptionService $paddleSubscriptionService
+        PaddleSubscriptionService $paddleSubscriptionService,
+        ICompositeDomainEventHandler $compositeDomainEventHandler
     )
     {
         $this->subscriptionRepository = $subscriptionRepository;
@@ -66,6 +71,7 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         $this->orderRepository = $orderRepository;
         $this->subscriptionFactory = $subscriptionFactory;
         $this->paddleSubscriptionService = $paddleSubscriptionService;
+        $this->compositeDomainEventHandler = $compositeDomainEventHandler;
     }
 
     public function handler(ExternalEvent $event): void
@@ -117,14 +123,13 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
             $this->subscriptionRepository->save($subscription);
         }
 
-        $oldMembership = $subscription->getCurrentMembership();
-        $oldMembershipId = $oldMembership instanceof Membership ? $oldMembership->getId() : null;
-
         $invoiceAmount = $event->getData()['invoice']['amount'];
-        if ($order->getTotalPrice() == $invoiceAmount) {
+        if ($order->getTotalPrice() >= $invoiceAmount) {
             $order->wasPaid();
             $this->subscriptionProcessingService->wasPaid($subscription, $invoiceAmount);
         }
         $events = $this->domainSession->flush();
+        $this->compositeDomainEventHandler->handleArray($events);
+        $this->domainSession->close();
     }
 }

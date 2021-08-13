@@ -76,6 +76,11 @@ class Customer extends AbstractEntity
         return null;
     }
 
+    public function addSubscription(Subscription $subscription): void
+    {
+        $this->subscriptions[] = $subscription;
+    }
+
     /**
      * @param CustomerDownload $newDownload
      * @return bool

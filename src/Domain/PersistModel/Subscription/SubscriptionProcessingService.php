@@ -68,13 +68,12 @@ class SubscriptionProcessingService
         if ($subscription->getStatus() !== Subscription::STATUS_NEW) {
             throw new DomainException('Only new subscription can be activated. SubscriptionId ' . $subscription->getId());
         }
-
-        $subscription->activate();
-
         $actualSubscription = $subscription->getCustomer()->getActualSubscription();
         if ($actualSubscription instanceof Subscription) {
             $subscription->getCurrentMembership()->absorb($actualSubscription);
             $actualSubscription->cancel();
         }
+
+        $subscription->activate();
     }
 }
