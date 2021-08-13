@@ -147,9 +147,13 @@ class Subscription extends AbstractEntity
         return $this->customer;
     }
 
+    public function getMembershipCount(): int
+    {
+        return count($this->memberships);
+    }
+
     public function addMembership(Membership $membership): void
     {
-        /** @todo нужно проверять доступен ли тарифный план */
         if ($this->autoRenewal) {
             $membership->paid();
             $this->memberships[] = $membership;
@@ -183,7 +187,7 @@ class Subscription extends AbstractEntity
             }
         }
 
-        if ($nextMembership instanceof $membership) {
+        if ($nextMembership instanceof Membership) {
             $this->startNewMembership($membership);
         } else if (!$this->autoRenewal) {
             /** нужно убедиться что не будут списываться деньги */
@@ -235,5 +239,14 @@ class Subscription extends AbstractEntity
     public function getPaddleId(): ?string
     {
         return $this->paddleId;
+    }
+
+    /**
+     * @return int|null
+     * @deprecated
+     */
+    public function getOldId(): ?int
+    {
+        return $this->oldId;
     }
 }

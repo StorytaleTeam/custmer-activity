@@ -9,5 +9,6 @@ return [
         'old:migrateOrder'                      => \Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Order\MigrateOldOrdersCommand::class,
         'old:migrateSubscriptions'              => \Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\MigrateOldSubscriptionCommand::class,
         'old:migrateMemberships'                => \Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\MigrateOldMembershipsCommand::class,
+        'old:activateOldSubscription'           => \Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\ActivateOldSubscriptionsCommand::class,
     ],
 ];

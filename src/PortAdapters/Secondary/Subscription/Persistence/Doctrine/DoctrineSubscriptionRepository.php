@@ -54,4 +54,25 @@ class DoctrineSubscriptionRepository implements SubscriptionRepository
 
         return $qb->getQuery()->execute();
     }
+
+    /**
+     * @return array
+     * @deprecated
+     */
+    public function getOldForActivate(): array
+    {
+        $qb = $this->repository->createQueryBuilder('s')
+            ->leftJoin(
+                's.memberships', 'm', 'WITH',
+                's.id = m.subscription AND m.cycleNumber IS NULL'
+            )
+            ->where('s.autoRenewal = true')
+            ->andWhere('s.status = :statusActive')
+            ->andWhere('s.oldId IS NOT NULL')
+            ->setParameters([
+                'statusActive' => 2,
+            ]);
+
+        return $qb->getQuery()->execute();
+    }
 }

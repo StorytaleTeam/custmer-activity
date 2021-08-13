@@ -13,9 +13,9 @@ insert into subscription_plans (id, duration_count, duration_label, download_lim
 VALUES
 ((select id from products where name='Individual Monthly'),1, 'month', 30, 4, 590488),
 ((select id from products where name='Team Monthly'),1, 'month', 90, 4, 590494),
-((select id from products where name='Team Annually'),12, 'month', 90, 4, 590495),
-((select id from products where name='Individual Annually'),12, 'month', 30, 4, 590493),
+((select id from products where name='Team Annually'),1, 'month', 90, 4, 590495),
+((select id from products where name='Individual Annually'),1, 'month', 30, 4, 590493),
 ((select id from products where name='Individual: Monthly'),1, 'month', 60, 4, 599038),
-((select id from products where name='Individual: Annually'),12, 'month', 60, 4, 599039),
+((select id from products where name='Individual: Annually'),1, 'month', 60, 4, 599039),
 ((select id from products where name='Team: Monthly'),1, 'month', 180, 4, 599040),
-((select id from products where name='Team: Annually'),12, 'month', 180, 4, 599041);
+((select id from products where name='Team: Annually'),1, 'month', 180, 4, 599041);

@@ -437,6 +437,10 @@
             <argument type="service" id="doctrine.orm.entityManager"/>
         </service>
 
+        <service id="storytale.customerActivity.portAdapters.secondary.order.persistence.doctrine.doctrineOrderSubscriptionRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Order\Persistence\Doctrine\DoctrineOrderSubscriptionRepository">
+            <argument type="service" id="doctrine.orm.entityManager"/>
+        </service>
+
         <service id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineMembershipRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Persistence\Doctrine\DoctrineMembershipRepository">
             <argument type="service" id="doctrine.orm.entityManager"/>
         </service>
@@ -599,6 +603,14 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraOldSubscriptionDataProvider"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.membershipFactory"/>
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineMembershipRepository"/>
+        </service>
+
+        <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\ActivateOldSubscriptionsCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Subscription\ActivateOldSubscriptionsCommand" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineSubscriptionRepository"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.persistence.doctrine.doctrineOrderSubscriptionRepository"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.membershipFactory"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineMembershipRepository"/>
         </service>
         <!-- Console command END -->

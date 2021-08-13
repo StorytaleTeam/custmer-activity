@@ -71,9 +71,9 @@ class MigrateOldMembershipsCommand extends AbstractMigrateCommand
                 $membershipMetas = $this->oldSubscriptionDataProvider->getMetaForPost($oldMembershipId);
 
                 $createdDate = null;
-                if (isset($oldSubscription['post_date'])) {
+                if (isset($oldMembership['post_date'])) {
                     try {
-                        $createdDate = new \DateTime($oldSubscription['post_date']);
+                        $createdDate = new \DateTime($oldMembership['post_date']);
                     } catch (\Exception $e) {
                         $createdDate = null;
                     }
@@ -138,7 +138,7 @@ class MigrateOldMembershipsCommand extends AbstractMigrateCommand
                     switch ($subscriptionMeta['meta_value']) {
 //                        resumed, expiring, not_active
                         case 'active':
-                            $newStatus = Membership::STATUS_ACTIVE;
+                            $newStatus = Membership::STATUS_PAID;
                             break;
                         case 'expired':
                             $newStatus = Membership::STATUS_DURATION_EXPIRED;

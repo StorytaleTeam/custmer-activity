@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\AbstractOrder;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 
 class DoctrineOrderRepository implements OrderRepository
 {

@@ -53,7 +53,6 @@ class AuraOldSubscriptionDataProvider extends AbstractAuraDataProvider
 
     public function getMemberships(int $count, int $page): array
     {
-        //_credits - оставшиеся лимиты
         $select = $this->queryFactory
             ->newSelect()
             ->cols(['*'])

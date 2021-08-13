@@ -116,8 +116,7 @@ class MigrateOldSubscriptionCommand extends AbstractMigrateCommand
                     $oldSubscriptionId,
                     $createdDate
                 );
-
-                /** @todo что с мембершипами??? */
+                $order->assignSubscription($subscription);
 
                 $this->subscriptionRepository->save($subscription);
                 $this->domainSession->flush();
@@ -165,8 +164,15 @@ class MigrateOldSubscriptionCommand extends AbstractMigrateCommand
                 case 'product_id':
                     $oldProductId = $subscriptionMeta['meta_value'];
                     break;
-                case 'order_id':
-                    $oldOrderId = $subscriptionMeta['meta_value'];
+//                case 'order_id':
+//                    $oldOrderId = $subscriptionMeta['meta_value'];
+//                    break;
+                case 'order_ids':
+                    $oldOrderIds = $subscriptionMeta['meta_value'];
+                    $oldOrderIds = unserialize($oldOrderIds);
+                    if (is_array($oldOrderIds) && count($oldOrderIds) > 0) {
+                        $oldOrderId = $oldOrderIds[array_key_last($oldOrderIds)];
+                    }
                     break;
                 case 'user_id':
                     $oldUserId = $subscriptionMeta['meta_value'];

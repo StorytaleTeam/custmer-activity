@@ -26,4 +26,10 @@ interface SubscriptionRepository
      * @return Subscription[]
      */
     public function getForProlongate(): array;
+
+    /**
+     * @return Subscription[]
+     * @deprecated
+     */
+    public function getOldForActivate(): array;
 }
