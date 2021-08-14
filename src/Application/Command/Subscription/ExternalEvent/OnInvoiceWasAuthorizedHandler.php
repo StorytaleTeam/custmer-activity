@@ -14,7 +14,6 @@ use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\AbstractOrder;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderSubscription;
-use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionFactory;
@@ -81,12 +80,21 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
             if (empty($paymentData)) {
                 throw new ApplicationException('Get InvoiceWasAuthorizedEvent event with empty data.');
             }
+
+            $oldOrderId = null;
             $orderId = $paymentData['invoice']['orderId'] ?? null;
             if ($orderId === null) {
-                throw new ApplicationException('Get InvoiceWasAuthorizedEvent with empty orderId');
+                $oldOrderId = $paymentData['invoice']['oldOrderId'] ?? null;
+                if ($oldOrderId === null) {
+                    throw new ApplicationException('Get InvoiceWasAuthorizedEvent with empty orderId & oldOrderId');
+                }
             }
 
-            $order = $this->orderRepository->get($orderId);
+            if ($orderId !== null) {
+                $order = $this->orderRepository->get($orderId);
+            } elseif ($oldOrderId !== null) {
+                $order = $this->orderRepository->getByOldId($oldOrderId);
+            }
             if (!$order instanceof AbstractOrder) {
                 throw new ApplicationException("Order with id $orderId not found.");
             }
@@ -114,7 +122,6 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
             $subscription = $this->subscriptionFactory
                 ->buildFromSubscriptionPlan($subscriptionPlan, $order->getCustomer());
             $order->assignSubscription($subscription);
-
             $paddleSubscriptionId = $event->getData()['paddle']['subscription_id'] ?? null;
             if ($paddleSubscriptionId === null) {
                 throw new ApplicationException('Get InvoiceWasAuthorizedEvent with empty paddle_subscription_id');
