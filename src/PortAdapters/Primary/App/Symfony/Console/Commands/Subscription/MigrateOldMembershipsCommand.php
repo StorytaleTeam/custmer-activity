@@ -112,7 +112,6 @@ class MigrateOldMembershipsCommand extends AbstractMigrateCommand
                     $downloadLimit, null, $oldMembershipId,
                     $createdDate
                 );
-//                $subscription->addMembership($membership);
                 $this->membershipRepository->save($membership);
                 $this->domainSession->flush();
                 $this->successSave();
@@ -136,14 +135,17 @@ class MigrateOldMembershipsCommand extends AbstractMigrateCommand
                     break;
                 case '_status':
                     switch ($subscriptionMeta['meta_value']) {
-//                        resumed, expiring, not_active
+//                        resumed
                         case 'active':
+                        case 'expiring':
                             $newStatus = Membership::STATUS_PAID;
                             break;
                         case 'expired':
                             $newStatus = Membership::STATUS_DURATION_EXPIRED;
                             break;
                         case 'cancelled':
+                        case 'not_active':
+                        case 'resumed':
                             $newStatus = Membership::STATUS_CANCELED_BY_ADMIN;
                             break;
                     }
