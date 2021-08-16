@@ -109,6 +109,7 @@ class MigrateOldLikesCommand extends AbstractMigrateCommand
                 $this->successSave();
             }
             $this->domainSession->flush();
+            $this->domainSession->close();
         }
 
         $this->finish();

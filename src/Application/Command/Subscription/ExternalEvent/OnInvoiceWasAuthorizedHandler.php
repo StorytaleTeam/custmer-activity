@@ -14,7 +14,6 @@ use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\AbstractOrder;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderSubscription;
-use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionFactory;

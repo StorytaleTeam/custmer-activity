@@ -43,6 +43,7 @@ class OnNewUserWasRegisteredHandler implements ExternalEventHandler
                 $customer = $this->customerFactory->createFromArray($customerData);
                 $this->customerRepository->save($customer);
                 $this->domainSession->flush();
+                $this->domainSession->close();
             }
         }
     }
