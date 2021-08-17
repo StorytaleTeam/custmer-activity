@@ -171,7 +171,7 @@ class MigrateOldSubscriptionCommand extends AbstractMigrateCommand
                     $oldOrderIds = $subscriptionMeta['meta_value'];
                     $oldOrderIds = unserialize($oldOrderIds);
                     if (is_array($oldOrderIds) && count($oldOrderIds) > 0) {
-                        $oldOrderId = $oldOrderIds[array_key_last($oldOrderIds)];
+                        $oldOrderId = $oldOrderIds[array_key_first($oldOrderIds)];
                     }
                     break;
                 case 'user_id':
