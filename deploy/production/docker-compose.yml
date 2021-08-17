@@ -19,6 +19,8 @@ services:
       - ALL
     volumes:
       - "./../../:/www/"
+    networks: 
+      - story_network  
 
   nginx_customer-activity:
     container_name: nginx.customer-activity
@@ -32,6 +34,8 @@ services:
       - "7009:80"
     volumes:
       - "./nginx:/etc/nginx/conf.d"
+    networks: 
+      - story_network    
 
   subscriber_customer-activity:
     container_name: subscriber.customer-activity
@@ -44,6 +48,8 @@ services:
       - ALL
     volumes:
       - "./../../:/www/"
+    networks: 
+      - story_network  
 
   cron_customer-activity:
     container_name: cron.customer-activity
@@ -56,3 +62,14 @@ services:
       - ALL
     volumes:
       - "./../../:/www/"
+    networks: 
+      - story_network
+
+networks:
+  story_network:
+    name: story_network          
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.200.0/26
