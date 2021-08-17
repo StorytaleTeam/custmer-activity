@@ -12,10 +12,16 @@ class OrderSubscription extends AbstractOrder
     /** @var Subscription|null */
     private ?Subscription $subscription;
 
-    public function __construct(Customer $customer, int $status, array $orderPositions)
+    public function __construct(
+        Customer $customer,
+        int $status,
+        array $orderPositions,
+        ?\DateTime $createdDate = null,
+        ?int $oldId = null
+    )
     {
         $this->subscription = null;
-        parent::__construct($customer, $status, $orderPositions);
+        parent::__construct($customer, $status, $orderPositions, $createdDate, $oldId);
     }
 
     /**

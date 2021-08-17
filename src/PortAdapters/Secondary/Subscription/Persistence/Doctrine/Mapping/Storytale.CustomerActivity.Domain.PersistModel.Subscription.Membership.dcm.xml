@@ -11,6 +11,7 @@
         <field name="startDate" type="datetime" column="start_date" nullable="true"/>
         <field name="endDate" type="datetime" column="end_date" nullable="true"/>
         <field name="cycleNumber" type="integer" column="cycle_number" nullable="true"/>
+        <field name="oldId" type="integer" column="old_id"  nullable="true"/>
         <one-to-many field="downloads" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerDownload" mapped-by="membership"/>
 
         <many-to-one field="subscription" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription" inversed-by="memberships">

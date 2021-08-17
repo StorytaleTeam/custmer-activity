@@ -13,6 +13,7 @@
         <field name="createdDate" type="datetime" column="created_date"/>
         <field name="status" type="integer" column="status"/>
         <field name="totalPrice" type="float" column="total_price"/>
+        <field name="oldId" type="integer" column="old_id" nullable="true"/>
 
         <many-to-one field="customer" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer" inversed-by="orders">
             <join-column name="customer_id" referenced-column-name="id"/>

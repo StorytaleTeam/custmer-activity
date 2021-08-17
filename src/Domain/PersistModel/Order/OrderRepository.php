@@ -16,6 +16,13 @@ interface OrderRepository
     public function get(int $id): ?AbstractOrder;
 
     /**
+     * @param int $oldId
+     * @return AbstractOrder|null
+     * @deprecated
+     */
+    public function getByOldId(int $oldId): ?AbstractOrder;
+
+    /**
      * @param int $orderId
      * @param int $customerId
      * @return AbstractOrder|null

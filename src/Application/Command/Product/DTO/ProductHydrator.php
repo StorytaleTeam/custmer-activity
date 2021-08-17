@@ -25,7 +25,7 @@ class ProductHydrator
                 break;
         }
 
-        $productData['totalPrice'] = $product->getTotalPrice();
+        $productData['price'] = $product->getPrice();
         $productData['productName'] = $product->getProductName();
 
         return $productData;

@@ -12,6 +12,11 @@ use Storytale\PortAdapters\Secondary\Console\AbstractMigrateCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class MigrateOldDownloadsCommand
+ * @package Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Customer
+ * @deprecated
+ */
 class MigrateOldDownloadsCommand extends AbstractMigrateCommand
 {
     /** @var CustomerRepository */

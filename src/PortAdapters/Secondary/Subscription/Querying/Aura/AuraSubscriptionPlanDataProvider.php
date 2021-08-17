@@ -17,12 +17,12 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
             ->newSelect()
             ->cols([
                 'sp.id',
-                'sp.name',
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
                 'sp.paddle_id'      => 'paddleId',
                 'p.created_date'   => 'createdDate',
+                'p.name',
                 'p.price',
             ])
             ->from('subscription_plans AS sp')
@@ -37,13 +37,13 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
             ->newSelect()
             ->cols([
                 'sp.id',
-                'sp.name',
                 'sp.status',
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
                 'sp.paddle_id' => 'paddleId',
                 'p.created_date'   => 'createdDate',
+                'p.name',
                 'p.price',
             ])
             ->where('sp.id = :id')
@@ -63,13 +63,13 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
             ->newSelect()
             ->cols([
                 'sp.id',
-                'sp.name',
                 'sp.status',
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
                 'sp.paddle_id' => 'paddleId',
                 'p.created_date'   => 'createdDate',
+                'p.name',
                 'p.price',
             ])
             ->from('subscription_plans AS sp')

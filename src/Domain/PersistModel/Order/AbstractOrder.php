@@ -2,6 +2,7 @@
 
 namespace Storytale\CustomerActivity\Domain\PersistModel\Order;
 
+use Storytale\CustomerActivity\Domain\DomainException;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
@@ -20,6 +21,12 @@ abstract class AbstractOrder extends AbstractEntity
     /** @var OrderPosition[] */
     protected $orderPositions;
 
+    /**
+     * @var int|null
+     * @deprecated
+     */
+    protected ?int $oldId;
+
     /** @var float */
     protected float $totalPrice;
 
@@ -27,10 +34,14 @@ abstract class AbstractOrder extends AbstractEntity
      * AbstractOrder constructor.
      * @param Customer $customer
      * @param int $status
-     * @param OrderPosition[] $orderPositions
+     * @param array $orderPositions
+     * @param \DateTime|null $createdDate
+     * @param int|null $oldId
      */
     public function __construct(
-        Customer $customer, int $status, array $orderPositions
+        Customer $customer, int $status,
+        array $orderPositions, ?\DateTime $createdDate = null,
+        ?int $oldId = null
     )
     {
         foreach ($orderPositions as $orderPosition) {
@@ -41,8 +52,9 @@ abstract class AbstractOrder extends AbstractEntity
         $this->status = $status;
         $this->orderPositions = $orderPositions;
         $this->totalPrice = 0;
+        $this->oldId = $oldId;
         $this->recalculateTotalPrice();
-        parent::__construct();
+        parent::__construct($createdDate);
     }
 
     /**
@@ -102,11 +114,34 @@ abstract class AbstractOrder extends AbstractEntity
     {
         $totalPrice = 0;
         $this->map(
-            function (OrderPosition $op) use (&$totalPrice) {$totalPrice += $op->getProduct()->getTotalPrice();},
+            function (OrderPosition $op) use (&$totalPrice) {$totalPrice += $op->getProduct()->getPrice();},
             $this->orderPositions
         );
         $this->totalPrice = $totalPrice;
 
         return $this->totalPrice;
+    }
+
+    /**
+     * @param int $oldId
+     * @throws DomainException
+     * @deprecated
+     */
+    public function initOldId(int $oldId): void
+    {
+        if ($this->oldId === null) {
+            $this->oldId = $oldId;
+        } else {
+            throw new DomainException('OldId already isset.');
+        }
+    }
+
+    /**
+     * @return int|null
+     * @deprecated
+     */
+    public function getOldId(): ?int
+    {
+        return $this->oldId;
     }
 }

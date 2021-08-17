@@ -40,10 +40,26 @@ class ProductBuilder implements IProductBuilder
     {
         $subscriptionPlan = $this->subscriptionPlanRepository->get($subscriptionPlanId);
         if (!$subscriptionPlan instanceof SubscriptionPlan) {
-            throw new DomainException('Subscription plan with this id not found');
+            throw new DomainException("Not found SubscriptionPlan with id $subscriptionPlanId");
         }
 
         return $subscriptionPlan;
+    }
+
+    /**
+     * @param int $oldPlanId
+     * @return SubscriptionPlan|null
+     * @throws DomainException
+     * @deprecated
+     */
+    public function buildSubscriptionPlanByOldId(int $oldPlanId): ?SubscriptionPlan
+    {
+        $plan = $this->subscriptionPlanRepository->getByOldId($oldPlanId);
+        if (!$plan instanceof SubscriptionPlan) {
+            throw new DomainException("Not found SubscriptionPlan with oldId $oldPlanId");
+        }
+
+        return $plan;
     }
 
 }

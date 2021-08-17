@@ -43,17 +43,22 @@ class Membership extends AbstractEntity
     /** @var int|null */
     private ?int $cycleNumber;
 
+    /** @var int|null */
+    private ?int$oldId;
+
     public function __construct(
         Subscription $subscription, float $amountReceived,
-        int $status, int $downloadLimit, ?int $cycleNumber = null
+        int $status, int $downloadLimit, ?int $cycleNumber = null,
+        ?int $oldId = null, ?\DateTime $createdDate = null
     )
     {
-        parent::__construct();
+        parent::__construct($createdDate);
         $this->subscription = $subscription;
         $this->amountReceived = $amountReceived;
         $this->status = $status;
         $this->downloadLimit = $downloadLimit;
         $this->cycleNumber = $cycleNumber;
+        $this->oldId = $oldId;
     }
 
     /**
@@ -181,7 +186,7 @@ class Membership extends AbstractEntity
     {
         if ($this->status !== self::STATUS_NEW) {
             /** @todo need alert to manager */
-            throw new DomainException('Retrying payment for membership ' . $this->id);
+            throw new DomainException('Retrying payment for membership ' . $this->id ?? null);
         }
         $this->status = self::STATUS_PAID;
     }

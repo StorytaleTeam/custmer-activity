@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\AbstractOrder;
 use Storytale\CustomerActivity\Domain\PersistModel\Order\OrderRepository;
+use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 
 class DoctrineOrderRepository implements OrderRepository
 {
@@ -29,6 +30,11 @@ class DoctrineOrderRepository implements OrderRepository
     public function get(int $id): ?AbstractOrder
     {
         return $this->repository->find($id);
+    }
+
+    public function getByOldId(int $oldId): ?AbstractOrder
+    {
+        return $this->repository->findOneBy(['oldId' => $oldId]);
     }
 
     public function getByIdAndCustomer(int $orderId, int $customerId): ?AbstractOrder

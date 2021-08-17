@@ -12,15 +12,16 @@ class OrderFactory
     /**
      * @param Customer $customer
      * @param array $orderPositions
+     * @param \DateTime|null $createdDate
      * @return AbstractOrder
-     * @throws DomainException
      * @throws ApplicationException
+     * @throws DomainException
      */
-    public function build(Customer $customer, array $orderPositions): AbstractOrder
+    public function build(Customer $customer, array $orderPositions, ?\DateTime $createdDate = null): AbstractOrder
     {
         $isOrderMustBeSubscriptionOrderSpecification = new IsOrderMustBeSubscriptionOrderSpecification();
         if ($isOrderMustBeSubscriptionOrderSpecification->isSatisfiedBy($orderPositions) === true) {
-            $order = $this->buildOrderSubscription($customer, $orderPositions);
+            $order = $this->buildOrderSubscription($customer, $orderPositions, $createdDate);
         } else {
             throw new DomainException(implode('. ', $isOrderMustBeSubscriptionOrderSpecification->getMessages()));
         }
@@ -28,8 +29,32 @@ class OrderFactory
         return $order;
     }
 
-    public function buildOrderSubscription(Customer $customer, array $orderPositions): OrderSubscription
+    public function buildOrderSubscription(
+        Customer $customer,
+        array $orderPositions,
+        ?\DateTime $createdDate = null,
+        ?int $oldId = null
+    ): OrderSubscription
     {
-        return new OrderSubscription($customer, OrderInterface::STATUS_NEW, $orderPositions);
+        return new OrderSubscription($customer, OrderInterface::STATUS_NEW, $orderPositions, $createdDate, $oldId);
+    }
+
+    /**
+     * @param Customer $customer
+     * @param int $status
+     * @param array $orderPositions
+     * @param \DateTime|null $createdDate
+     * @param int|null $oldId
+     * @return OrderSubscription
+     */
+    public function buildOrderSubscriptionAll(
+        Customer $customer,
+        int $status,
+        array $orderPositions,
+        ?\DateTime $createdDate = null,
+        ?int $oldId = null
+    ): OrderSubscription
+    {
+        return new OrderSubscription($customer, $status, $orderPositions, $createdDate, $oldId);
     }
 }

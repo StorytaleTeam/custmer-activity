@@ -26,6 +26,11 @@ class DoctrineSubscriptionPlanRepository implements SubscriptionPlanRepository
         return $this->repository->find($id);
     }
 
+    public function getByOldId(int $oldId): ?SubscriptionPlan
+    {
+        return $this->repository->findOneBy(['oldId' => $oldId]);
+    }
+
     public function save(SubscriptionPlan $subscriptionPlan): void
     {
         $this->entityManager->persist($subscriptionPlan);
