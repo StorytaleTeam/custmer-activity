@@ -31,7 +31,7 @@ services:
     links:
       - fpm_customer-activity:fpm_customer-activity.local
     ports:
-      - "7009:80"
+      - "192.168.200.1:7009:80"
     volumes:
       - "./nginx:/etc/nginx/conf.d"
     networks: 
