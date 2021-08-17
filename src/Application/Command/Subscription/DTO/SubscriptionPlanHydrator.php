@@ -15,7 +15,7 @@ class SubscriptionPlanHydrator
         return [
             'id' => $subscriptionPlan->getId(),
             'paddleId' => $subscriptionPlan->getPaddleId() ?? null,
-            'name' => $subscriptionPlan->getName(),
+            'name' => $subscriptionPlan->getProductName(),
             'price' => $subscriptionPlan->getPrice(),
             'duration' => [
                 'count' => $subscriptionPlan->getDuration()->getCount(),
