@@ -38,4 +38,23 @@ class OrderFactory
     {
         return new OrderSubscription($customer, OrderInterface::STATUS_NEW, $orderPositions, $createdDate, $oldId);
     }
+
+    /**
+     * @param Customer $customer
+     * @param int $status
+     * @param array $orderPositions
+     * @param \DateTime|null $createdDate
+     * @param int|null $oldId
+     * @return OrderSubscription
+     */
+    public function buildOrderSubscriptionAll(
+        Customer $customer,
+        int $status,
+        array $orderPositions,
+        ?\DateTime $createdDate = null,
+        ?int $oldId = null
+    ): OrderSubscription
+    {
+        return new OrderSubscription($customer, $status, $orderPositions, $createdDate, $oldId);
+    }
 }

@@ -96,6 +96,23 @@ class MigrateOldOrdersCommand extends AbstractMigrateCommand
                 }
 
 
+                $newStatus = 1;
+                if (isset($oldOrder['post_status'])) {
+                    switch ($oldOrder['post_date']) {
+                        case 'wc-cancelled':
+                            $newStatus = AbstractOrder::STATUS_CANCELED;
+                            break;
+                        case 'wc-completed':
+                        case 'wc-processing':
+                            $newStatus = AbstractOrder::STATUS_PAID;
+                            break;
+                        case 'wc-pending':
+                        case 'wc-on-hold':
+                            $newStatus = AbstractOrder::STATUS_CONFIRMED;
+                            break;
+                    }
+                }
+
                 if (empty($oldOrderPosition)) {
                     $this->registerError('Get order with empty positions  ' . $oldOrder['ID'] ?? null);
                     continue;
@@ -129,7 +146,7 @@ class MigrateOldOrdersCommand extends AbstractMigrateCommand
                     continue;
                 }
 
-                $order = $this->orderFactory->buildOrderSubscription($customer, $orderPositions, $createdDate, $oldOrder['ID']);
+                $order = $this->orderFactory->buildOrderSubscriptionAll($customer, $newStatus, $orderPositions, $createdDate, $oldOrder['ID']);
                 $this->orderRepository->save($order);
                 $this->domainSession->flush();
                 $this->successSave();
