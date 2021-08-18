@@ -131,7 +131,7 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
         }
 
         $invoiceAmount = $event->getData()['invoice']['amount'];
-        if ($order->getTotalPrice() >= $invoiceAmount) {
+        if ($order->getTotalPrice() <= $invoiceAmount) {
             $order->wasPaid();
             $this->subscriptionProcessingService->wasPaid($subscription, $invoiceAmount);
         }
