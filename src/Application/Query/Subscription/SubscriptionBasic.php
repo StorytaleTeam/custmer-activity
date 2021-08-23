@@ -46,8 +46,8 @@ class SubscriptionBasic implements \JsonSerializable
     /** @var int|null */
     private ?int $membershipId;
 
-    /** @var string|null */
-    private ?string $membershipStatus;
+    /** @var int|null */
+    private ?int $membershipStatus;
 
     public function jsonSerialize()
     {
