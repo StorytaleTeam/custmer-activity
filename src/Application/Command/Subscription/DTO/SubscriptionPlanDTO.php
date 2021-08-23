@@ -11,6 +11,9 @@ class SubscriptionPlanDTO
     private ?float $price;
 
     /** @var string|null */
+    private ?string $description;
+
+    /** @var string|null */
     private ?string $durationLabel;
 
     /** @var int|null */
@@ -26,6 +29,7 @@ class SubscriptionPlanDTO
     {
         $this->name = $data['name'] ? trim($data['name']) : null;
         $this->price = $data['price'] ?? null;
+        $this->description = $data['description'] ?? null;
         $this->durationCount = $data['duration_count'] ?? null;
         $this->durationLabel = $data['duration_label'] ?? null;
         $this->downloadLimit = $data['downloadLimit'] ?? null;
@@ -46,6 +50,14 @@ class SubscriptionPlanDTO
     public function getPrice(): ?float
     {
         return $this->price;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
     }
 
     /**

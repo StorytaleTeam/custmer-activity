@@ -17,6 +17,7 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
             ->newSelect()
             ->cols([
                 'sp.id',
+                'sp.description',
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
@@ -38,6 +39,7 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
             ->cols([
                 'sp.id',
                 'sp.status',
+                'sp.description',
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',
@@ -64,6 +66,7 @@ class AuraSubscriptionPlanDataProvider extends AbstractAuraDataProvider
             ->cols([
                 'sp.id',
                 'sp.status',
+                'sp.description',
                 'sp.duration_count' => 'durationCount',
                 'sp.duration_label' => 'durationLabel',
                 'sp.download_limit' => 'downloadLimit',

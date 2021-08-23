@@ -13,6 +13,7 @@ class SubscriptionPlanFactory
         return new SubscriptionPlan(
             $subscriptionPlanDTO->getName(),
             $subscriptionPlanDTO->getPrice(),
+            $subscriptionPlanDTO->getDescription(),
             $duration,
             $subscriptionPlanDTO->getDownloadLimit(),
             SubscriptionPlan::STATUS_DRAFTED

@@ -17,6 +17,9 @@ class SubscriptionPlan extends AbstractProduct
     public const STATUS_RENEWAL_ONLY = 4;
     public const STATUS_TRASHED = 5;
 
+    /** @var string|null */
+    private ?string $description;
+
     /** @var Duration */
     private Duration $duration;
 
@@ -32,8 +35,21 @@ class SubscriptionPlan extends AbstractProduct
     /** @var int|null */
     private ?int $paddleId;
 
-    public function __construct(string $name, float $price, Duration $duration, int $downloadLimit, int $status)
+    /**
+     * SubscriptionPlan constructor.
+     * @param string $name
+     * @param float $price
+     * @param string $description
+     * @param Duration $duration
+     * @param int $downloadLimit
+     * @param int $status
+     */
+    public function __construct(
+        string $name, float $price, string $description,
+        Duration $duration, int $downloadLimit, int $status
+    )
     {
+        $this->description = $description;
         $this->price = $price;
         $this->duration = $duration;
         $this->downloadLimit = $downloadLimit;
