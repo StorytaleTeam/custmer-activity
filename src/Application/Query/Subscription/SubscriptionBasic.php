@@ -46,30 +46,32 @@ class SubscriptionBasic implements \JsonSerializable
     /** @var int|null */
     private ?int $membershipId;
 
+    /** @var string|null */
+    private ?string $membershipStatus;
+
     public function jsonSerialize()
     {
         return [
-            'id' => $this->id ?? null,
-            'status' => $this->status ?? null,
-            'autoRenewal' => $this->autoRenewal ?? null,
+            'id'            => $this->id ?? null,
+            'status'        => $this->status ?? null,
+            'autoRenewal'   => $this->autoRenewal ?? null,
             'customer' => [
-                'id' => $this->customerId ?? null,
+                'id'                => $this->customerId ?? null,
             ],
             'subscriptionPlan' => [
-                'id' => $this->planId ?? null,
-                'name' => $this->name ?? null,
-                'price' => $this->price ?? null,
-                'durationCount' => $this->durationCount ?? null,
-                'durationLabel' => $this->durationLabel ?? null,
-
+                'id'                => $this->planId ?? null,
+                'name'              => $this->name ?? null,
+                'price'             => $this->price ?? null,
+                'durationCount'     => $this->durationCount ?? null,
+                'durationLabel'     => $this->durationLabel ?? null,
             ],
             'currentMembership' => [
-                'id' => $this->membershipId ?? null,
-                'startDate' => $this->startDate ?? null,
-                'endDate' => $this->endDate ?? null,
-                'downloadLimit' => $this->downloadLimit ?? null,
+                'id'                => $this->membershipId ?? null,
+                'startDate'         => $this->startDate ?? null,
+                'endDate'           => $this->endDate ?? null,
+                'downloadLimit'     => $this->downloadLimit ?? null,
                 'downloadRemaining' => $this->downloadRemaining ?? null,
-
+                'status'            => $this->membershipStatus ?? null
             ],
         ];
     }

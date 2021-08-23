@@ -29,6 +29,7 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
                 'm.download_limit - (SELECT count(*) from customer_downloads 
                 AS cd where cd.membership_id = m.id)' => 'downloadRemaining',
                 'm.download_limit'              => 'downloadLimit',
+                'm.status'                      => 'membershipStatus',
 
                 'p.price',
                 'p.name',
@@ -38,8 +39,7 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
             ])
             ->from('subscriptions AS s')
             ->join('LEFT', 'memberships AS m', 's.id = m.subscription_id '
-                . 'AND s.current_membership_cycle = m.cycle_number '
-                . 'AND m.end_date >= now()')
+                . 'AND s.current_membership_cycle = m.cycle_number')
             ->join('LEFT', 'subscription_plans AS sp', 's.subscription_plan_id = sp.id')
             ->join('LEFT', 'products AS p', 'p.id = sp.id');
     }
