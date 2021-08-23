@@ -30,7 +30,7 @@ class Subscription extends AbstractEntity
     /** @var SubscriptionPlan */
     private SubscriptionPlan $subscriptionPlan;
 
-    /** @var array|null */
+    /** @var Membership[]|null */
     private $memberships;
 
     /** @var int */
@@ -170,10 +170,12 @@ class Subscription extends AbstractEntity
 
     public function expireMembership(): void
     {
-        $currentMembership = $this->getCurrentMembership();
-        if ($currentMembership instanceof Membership) {
-            $currentMembership->expire();
+        foreach ($this->memberships as $membership) {
+            if ($membership->getEndDate() !== null && $membership->getEndDate() <= new \DateTime()) {
+                $membership->expire();
+            }
         }
+
 
         $nextMembership = null;
         /** @var Membership $membership */
