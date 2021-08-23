@@ -21,6 +21,9 @@ class SubscriptionPlanDTOValidation implements DTOValidation
         if (empty($dto->getPrice())) {
             throw new ValidationException('Need not empty `price` param.');
         }
+        if (empty($dto->getDescription())) {
+            throw new ValidationException('Need not empty `description` param.');
+        }
         if (empty($dto->getDurationCount())) {
             throw new ValidationException('Need not empty `duration_count` param.');
         }

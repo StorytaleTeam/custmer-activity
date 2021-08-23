@@ -22,6 +22,7 @@ class AuraOrderDataProvider extends AbstractAuraDataProvider
             ])
             ->from('orders AS o')
             ->where('o.customer_id = :customerId')
+            ->orderBy(['created_date DESC'])
             ->bindValue('customerId', $customerId);
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), OrderBasic::class);
@@ -54,8 +55,6 @@ class AuraOrderDataProvider extends AbstractAuraDataProvider
             ->bindValue('orderId', $orderId);
 
         $response = $this->executeStatement($select->getStatement(), $select->getBindValues(), OrderBasic::class);
-//        $response = $this->executeStatement($select->getStatement(), $select->getBindValues());
-//        var_dump($response);die;
         $response = count($response) === 0 ? null : $response[0];
 
         return $response;
