@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Storytale\CustomerActivity\Domain\PersistModel\Newsletter\NewsletterSubscription" table="newsletter_subscriptions">
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+        <field name="createdDate" type="datetime" column="created_date"/>
+        <field name="email"/>
+        <field name="isActive" type="boolean" column="is_active"/>
+        <field name="type"/>
+        <field name="uuid" unique="true"/>
+
+        <many-to-one field="customer" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer">
+            <join-column name="customer_id" referenced-column-name="id"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

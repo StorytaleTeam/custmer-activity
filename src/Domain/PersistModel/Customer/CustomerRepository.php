@@ -20,4 +20,10 @@ interface CustomerRepository
      * @return Customer|null
      */
     public function getByOldId(int $oldId): ?Customer;
+
+    /**
+     * @param string $email
+     * @return Customer|null
+     */
+    public function getByEmail(string $email): ?Customer;
 }

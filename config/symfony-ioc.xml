@@ -53,6 +53,7 @@
                 <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Subscription/Persistence/Doctrine/Mapping/</argument>
                 <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Order/Persistence/Doctrine/Mapping/</argument>
                 <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Product/Persistence/Doctrine/Mapping/</argument>
+                <argument>%kernel.project_dir%/src/PortAdapters/Secondary/Newsletter/Persistence/Doctrine/Mapping/</argument>
             </argument>
         </service>
 
@@ -266,6 +267,10 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.order.querying.aura.auraOrderDataProvider"/>
             <argument type="service" id="storytale.customerActivity.application.command.order.orderService"/>
         </service>
+
+        <service id="RestAPI\Controller\NewsletterController" class="RestAPI\Controller\NewsletterController" public="true">
+            <argument type="service" id="storytale.customerActivity.application.command.newsletter.newsletterService"/>
+        </service>
         <!--Controllers end-->
 
     <!-- DTO Validation -->
@@ -329,6 +334,13 @@
             <argument type="service" id="storytale.customerActivity.application.command.order.dto.orderHydrator"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.product.productBuilder"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.order.orderPositionFactory"/>
+        </service>
+
+        <service id="storytale.customerActivity.application.command.newsletter.newsletterService" class="Storytale\CustomerActivity\Application\Command\Newsletter\NewsletterService">
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.newsletter.persistence.doctrine.doctrineNewsletterSubscriptionRepository"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.newsletter.newsletterSubscriptionFactory"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
         </service>
     <!-- Command end -->
 
@@ -396,6 +408,8 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
             <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerFactory"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.newsletter.newsletterSubscriptionFactory"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.newsletter.persistence.doctrine.doctrineNewsletterSubscriptionRepository"/>
         </service>
 
         <service id="storytale.customerActivity.application.command.customer.externalEvent.onNewUserWasMigratedEventHandler" class="Storytale\CustomerActivity\Application\Command\Customer\ExternalEvent\OnNewUserWasMigratedEventHandler">
@@ -445,6 +459,10 @@
         <service id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineMembershipRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Persistence\Doctrine\DoctrineMembershipRepository">
             <argument type="service" id="doctrine.orm.entityManager"/>
         </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.newsletter.persistence.doctrine.doctrineNewsletterSubscriptionRepository" class="Storytale\CustomerActivity\PortAdapters\Secondary\Newsletter\Persistence\Doctrine\DoctrineNewsletterSubscriptionRepository">
+            <argument type="service" id="doctrine.orm.entityManager"/>
+        </service>
     <!-- Repository END -->
 
     <!-- Specification -->
@@ -476,6 +494,7 @@
         <service id="storytale.customerActivity.domain.persistModel.subscription.membershipFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Subscription\MembershipFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.order.orderFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Order\OrderFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.order.orderPositionFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Order\OrderPositionFactory"/>
+        <service id="storytale.customerActivity.domain.persistModel.newsletter.newsletterSubscriptionFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Newsletter\NewsletterSubscriptionFactory"/>
     <!-- Factory END -->
 
     <!-- Builder -->

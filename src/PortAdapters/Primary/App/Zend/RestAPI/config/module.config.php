@@ -14,6 +14,7 @@ use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 use RestAPI\Controller\OrderController;
 use RestAPI\Controller\OrderCustomerController;
+use RestAPI\Controller\NewsletterController;
 
 return [
     'view_manager' => [
@@ -186,6 +187,19 @@ return [
                             ],
                         ],
                     ],
+                    'newsletter' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => '/newsletter/:action',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => NewsletterController::class,
+                                'action' => null,
+                            ],
+                        ],
+                    ]
                 ]
             ],
         ],

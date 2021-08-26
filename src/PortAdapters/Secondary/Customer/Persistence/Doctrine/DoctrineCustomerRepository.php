@@ -21,6 +21,11 @@ class DoctrineCustomerRepository implements CustomerRepository
         $this->repository = $entityManager->getRepository(Customer::class);
     }
 
+    public function save(Customer $customer): void
+    {
+        $this->entityManager->persist($customer);
+    }
+
     public function get(int $id): ?Customer
     {
         return $this->repository->find($id);
@@ -31,8 +36,10 @@ class DoctrineCustomerRepository implements CustomerRepository
         return $this->repository->findOneBy(['oldId' => $oldId]);
     }
 
-    public function save(Customer $customer): void
+
+    public function getByEmail(string $email): ?Customer
     {
-        $this->entityManager->persist($customer);
+        return $this->repository->findOneBy(['email' => $email]);
     }
+
 }
