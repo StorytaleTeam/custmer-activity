@@ -633,6 +633,21 @@
             <argument type="service" id="storytale.customerActivity.domain.persistModel.subscription.membershipFactory"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.subscription.persistence.doctrine.doctrineMembershipRepository"/>
         </service>
+
+        <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Newsletter\InitNewsletterForCustomersCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Newsletter\InitNewsletterForCustomersCommand" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraCustomerDataProvider"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.newsletter.newsletterSubscriptionFactory"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+        </service>
+
+        <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Newsletter\MigrateOldNewsletterSubscriptionsCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Newsletter\MigrateOldNewsletterSubscriptionsCommand" public="true">
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraOldCustomerDataProvider"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.newsletter.persistence.doctrine.doctrineNewsletterSubscriptionRepository"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.newsletter.newsletterSubscriptionFactory"/>
+            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
+        </service>
         <!-- Console command END -->
 
     </services>

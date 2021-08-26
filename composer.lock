@@ -2000,7 +2000,7 @@
             "source": {
                 "type": "git",
                 "url": "ssh://git@git.jetbrains.space/craftwork/stor/port-adapter-sk.git",
-                "reference": "cfba91d70f9142035c77001b5db98d497f0ee737"
+                "reference": "68df927a0c708cf3cd28c3e323c2760ae435d2ad"
             },
             "require": {
                 "doctrine/migrations": "~2.2.1",
@@ -2034,7 +2034,7 @@
                 }
             ],
             "description": "Main port adapters",
-            "time": "2021-08-06T13:09:38+00:00"
+            "time": "2021-08-26T17:12:32+00:00"
         },
         {
             "name": "symfony/config",
@@ -4400,5 +4400,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }

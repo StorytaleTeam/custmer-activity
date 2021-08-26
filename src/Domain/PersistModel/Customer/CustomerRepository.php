@@ -26,4 +26,11 @@ interface CustomerRepository
      * @return Customer|null
      */
     public function getByEmail(string $email): ?Customer;
+
+    /**
+     * @param int $count
+     * @param int $page
+     * @return Customer[]
+     */
+    public function getBatch(int $count, int $page): array;
 }

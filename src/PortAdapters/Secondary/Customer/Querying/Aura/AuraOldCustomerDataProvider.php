@@ -59,4 +59,19 @@ class AuraOldCustomerDataProvider extends AbstractAuraDataProvider
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues());
     }
+
+    public function getCanceledNewsletter(int $count, int $page): array
+    {
+        $select = $this->queryFactory
+            ->newSelect()
+            ->cols(['*'])
+            ->from('wp_newsletter')
+            ->where('status = :cancelStatus')
+            ->limit($count)
+            ->page($page)
+            ->orderBy(['id'])
+            ->bindValue('cancelStatus', 'U');
+
+        return $this->executeStatement($select->getStatement(), $select->getBindValues());
+    }
 }

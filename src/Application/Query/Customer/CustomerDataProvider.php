@@ -29,4 +29,9 @@ interface CustomerDataProvider
      * @return CustomerBasic[]
      */
     public function findListForAdmin(int $count, int $page, ?array $params = null): array;
+
+    /**
+     * @return int
+     */
+    public function count(): int;
 }

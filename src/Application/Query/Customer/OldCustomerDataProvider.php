@@ -17,4 +17,11 @@ interface OldCustomerDataProvider
      * @return array
      */
     public function getDownloads(int $count, int $page): array;
+
+    /**
+     * @param int $count
+     * @param int $page
+     * @return array
+     */
+    public function getCanceledNewsletter(int $count, int $page): array;
 }

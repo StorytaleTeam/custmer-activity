@@ -42,4 +42,9 @@ class DoctrineCustomerRepository implements CustomerRepository
         return $this->repository->findOneBy(['email' => $email]);
     }
 
+    public function getBatch(int $count, int $page): array
+    {
+        $offset = ($page - 1) * $count;
+        return $this->repository->findBy([], ['id' => 'ASC'], $count, $offset);
+    }
 }

@@ -27,5 +27,11 @@
                 <cascade-persist/>
             </cascade>
         </one-to-many>
+
+        <one-to-many field="newsletterSubscriptions" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Newsletter\NewsletterSubscription" mapped-by="customer">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+        </one-to-many>
     </entity>
 </doctrine-mapping>

@@ -85,4 +85,15 @@ class AuraCustomerDataProvider extends AbstractAuraDataProvider
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), CustomerBasic::class);
     }
+
+    public function count(): int
+    {
+        $select = $this->queryFactory
+            ->newSelect()
+            ->cols(['count(*) as count'])
+            ->from('customers');
+        $response = $this->executeStatement($select->getStatement(), $select->getBindValues());
+
+        return $response[0]['count'] ?? 0;
+    }
 }

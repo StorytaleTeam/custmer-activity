@@ -3,6 +3,7 @@
 namespace Storytale\CustomerActivity\Domain\PersistModel\Customer;
 
 use Storytale\CustomerActivity\Domain\DomainException;
+use Storytale\CustomerActivity\Domain\PersistModel\Newsletter\NewsletterSubscription;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
 
@@ -11,14 +12,17 @@ class Customer extends AbstractEntity
     /** @var int */
     private int $id;
 
-    /** @var array */
+    /** @var CustomerLike[] */
     private $likes;
 
-    /** @var array */
+    /** @var CustomerDownload[] */
     private $downloads;
 
-    /** @var array */
+    /** @var Subscription[] */
     private $subscriptions;
+
+    /** @var NewsletterSubscription[] */
+    private $newsletterSubscriptions;
 
     /** @var string */
     private string $email;
@@ -43,6 +47,30 @@ class Customer extends AbstractEntity
         $this->name = $name;
         $this->oldId = $oldId;
         parent::__construct();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getOldId(): ?int
+    {
+        return $this->oldId;
     }
 
     /**
@@ -141,27 +169,21 @@ class Customer extends AbstractEntity
         return true;
     }
 
-    /**
-     * @return int
-     */
-    public function getId(): int
+    public function addNewsletterSubscription(NewsletterSubscription $newsletterSubscription): void
     {
-        return $this->id;
+        foreach ($this->newsletterSubscriptions as $oldNewsletterSubscription) {
+            if ($oldNewsletterSubscription->getType() === $newsletterSubscription->getType()) {
+                throw new DomainException('Newsletter subscription with this type already exist.');
+            }
+        }
+        $this->newsletterSubscriptions[] = $newsletterSubscription;
     }
 
     /**
-     * @return string
+     * @return NewsletterSubscription[]
      */
-    public function getEmail(): string
+    public function getNewsletterSubscriptions(): iterable
     {
-        return $this->email;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getOldId(): ?int
-    {
-        return $this->oldId;
+        return $this->newsletterSubscriptions;
     }
 }

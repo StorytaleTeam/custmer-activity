@@ -77,11 +77,11 @@ class OnNewUserWasRegisteredHandler implements ExternalEventHandler
 
                 if ($anonsExist === false) {
                     $anonsSubscription = $this->newsletterSubscriptionFactory->build($customer->getEmail(), NewsletterSubscription::TYPE_ANONS, $customer);
-                    $this->newsletterSubscriptionRepository->save($anonsSubscription);
+                    $customer->addNewsletterSubscription($anonsSubscription);
                 }
                 if ($heatingExist === false) {
                     $heatingSubscription = $this->newsletterSubscriptionFactory->build($customer->getEmail(), NewsletterSubscription::TYPE_HEATING, $customer);
-                    $this->newsletterSubscriptionRepository->save($heatingSubscription);
+                    $customer->addNewsletterSubscription($heatingSubscription);
                 }
 
                 $this->domainSession->flush();
