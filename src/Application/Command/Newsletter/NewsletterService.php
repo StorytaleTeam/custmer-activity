@@ -3,8 +3,12 @@
 namespace Storytale\CustomerActivity\Application\Command\Newsletter;
 
 use Storytale\Contracts\Persistence\DomainSession;
+use Storytale\CustomerActivity\Application\Command\Newsletter\DTO\NewsletterSubscribeDTOValidation;
+use Storytale\CustomerActivity\Application\Command\Newsletter\DTO\NewsletterSubscriptionDTO;
+use Storytale\CustomerActivity\Application\Command\Newsletter\DTO\NewsletterUnsubscribeDTOValidation;
 use Storytale\CustomerActivity\Application\OperationResponse;
 use Storytale\CustomerActivity\Application\ValidationException;
+use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerRepository;
 use Storytale\CustomerActivity\Domain\PersistModel\Newsletter\NewsletterSubscription;
 use Storytale\CustomerActivity\Domain\PersistModel\Newsletter\NewsletterSubscriptionFactory;
@@ -24,42 +28,64 @@ class NewsletterService
     /** @var CustomerRepository */
     private CustomerRepository $customerRepository;
 
+    /** @var NewsletterSubscribeDTOValidation */
+    private NewsletterSubscribeDTOValidation $newsletterSubscribeDTOValidation;
+
+    /** @var NewsletterUnsubscribeDTOValidation */
+    private NewsletterUnsubscribeDTOValidation $newsletterUnsubscribeDTOValidation;
+
     public function __construct(
         DomainSession $domainSession,
         NewsletterSubscriptionRepository $newsletterRepository,
         NewsletterSubscriptionFactory $newsletterSubscriptionFactory,
-        CustomerRepository $customerRepository
+        CustomerRepository $customerRepository,
+        NewsletterSubscribeDTOValidation $newsletterSubscribeDTOValidation,
+        NewsletterUnsubscribeDTOValidation $newsletterUnsubscribeDTOValidation
     )
     {
         $this->domainSession = $domainSession;
         $this->newsletterRepository = $newsletterRepository;
         $this->newsletterSubscriptionFactory = $newsletterSubscriptionFactory;
         $this->customerRepository = $customerRepository;
+        $this->newsletterSubscribeDTOValidation = $newsletterSubscribeDTOValidation;
+        $this->newsletterUnsubscribeDTOValidation = $newsletterUnsubscribeDTOValidation;
     }
 
-    public function subscribeEmail(?string $email): OperationResponse
+    public function subscribe(NewsletterSubscriptionDTO $dto): OperationResponse
     {
         $result = null;
         $message = null;
 
         try {
-            if ($email === null) {
-                throw new ValidationException('Need not empty `email` param.');
-            }
-            $isExist = false;
-            $newsletters = $this->newsletterRepository->getByEmail($email);
-            foreach ($newsletters as $newsletter) {
-                if ($newsletter->getType() === NewsletterSubscription::TYPE_ANONS) {
-                    $newsletter->subscribe();
-                    $isExist = true;
+            $this->newsletterSubscribeDTOValidation->validate($dto);
+            $actualNewsletterSubscription = null;
+            $customer = null;
+
+            if ($dto->getCustomerId() !== null) {
+                $customer = $this->customerRepository->get($dto->getCustomerId());
+                if (!$customer instanceof Customer) {
+                    throw new ValidationException('Customer with this id not found.');
                 }
+
+                foreach ($customer->getNewsletterSubscriptions() as $newsletterSubscription) {
+                    if ($newsletterSubscription->getType() === $dto->getNewsletterType()) {
+                        $actualNewsletterSubscription = $newsletterSubscription;
+                        break;
+                    }
+                }
+            } else {
+                $actualNewsletterSubscription = $this->newsletterRepository->getByEmailAndType($dto->getEmail(), $dto->getNewsletterType());
+            }
+            if (!$actualNewsletterSubscription instanceof NewsletterSubscription) {
+                if (!$customer instanceof Customer) {
+                    $customer = $this->customerRepository->getByEmail($dto->getEmail());
+                }
+                $email = $customer instanceof Customer ? $customer->getEmail() : $dto->getEmail();
+                $actualNewsletterSubscription = $this->newsletterSubscriptionFactory->build($email, $dto->getNewsletterType(), $customer);
+                $this->newsletterRepository->save($actualNewsletterSubscription);
             }
 
-            if ($isExist !== true) {
-                $customer = $this->customerRepository->getByEmail($email);
-                $newAnonsSubscription = $this->newsletterSubscriptionFactory->build($email, NewsletterSubscription::TYPE_ANONS, $customer);
-                $this->newsletterRepository->save($newAnonsSubscription);
-            }
+            $actualNewsletterSubscription->subscribe();
 
             $this->domainSession->flush();
             $success = true;
@@ -71,20 +97,35 @@ class NewsletterService
         return new OperationResponse($success, $result, $message);
     }
 
-    public function unsubscribeByUuid(?string $uuid): OperationResponse
+    public function unsubscribe(NewsletterSubscriptionDTO $dto): OperationResponse
     {
         $result = null;
         $message = null;
 
         try {
-            if ($uuid === null) {
-                throw new ValidationException('Need not empty `uuid` param.');
-            }
-            $newsletter = $this->newsletterRepository->getByUuid($uuid);
-            if ($newsletter instanceof NewsletterSubscription) {
-                $newsletter->unsubscribe();
+            $this->newsletterUnsubscribeDTOValidation->validate($dto);
+            $actualNewsletterSubscription = null;
+
+            if ($dto->getNewsletterSubscriptionUuid() !== null) {
+                $actualNewsletterSubscription = $this->newsletterRepository->getByUuid($dto->getNewsletterSubscriptionUuid());
+                if (!$actualNewsletterSubscription instanceof NewsletterSubscription) {
+                    throw new ValidationException('Newsletter subscription with this uuid not found.');
+                }
             } else {
-                throw new ValidationException('Newsletter subscription with this uuid not found.');
+                $customer = $this->customerRepository->get($dto->getCustomerId());
+                if (!$customer instanceof Customer) {
+                    throw new ValidationException('Customer with this id not found.');
+                }
+                foreach ($customer->getNewsletterSubscriptions() as $newsletterSubscription) {
+                    if ($newsletterSubscription->getType() === $dto->getNewsletterType()) {
+                        $actualNewsletterSubscription = $newsletterSubscription;
+                        break;
+                    }
+                }
+            }
+
+            if ($actualNewsletterSubscription instanceof NewsletterSubscription) {
+                $actualNewsletterSubscription->unsubscribe();
             }
 
             $this->domainSession->flush();

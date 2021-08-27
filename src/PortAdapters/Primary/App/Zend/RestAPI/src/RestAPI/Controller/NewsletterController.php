@@ -2,6 +2,7 @@
 
 namespace RestAPI\Controller;
 
+use Storytale\CustomerActivity\Application\Command\Newsletter\DTO\NewsletterSubscriptionDTO;
 use Storytale\CustomerActivity\Application\Command\Newsletter\NewsletterService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -16,18 +17,20 @@ class NewsletterController extends AbstractActionController
         $this->newsletterService = $newsletterService;
     }
 
-    public function subscribeEmailAction()
+    public function subscribeAction()
     {
-        $email = $this->params()->fromPost('email');
-        $response = $this->newsletterService->subscribeEmail($email);
+        $params = $this->params()->fromPost(null, []);
+        $newsletterSubscriptionDTO = new NewsletterSubscriptionDTO($params);
+        $response = $this->newsletterService->subscribe($newsletterSubscriptionDTO);
 
         return new JsonModel($response->jsonSerialize());
     }
 
-    public function unsubscribeUuidAction()
+    public function unsubscribeAction()
     {
-        $uuid = $this->params()->fromPost('uuid');
-        $response = $this->newsletterService->unsubscribeByUuid($uuid);
+        $params = $this->params()->fromPost(null, []);
+        $newsletterSubscriptionDTO = new NewsletterSubscriptionDTO($params);
+        $response = $this->newsletterService->unsubscribe($newsletterSubscriptionDTO);
 
         return new JsonModel($response->jsonSerialize());
     }

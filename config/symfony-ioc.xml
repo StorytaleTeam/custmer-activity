@@ -278,6 +278,8 @@
         <service id="storytale.customerActivity.application.command.subscription.dto.subscriptionSigningDTOValidation" class="Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionSigningDTOValidation"/>
         <service id="storytale.customerActivity.application.command.order.dto.confirmOrderDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\ConfirmOrderDTOValidation"/>
         <service id="storytale.customerActivity.application.command.order.dto.orderPositionDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\OrderPositionDTOValidation"/>
+        <service id="storytale.customerActivity.application.command.newsletter.dto.newsletterSubscribeDTOValidation" class="Storytale\CustomerActivity\Application\Command\Newsletter\DTO\NewsletterSubscribeDTOValidation"/>
+        <service id="storytale.customerActivity.application.command.newsletter.dto.newsletterUnsubscribeDTOValidation" class="Storytale\CustomerActivity\Application\Command\Newsletter\DTO\NewsletterUnsubscribeDTOValidation"/>
 
         <service id="storytale.customerActivity.application.command.order.dto.createOrderDTOValidation" class="Storytale\CustomerActivity\Application\Command\Order\DTO\CreateOrderDTOValidation">
             <argument type="service" id="storytale.customerActivity.application.command.order.dto.orderPositionDTOValidation"/>
@@ -341,6 +343,8 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.newsletter.persistence.doctrine.doctrineNewsletterSubscriptionRepository"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.newsletter.newsletterSubscriptionFactory"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
+            <argument type="service" id="storytale.customerActivity.application.command.newsletter.dto.newsletterSubscribeDTOValidation"/>
+            <argument type="service" id="storytale.customerActivity.application.command.newsletter.dto.newsletterUnsubscribeDTOValidation"/>
         </service>
     <!-- Command end -->
 

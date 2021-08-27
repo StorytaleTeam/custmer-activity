@@ -46,6 +46,7 @@ class Customer extends AbstractEntity
         $this->subscriptionAutoRenewal = $subscriptionAutoRenewal;
         $this->name = $name;
         $this->oldId = $oldId;
+        $this->newsletterSubscriptions = [];
         parent::__construct();
     }
 

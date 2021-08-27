@@ -11,6 +11,13 @@ interface NewsletterSubscriptionRepository
     public function getByEmail(string $email): array;
 
     /**
+     * @param string $email
+     * @param string $type
+     * @return NewsletterSubscription|null
+     */
+    public function getByEmailAndType(string $email, string $type): ?NewsletterSubscription;
+
+    /**
      * @param string $uuid
      * @return NewsletterSubscription|null
      */

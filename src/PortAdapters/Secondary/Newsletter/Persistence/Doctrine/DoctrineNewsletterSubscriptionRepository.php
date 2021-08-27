@@ -26,6 +26,11 @@ class DoctrineNewsletterSubscriptionRepository implements NewsletterSubscription
         return $this->repository->findBy(['email' => $email]);
     }
 
+    public function getByEmailAndType(string $email, string $type): ?NewsletterSubscription
+    {
+        return $this->repository->findOneBy(['email' => $email, 'type' => $type]);
+    }
+
     public function getByUuid(string $uuid): ?NewsletterSubscription
     {
         return $this->repository->findOneBy(['uuid' => $uuid]);
