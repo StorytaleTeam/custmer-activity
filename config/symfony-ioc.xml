@@ -270,6 +270,7 @@
 
         <service id="RestAPI\Controller\NewsletterController" class="RestAPI\Controller\NewsletterController" public="true">
             <argument type="service" id="storytale.customerActivity.application.command.newsletter.newsletterService"/>
+            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.newsletter.querying.aura.auraNewsletterSubscriptionDataProvider"/>
         </service>
         <!--Controllers end-->
 
@@ -404,6 +405,11 @@
         <service id="storytale.customerActivity.portAdapters.secondary.subscription.querying.aura.auraOldSubscriptionDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Subscription\Querying\Aura\AuraOldSubscriptionDataProvider">
             <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection_for_old_db"/>
             <argument type="service" id="AuraMySQLQueryFactory"/>
+        </service>
+
+        <service id="storytale.customerActivity.portAdapters.secondary.newsletter.querying.aura.auraNewsletterSubscriptionDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Newsletter\Querying\Aura\AuraNewsletterSubscriptionDataProvider">
+            <argument type="service" id="storytale.portAdapters.secondary.dataBase.sql.storytaleTeam.storytalePdoConnection"/>
+            <argument type="service" id="AuraPgSQLQueryFactory"/>
         </service>
     <!-- Query END -->
 
