@@ -103,6 +103,8 @@ class SubscriptionPlanService
                 throw new ValidationException('Plan with this id not found');
             }
 
+            /** @todo edit description */
+            
             if ($this->isSubscriptionPlanCanMoveToStatusSpecification->isSatisfiedBy($subscriptionPlan, $data['status'])) {
                 $subscriptionPlan->changeStatus($data['status']);
             } else {

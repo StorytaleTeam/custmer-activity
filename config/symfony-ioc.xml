@@ -213,7 +213,7 @@
 
         <service id="storytale.portAdapters.secondary.logger.chainLogger" class="Storytale\PortAdapters\Secondary\Logger\Chain\ChainLogger" public="true">
             <argument type="collection">
-<!--                <argument type="service" id="storytale.portAdapters.secondary.logger.gelf.gelfLogger"/>-->
+                <argument type="service" id="storytale.portAdapters.secondary.logger.gelf.gelfLogger"/>
                 <argument type="service" id="storytale.portAdapters.secondary.logger.zend.zendLogger"/>
             </argument>
         </service>
