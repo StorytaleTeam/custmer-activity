@@ -25,8 +25,8 @@ class SubscriptionBasic implements \JsonSerializable
     /** @var string|null */
     private ?string $durationLabel;
 
-    /** @var string|null */
-    private ?string $subscriptionPlanDownloadLimit;
+    /** @var int|null */
+    private ?int $subscriptionPlanDownloadLimit;
 
     /** @var int|null */
     private ?int $downloadLimit;
