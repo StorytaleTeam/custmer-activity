@@ -36,6 +36,7 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
                 'sp.id'                         => 'planId',
                 'sp.duration_label'             => 'durationLabel',
                 'sp.duration_count'             => 'durationCount',
+                'sp.download_limit'             => 'subscriptionPlanDownloadLimit',
             ])
             ->from('subscriptions AS s')
             ->join('LEFT', 'memberships AS m', 's.id = m.subscription_id '
