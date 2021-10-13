@@ -15,4 +15,10 @@ interface NewsletterSubscriptionDataProvider
      * @return NewsletterSubscriptionBasic[]
      */
     public function getList(array $params): array;
+
+    /**
+     * @param int $customerId
+     * @return NewsletterSubscriptionBasic[]
+     */
+    public function getListForCustomer(int $customerId): array;
 }

@@ -53,4 +53,22 @@ class AuraNewsletterSubscriptionDataProvider extends AbstractAuraDataProvider
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), NewsletterSubscriptionBasic::class);
     }
+
+    public function getListForCustomer(int $customerId): array
+    {
+        $select = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'ns.email',
+                'ns.type',
+                'ns.uuid',
+                'ns.is_active' => 'isActive',
+            ])
+            ->from('newsletter_subscriptions AS ns')
+            ->where('ns.customer_id = :customerId')
+            ->bindValue('customerId', $customerId)
+            ->orderBy(['id']);
+
+        return $this->executeStatement($select->getStatement(), $select->getBindValues(), NewsletterSubscriptionBasic::class);
+    }
 }

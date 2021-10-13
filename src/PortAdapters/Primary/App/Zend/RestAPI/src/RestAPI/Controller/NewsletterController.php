@@ -63,4 +63,19 @@ class NewsletterController extends AbstractActionController
 
         return new JsonModel($response);
     }
+
+    public function getListForCustomerAction()
+    {
+        $customerId = $this->params()->fromQuery('customerId');
+        if ($customerId === null) {
+            return new JsonModel(['success' => false, 'message' => 'Need not empty `customerId` param']);
+        }
+        $customerNewsletterSubscription = $this->newsletterSubscriptionDataProvider->getListForCustomer($customerId);
+        $response = [
+            'success' => true,
+            'result' => ['newsletterSubscription' => $customerNewsletterSubscription],
+        ];
+
+        return new JsonModel($response);
+    }
 }
