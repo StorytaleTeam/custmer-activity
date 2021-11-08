@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <embeddable name="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Duration">
-        <field name="label"/>
-        <field name="count" type="integer"/>
+    <embeddable name="Storytale\CustomerActivity\Domain\PersistModel\Subscription\TimeRange">
+        <field name="label" nullable="true"/>
+        <field name="count" type="integer" nullable="true"/>
     </embeddable>
 </doctrine-mapping>

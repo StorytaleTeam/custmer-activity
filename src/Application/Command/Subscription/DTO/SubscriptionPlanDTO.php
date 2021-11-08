@@ -19,6 +19,12 @@ class SubscriptionPlanDTO
     /** @var int|null */
     private ?int $durationCount;
 
+    /** @var string|null */
+    private ?string $chargePeriodLabel;
+
+    /** @var int|null */
+    private ?int $chargePeriodCount;
+
     /** @var int|null */
     private ?int $downloadLimit;
 
@@ -30,10 +36,14 @@ class SubscriptionPlanDTO
         $this->name = $data['name'] ? trim($data['name']) : null;
         $this->price = $data['price'] ?? null;
         $this->description = $data['description'] ?? null;
-        $this->durationCount = $data['duration_count'] ?? null;
-        $this->durationLabel = $data['duration_label'] ?? null;
         $this->downloadLimit = $data['downloadLimit'] ?? null;
         $this->status = $data['status'] ?? null;
+
+        $this->durationCount = $data['duration_count'] ?? null;
+        $this->durationLabel = $data['duration_label'] ?? null;
+
+        $this->chargePeriodLabel = $data['chargePeriod']['label'] ?? null;
+        $this->chargePeriodCount = $data['chargePeriod']['count'] ?? null;
     }
 
     /**
@@ -74,6 +84,22 @@ class SubscriptionPlanDTO
     public function getDurationCount(): ?int
     {
         return $this->durationCount;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getChargePeriodLabel(): ?string
+    {
+        return $this->chargePeriodLabel;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getChargePeriodCount(): ?int
+    {
+        return $this->chargePeriodCount;
     }
 
     /**
