@@ -2,7 +2,8 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan" table="subscription_plans">
         <field name="description" nullable="true"/>
-        <embedded name="duration" class="Duration" column-prefix="duration_"/>
+        <embedded name="duration" class="TimeRange" column-prefix="duration_"/>
+        <embedded name="chargePeriod" class="TimeRange" column-prefix="charge_period_"/>
         <field name="downloadLimit" type="integer" column="download_limit"/>
         <field name="status" type="integer" column="status"/>
         <field name="paddleId" type="integer" column="paddle_id" nullable="true"/>

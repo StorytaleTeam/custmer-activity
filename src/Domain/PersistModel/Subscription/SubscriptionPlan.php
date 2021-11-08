@@ -20,8 +20,11 @@ class SubscriptionPlan extends AbstractProduct
     /** @var string|null */
     private ?string $description;
 
-    /** @var Duration */
-    private Duration $duration;
+    /** @var TimeRange */
+    private TimeRange $duration;
+
+    /** @var TimeRange */
+    private TimeRange $chargePeriod;
 
     /** @var int */
     private int $downloadLimit;
@@ -40,17 +43,20 @@ class SubscriptionPlan extends AbstractProduct
      * @param string $name
      * @param float $price
      * @param string $description
-     * @param Duration $duration
+     * @param TimeRange $duration
+     * @param TimeRange $chargePeriod
      * @param int $downloadLimit
      * @param int $status
      */
     public function __construct(
         string $name, float $price, string $description,
-        Duration $duration, int $downloadLimit, int $status
+        TimeRange $duration, TimeRange $chargePeriod,
+        int $downloadLimit, int $status
     )
     {
         $this->description = $description;
         $this->price = $price;
+        $this->chargePeriod = $chargePeriod;
         $this->duration = $duration;
         $this->downloadLimit = $downloadLimit;
         $this->status = $status;
@@ -60,11 +66,19 @@ class SubscriptionPlan extends AbstractProduct
     }
 
     /**
-     * @return Duration
+     * @return TimeRange
      */
-    public function getDuration(): Duration
+    public function getDuration(): TimeRange
     {
         return $this->duration;
+    }
+
+    /**
+     * @return TimeRange
+     */
+    public function getChargePeriod(): TimeRange
+    {
+        return $this->chargePeriod;
     }
 
     /**
@@ -84,6 +98,14 @@ class SubscriptionPlan extends AbstractProduct
     }
 
     /**
+     * @return int|null
+     */
+    public function getPaddleId(): ?int
+    {
+        return $this->paddleId;
+    }
+
+    /**
      * @param int $status
      */
     public function changeStatus(int $status): void
@@ -100,13 +122,5 @@ class SubscriptionPlan extends AbstractProduct
         } else {
             throw new DomainException('Paddle id already isset in SubscriptionPlan id:' . $this->id ?? null);
         }
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getPaddleId(): ?int
-    {
-        return $this->paddleId;
     }
 }

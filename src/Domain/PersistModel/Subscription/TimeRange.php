@@ -2,7 +2,12 @@
 
 namespace Storytale\CustomerActivity\Domain\PersistModel\Subscription;
 
-class Duration
+/**
+ * Class TimeRange
+ * @package Storytale\CustomerActivity\Domain\PersistModel\Subscription
+ * @todo make not null in mapping
+ */
+class TimeRange
 {
     public const AVAILABLE_LABEL = ['day', 'month'];
 
