@@ -55,8 +55,13 @@ class SubscriptionProcessingService
 
     public function wasPaid(Subscription $subscription, float $amountReceived): void
     {
-        $membership = $this->membershipFactory->build($subscription, $amountReceived);
-        $subscription->addMembership($membership);
+        $membershipCount = $subscription->getSubscriptionPlan()->getChargePeriod()->getCount()
+            / $subscription->getSubscriptionPlan()->getDuration()->getCount();
+
+        for ($i=1; $i<=$membershipCount; $i++) {
+            $membership = $this->membershipFactory->build($subscription, $amountReceived / $membershipCount);
+            $subscription->addMembership($membership);
+        }
 
         if ($subscription->getStatus() === Subscription::STATUS_NEW) {
             $this->activate($subscription);
