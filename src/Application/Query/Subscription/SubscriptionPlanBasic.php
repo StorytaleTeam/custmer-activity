@@ -22,8 +22,8 @@ class SubscriptionPlanBasic implements \JsonSerializable
     /** @var string|null */
     private ?string $durationLabel;
 
-    /** @var string|null */
-    private ?string $chargePeriodCount;
+    /** @var int|null */
+    private ?int $chargePeriodCount;
 
     /** @var string|null */
     private ?string $chargePeriodLabel;
