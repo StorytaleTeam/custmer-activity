@@ -30,7 +30,7 @@ class DownloadProcessingService
         }
         $currentMembership = $actualSubscribe->getCurrentMembership();
         if (!$currentMembership instanceof Membership) {
-            throw new DomainException('You have not actual membership.', 109001002);
+            throw new DomainException("You don't have an active membership.", 109001002);
         }
 
         $isAlreadyDownloaded = $customer->isAlreadyDownloaded($illustrationId);
@@ -60,6 +60,7 @@ class DownloadProcessingService
      * @param Customer $customer
      * @param int $illustrationId
      * @param \DateTime|null $createdDate
+     * @deprecated
      */
     public function migrateDownload(Customer $customer, int $illustrationId, ?\DateTime $createdDate = null): void
     {
