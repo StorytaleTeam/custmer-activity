@@ -34,6 +34,8 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
                 'p.price',
                 'p.name',
                 'sp.id'                         => 'planId',
+                'sp.charge_period_count'        => 'chargePeriodCount',
+                'sp.charge_period_label'        => 'chargePeriodLabel',
                 'sp.duration_label'             => 'durationLabel',
                 'sp.duration_count'             => 'durationCount',
                 'sp.download_limit'             => 'subscriptionPlanDownloadLimit',
