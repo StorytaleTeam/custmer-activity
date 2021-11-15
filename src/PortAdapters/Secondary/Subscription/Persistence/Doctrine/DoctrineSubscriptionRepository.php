@@ -43,7 +43,6 @@ class DoctrineSubscriptionRepository implements SubscriptionRepository
                 's.memberships', 'm', 'WITH',
                 's.id = m.subscription AND s.currentMembershipCycle = m.cycleNumber'
             )
-            ->where('s.autoRenewal = true')
             ->andWhere('m.endDate <= :today')
             ->andWhere('s.status = :statusActive')
             ->setParameters([

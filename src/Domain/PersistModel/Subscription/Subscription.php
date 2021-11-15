@@ -98,14 +98,10 @@ class Subscription extends AbstractEntity
     public function getCurrentMembership(): ?Membership
     {
         $currentMembership = null;
-        $nowDate = new \DateTime();
 
         /** @var Membership $membership */
         foreach ($this->memberships as $membership) {
-            if (
-                $membership->getCycleNumber() === $this->currentMembershipCycle
-                && $membership->getEndDate() > $nowDate
-            ) {
+            if ($membership->getCycleNumber() === $this->currentMembershipCycle) {
                 $currentMembership = $membership;
                 break;
             }
@@ -170,12 +166,14 @@ class Subscription extends AbstractEntity
 
     public function expireMembership(): void
     {
-        foreach ($this->memberships as $membership) {
-            if ($membership->getEndDate() !== null && $membership->getEndDate() <= new \DateTime()) {
-                $membership->expire();
-            }
+        $currentMembership = $this->getCurrentMembership();
+        if (
+            $currentMembership instanceof Membership
+            && $currentMembership->getEndDate() !== null &&
+            $currentMembership->getEndDate() <= new \DateTime()
+        ) {
+            $currentMembership->expire();
         }
-
 
         $nextMembership = null;
         /** @var Membership $membership */

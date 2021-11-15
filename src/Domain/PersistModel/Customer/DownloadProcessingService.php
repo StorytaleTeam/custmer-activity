@@ -29,7 +29,9 @@ class DownloadProcessingService
             throw new DomainException('You have not actual subscription.', 109001001);
         }
         $currentMembership = $actualSubscribe->getCurrentMembership();
-        if (!$currentMembership instanceof Membership) {
+        if (!$currentMembership instanceof Membership
+            || !in_array($currentMembership->getStatus(), [Membership::STATUS_SPENT_LIMIT, Membership::STATUS_SPENT_LIMIT])
+        ) {
             throw new DomainException("You don't have an active membership.", 109001002);
         }
 
