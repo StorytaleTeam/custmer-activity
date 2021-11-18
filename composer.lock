@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "de5a0c1e8eb1fbd78ad845239a17e5e3",
+    "content-hash": "01253f9859290c1450c0131f1693d25f",
     "packages": [
         {
             "name": "aura/sqlquery",
@@ -1971,7 +1971,7 @@
             "source": {
                 "type": "git",
                 "url": "ssh://git@git.jetbrains.space/craftwork/stor/contracts-sk.git",
-                "reference": "3527371e2bd75b6a27b01e2da3c0ff774173a99d"
+                "reference": "f9a5b18d6202e499c358f30d5912db50b471c3f4"
             },
             "require": {
                 "ext-json": "*",
@@ -1992,15 +1992,15 @@
                 }
             ],
             "description": "Shared contracts definition",
-            "time": "2021-08-06T14:02:40+00:00"
+            "time": "2021-10-13T15:07:52+00:00"
         },
         {
             "name": "storytale/port-adapter-sk",
-            "version": "dev-master",
+            "version": "dev-STOR-130_year_plan",
             "source": {
                 "type": "git",
                 "url": "ssh://git@git.jetbrains.space/craftwork/stor/port-adapter-sk.git",
-                "reference": "68df927a0c708cf3cd28c3e323c2760ae435d2ad"
+                "reference": "4da217c0c949f12bb4e82ebc1d032970fe326d96"
             },
             "require": {
                 "doctrine/migrations": "~2.2.1",
@@ -2020,7 +2020,6 @@
                 "zendframework/zend-mvc": "^3.1",
                 "zendframework/zend-session": "^2.9"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -2034,7 +2033,7 @@
                 }
             ],
             "description": "Main port adapters",
-            "time": "2021-08-26T17:12:32+00:00"
+            "time": "2021-11-08T16:48:04+00:00"
         },
         {
             "name": "symfony/config",
@@ -4400,5 +4399,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }

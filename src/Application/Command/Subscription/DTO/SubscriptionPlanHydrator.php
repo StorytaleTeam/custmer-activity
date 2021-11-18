@@ -21,6 +21,10 @@ class SubscriptionPlanHydrator
                 'count' => $subscriptionPlan->getDuration()->getCount(),
                 'label' => $subscriptionPlan->getDuration()->getLabel(),
             ],
+            'chargePeriod' => [
+                'count' => $subscriptionPlan->getChargePeriod()->getCount(),
+                'label' => $subscriptionPlan->getChargePeriod()->getLabel(),
+            ]
         ];
     }
 }

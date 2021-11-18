@@ -23,6 +23,12 @@ class SubscriptionPlanBasic implements \JsonSerializable
     private ?string $durationLabel;
 
     /** @var int|null */
+    private ?int $chargePeriodCount;
+
+    /** @var string|null */
+    private ?string $chargePeriodLabel;
+
+    /** @var int|null */
     private ?int $downloadLimit;
 
     /** @var int|null */
@@ -42,8 +48,10 @@ class SubscriptionPlanBasic implements \JsonSerializable
             'price' => $this->price ?? null,
             'description' => $this->description ?? null,
             'downloadLimit' => $this->downloadLimit ?? null,
-            'durationCount' => $this->durationCount ?? null,
+            'chargePeriodLabel' => $this->chargePeriodLabel ?? null,
+            'chargePeriodCount' => $this->chargePeriodCount ?? null,
             'durationLabel' => $this->durationLabel ?? null,
+            'durationCount' => $this->durationCount ?? null,
             'status' => $this->status ?? null,
             'paddleId' => $this->paddleId ?? null,
             'createdDate' => $this->createdDate ?? null,

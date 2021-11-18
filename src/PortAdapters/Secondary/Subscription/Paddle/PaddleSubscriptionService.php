@@ -7,6 +7,7 @@ use Storytale\Contracts\ServiceClient\PaddleClient;
 use Storytale\CustomerActivity\Application\ApplicationException;
 use Storytale\CustomerActivity\Application\Command\Subscription\DTO\SubscriptionPlanHydrator;
 use Storytale\CustomerActivity\Application\ValidationException;
+use Storytale\CustomerActivity\Domain\DomainException;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\SubscriptionPlan;
 use Storytale\PortAdapters\Secondary\ServiceClient\CommandValidationException;
 use Storytale\PortAdapters\Secondary\ServiceClient\Paddle\Command\PaddleCancelSubscriptionCommand;
@@ -52,7 +53,7 @@ class PaddleSubscriptionService
     /**
      * @param SubscriptionPlan $subscriptionPlan
      * @throws ApplicationException
-     * @throws \Storytale\CustomerActivity\Domain\DomainException
+     * @throws DomainException
      */
     public function createSubscriptionPlan(SubscriptionPlan $subscriptionPlan): void
     {
