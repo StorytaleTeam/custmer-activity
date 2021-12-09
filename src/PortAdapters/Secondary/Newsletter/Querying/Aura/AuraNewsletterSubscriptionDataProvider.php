@@ -46,9 +46,9 @@ class AuraNewsletterSubscriptionDataProvider extends AbstractAuraDataProvider
         }
         if (isset($params['count'])) {
             $select->limit($params['count']);
-        }
-        if (isset($params['page'])) {
-            $select->page($params['page']);
+            if (isset($params['page'])) {
+                $select->offset($params['count'] * ($params['page']-1));
+            }
         }
 
         return $this->executeStatement($select->getStatement(), $select->getBindValues(), NewsletterSubscriptionBasic::class);
