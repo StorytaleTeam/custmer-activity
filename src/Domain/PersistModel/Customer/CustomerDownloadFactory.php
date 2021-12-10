@@ -2,11 +2,13 @@
 
 namespace Storytale\CustomerActivity\Domain\PersistModel\Customer;
 
+use Storytale\CustomerActivity\Domain\PersistModel\Illustration\Illustration;
+
 class CustomerDownloadFactory
 {
-    public function create(int $illustrationId, Customer $customer, ?\DateTime $createdDate = null): CustomerDownload
+    public function create(Illustration $illustration, Customer $customer, ?\DateTime $createdDate = null): CustomerDownload
     {
         $createdDate = $createdDate ?? new \DateTime();
-        return new CustomerDownload($illustrationId, $customer, $createdDate, 0);
+        return new CustomerDownload($illustration->getId(), $illustration->isFree(), $customer, $createdDate, 0);
     }
 }

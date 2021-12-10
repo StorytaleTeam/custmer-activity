@@ -12,6 +12,7 @@ use Storytale\CustomerActivity\Domain\DomainException;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\Customer;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\CustomerRepository;
 use Storytale\CustomerActivity\Domain\PersistModel\Customer\DownloadProcessingService;
+use Storytale\CustomerActivity\Domain\PersistModel\Illustration\Illustration;
 
 class DownloadService
 {
@@ -56,29 +57,35 @@ class DownloadService
             if (!$customer instanceof Customer) {
                 throw new ValidationException('Customer with this id not found.');
             }
+            $illustration = $this->remoteIllustrationDataProvider->get($illustrationId);
+            if (!$illustration instanceof Illustration) {
+                throw new ValidationException("Illustration with id $illustrationId not found.");
+            }
+
+
             try {
-                $this->downloadProcessingService->getDownloadPass($customer, $illustrationId);
+                $this->downloadProcessingService->getDownloadPass($customer, $illustration);
             } catch (DomainException $e) {
                 throw new ValidationException($e->getMessage(), $e->getCode());
             }
 
-                $illustrationData = $this->remoteIllustrationDataProvider->getZip($illustrationId);
-                if (!isset($illustrationData['zip']) || empty($illustrationData['zip'])) {
-                    throw new ValidationException('Error occurrence with zip generating.');
-                }
+            $illustrationZip = $this->remoteIllustrationDataProvider->getZip($illustration->getId());
+            if (!isset($illustrationZip['zip']) || empty($illustrationZip['zip'])) {
+                throw new ValidationException('Error occurrence with zip generating.');
+            }
 
-                try {
-                    $isNewDownload = $this->downloadProcessingService->trackDownload($customer, $illustrationId);
-                } catch (DomainException $e) {
-                    throw new ValidationException($e->getMessage(), $e->getCode());
-                }
+            try {
+                $isNewDownload = $this->downloadProcessingService->trackDownload($customer, $illustration);
+            } catch (DomainException $e) {
+                throw new ValidationException($e->getMessage(), $e->getCode());
+            }
 
-                $this->domainSession->flush();
+            $this->domainSession->flush();
 
-                if ($isNewDownload) {
-                    $this->eventBus->fire(new IllustrationWasDownload($illustrationData['illustration'] ?? []));
-                }
-                $result['zip'] = $illustrationData['zip'];
+            if ($isNewDownload) {
+                $this->eventBus->fire(new IllustrationWasDownload($illustrationZip['illustration'] ?? []));
+            }
+            $result['zip'] = $illustrationZip['zip'];
 
             $success = true;
         } catch (ValidationException $e) {

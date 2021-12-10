@@ -20,6 +20,7 @@ class AuraSubscriptionDataProvider extends AbstractAuraDataProvider
                 's.customer_id'                 => 'customerId',
                 's.subscription_plan_id'        => 'subscriptionPlanId',
                 's.created_date'                => 'createdDate',
+                's.next_bill_date'              => 'nextBillDate',
                 's.status',
 
                 'm.id'                          => 'membershipId',

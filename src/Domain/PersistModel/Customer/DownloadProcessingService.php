@@ -3,6 +3,7 @@
 namespace Storytale\CustomerActivity\Domain\PersistModel\Customer;
 
 use Storytale\CustomerActivity\Domain\DomainException;
+use Storytale\CustomerActivity\Domain\PersistModel\Illustration\Illustration;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 
@@ -18,27 +19,29 @@ class DownloadProcessingService
 
     /**
      * @param Customer $customer
-     * @param int $illustrationId
+     * @param Illustration $illustration
      * @return bool
      * @throws DomainException
      */
-    public function getDownloadPass(Customer $customer, int $illustrationId): bool
+    public function getDownloadPass(Customer $customer, Illustration $illustration): bool
     {
-        $actualSubscribe = $customer->getActualSubscription();
-        if (!$actualSubscribe instanceof Subscription) {
-            throw new DomainException('You have not actual subscription.', 109001001);
-        }
-        $currentMembership = $actualSubscribe->getCurrentMembership();
-        if (!$currentMembership instanceof Membership
-            || !in_array($currentMembership->getStatus(), [Membership::STATUS_ACTIVE, Membership::STATUS_SPENT_LIMIT])
-        ) {
-            throw new DomainException("You don't have an active membership.", 109001002);
-        }
+        if ($illustration->isFree() == false) {
+            $actualSubscribe = $customer->getActualSubscription();
+            if (!$actualSubscribe instanceof Subscription) {
+                throw new DomainException('You have not actual subscription.', 109001001);
+            }
+            $currentMembership = $actualSubscribe->getCurrentMembership();
+            if (!$currentMembership instanceof Membership
+                || !in_array($currentMembership->getStatus(), [Membership::STATUS_ACTIVE, Membership::STATUS_SPENT_LIMIT])
+            ) {
+                throw new DomainException("You don't have an active membership.", 109001002);
+            }
 
-        $isAlreadyDownloaded = $customer->isAlreadyDownloaded($illustrationId);
-        if (!$isAlreadyDownloaded) {
-            if ($currentMembership->getDownloadRemaining() < 1) {
-                throw new DomainException('Downloads limit reached.', 109001003);
+            $isAlreadyDownloaded = $customer->isAlreadyDownloaded($illustration);
+            if (!$isAlreadyDownloaded) {
+                if ($currentMembership->getDownloadRemaining() < 1) {
+                    throw new DomainException('Downloads limit reached.', 109001003);
+                }
             }
         }
 
@@ -47,26 +50,14 @@ class DownloadProcessingService
 
     /**
      * @param Customer $customer
-     * @param int $illustrationId
+     * @param Illustration $illustration
      * @return bool
      * @throws DomainException
      * @Annotation return true if is new download
      */
-    public function trackDownload(Customer $customer, int $illustrationId): bool
+    public function trackDownload(Customer $customer, Illustration $illustration): bool
     {
-        $newDownload = $this->customerDownloadFactory->create($illustrationId, $customer);
+        $newDownload = $this->customerDownloadFactory->create($illustration, $customer);
         return $customer->trackDownload($newDownload);
-    }
-
-    /**
-     * @param Customer $customer
-     * @param int $illustrationId
-     * @param \DateTime|null $createdDate
-     * @deprecated
-     */
-    public function migrateDownload(Customer $customer, int $illustrationId, ?\DateTime $createdDate = null): void
-    {
-        $newDownload = $this->customerDownloadFactory->create($illustrationId, $customer, $createdDate);
-        $customer->migrateDownload($newDownload);
     }
 }

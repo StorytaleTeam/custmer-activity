@@ -20,6 +20,9 @@ class CustomerDownload extends AbstractEntity
     /** @var int */
     private int $illustrationId;
 
+    /** @var bool */
+    private bool $isFree;
+
     /** @var int|null */
     private ?int $reDownloadCount;
 
@@ -29,16 +32,26 @@ class CustomerDownload extends AbstractEntity
     private ?\DateTime $lastDownloadDate;
 
     public function __construct(
-        int $illustrationId, ?Customer $customer = null,
+        int $illustrationId, bool $isFree,
+        ?Customer $customer = null,
         ?\DateTime $lastDownloadDate = null, ?int $reDownloadCount = null
     )
     {
         $this->illustrationId = $illustrationId;
+        $this->isFree = $isFree;
         $this->reDownloadCount = $reDownloadCount;
         $this->lastDownloadDate = $lastDownloadDate;
         $this->customer = $customer;
         $this->membership = null;
         parent::__construct($lastDownloadDate);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFree(): bool
+    {
+        return $this->isFree;
     }
 
     /**

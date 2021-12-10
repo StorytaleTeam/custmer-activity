@@ -45,6 +45,9 @@ class Subscription extends AbstractEntity
     /** @var int|null */
     private ?int $oldId;
 
+    /** @var \DateTime|null */
+    private ?\DateTime $nextBillDate;
+
     /**
      * Subscription constructor.
      * @param Customer $customer
@@ -64,7 +67,8 @@ class Subscription extends AbstractEntity
         bool $autoRenewal,
         ?string $paddleId = null,
         ?int $oldId = null,
-        ?\DateTime $createdDate = null
+        ?\DateTime $createdDate = null,
+        ?\DateTime $nextBillDate = null
     )
     {
         $this->customer = $customer;
@@ -75,6 +79,7 @@ class Subscription extends AbstractEntity
         $this->autoRenewal = $autoRenewal;
         $this->paddleId = $paddleId;
         $this->oldId = $oldId;
+        $this->nextBillDate = $nextBillDate;
         parent::__construct($createdDate);
         $this->raiseEvent(new SubscriptionWasCreated($this));
     }
@@ -93,6 +98,23 @@ class Subscription extends AbstractEntity
     public function getStatus(): int
     {
         return $this->status;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPaddleId(): ?string
+    {
+        return $this->paddleId;
+    }
+
+    /**
+     * @return int|null
+     * @deprecated
+     */
+    public function getOldId(): ?int
+    {
+        return $this->oldId;
     }
 
     public function getCurrentMembership(): ?Membership
@@ -119,11 +141,11 @@ class Subscription extends AbstractEntity
      * @param CustomerDownload $customerDownload
      * @throws DomainException
      */
-    public function newDownload(CustomerDownload $customerDownload): void
+    public function useUpDownload(CustomerDownload $customerDownload): void
     {
         $currentMembership = $this->getCurrentMembership();
         if ($currentMembership instanceof Membership) {
-            $currentMembership->newDownload($customerDownload);
+            $currentMembership->useUpDownload($customerDownload);
         } else {
             throw new DomainException('There is no active membership for this subscription.');
         }
@@ -220,7 +242,6 @@ class Subscription extends AbstractEntity
 
     public function cancel()
     {
-
         $this->status = self::STATUS_STOPPED;
         $this->autoRenewal = false;
         $this->raiseEvent(new SubscriptionWasCanceled($this));
@@ -239,20 +260,8 @@ class Subscription extends AbstractEntity
         }
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPaddleId(): ?string
+    public function updateBillDate(\DateTime $nextBillDate): void
     {
-        return $this->paddleId;
-    }
-
-    /**
-     * @return int|null
-     * @deprecated
-     */
-    public function getOldId(): ?int
-    {
-        return $this->oldId;
+        $this->nextBillDate = $nextBillDate;
     }
 }

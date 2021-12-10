@@ -10,6 +10,7 @@
         <field name="currentMembershipCycle" type="integer" column="current_membership_cycle"/>
         <field name="paddleId" column="paddle_id" nullable="true"/>
         <field name="oldId" type="integer" column="old_id" nullable="true"/>
+        <field name="nextBillDate" type="datetime" column="next_bill_date" nullable="true"/>
 
         <one-to-many field="memberships" target-entity="Storytale\CustomerActivity\Domain\PersistModel\Subscription\Membership" mapped-by="subscription">
             <cascade>

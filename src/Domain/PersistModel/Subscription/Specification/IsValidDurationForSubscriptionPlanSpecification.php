@@ -24,6 +24,10 @@ class IsValidDurationForSubscriptionPlanSpecification
             $this->messages[] = 'Duration count should not be more than the ChargePeriod.';
             return false;
         }
+        if (($chargePeriod->getCount() % $duration->getCount()) !== 0) {
+            $this->messages[] = 'ChargePeriod must be a multiple of the Duration.';
+            return false;
+        }
 
         return true;
     }

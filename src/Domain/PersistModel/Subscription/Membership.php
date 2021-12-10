@@ -152,7 +152,11 @@ class Membership extends AbstractEntity
         } else throw new DomainException('CycleNumber already isset in membership ' . $this->id);
     }
 
-    public function newDownload(CustomerDownload $customerDownload): void
+    /**
+     * @param CustomerDownload $customerDownload
+     * @throws DomainException
+     */
+    public function useUpDownload(CustomerDownload $customerDownload): void
     {
         if ($this->getDownloadRemaining() < 1) {
             throw new DomainException('Download limit reached.');

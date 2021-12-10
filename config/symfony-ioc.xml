@@ -390,6 +390,7 @@
 
         <service id="storytale.customerActivity.portAdapters.secondary.illustration.querying.storytale.storytaleRemoteIllustrationDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Illustration\Querying\Storytale\StorytaleRemoteIllustrationDataProvider">
             <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
+            <argument type="service" id="storytale.customerActivity.domain.persistModel.illustration.illustrationFactory"/>
         </service>
 
         <service id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraOldCustomerDataProvider" class="Storytale\CustomerActivity\PortAdapters\Secondary\Customer\Querying\Aura\AuraOldCustomerDataProvider">
@@ -505,6 +506,7 @@
         <service id="storytale.customerActivity.domain.persistModel.order.orderFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Order\OrderFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.order.orderPositionFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Order\OrderPositionFactory"/>
         <service id="storytale.customerActivity.domain.persistModel.newsletter.newsletterSubscriptionFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Newsletter\NewsletterSubscriptionFactory"/>
+        <service id="storytale.customerActivity.domain.persistModel.illustration.illustrationFactory" class="Storytale\CustomerActivity\Domain\PersistModel\Illustration\IllustrationFactory"/>
     <!-- Factory END -->
 
     <!-- Builder -->
@@ -598,15 +600,6 @@
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraOldCustomerDataProvider"/>
             <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineLikeRepository"/>
             <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.customerLikeFactory"/>
-            <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
-        </service>
-
-        <service id="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Customer\MigrateOldDownloadsCommand" class="Storytale\CustomerActivity\PortAdapters\Primary\App\Symfony\Console\Commands\Customer\MigrateOldDownloadsCommand" public="true">
-            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.persistence.doctrine.doctrineCustomerRepository"/>
-            <argument type="service" id="storytale.portAdapters.secondary.persistence.doctrine.doctrineDomainSession"/>
-            <argument type="service" id="storytale.customerActivity.portAdapters.secondary.customer.querying.aura.auraOldCustomerDataProvider"/>
-            <argument type="service" id="storytale.customerActivity.domain.persistModel.customer.downloadProcessingService"/>
-            <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
             <argument type="service" id="storytale.portAdapters.secondary.serviceClient.inventory.inventoryServiceClient"/>
         </service>
 

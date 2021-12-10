@@ -3,6 +3,7 @@
 namespace Storytale\CustomerActivity\Domain\PersistModel\Customer;
 
 use Storytale\CustomerActivity\Domain\DomainException;
+use Storytale\CustomerActivity\Domain\PersistModel\Illustration\Illustration;
 use Storytale\CustomerActivity\Domain\PersistModel\Newsletter\NewsletterSubscription;
 use Storytale\CustomerActivity\Domain\PersistModel\Subscription\Subscription;
 use Storytale\PortAdapters\Secondary\Persistence\AbstractEntity;
@@ -75,14 +76,14 @@ class Customer extends AbstractEntity
     }
 
     /**
-     * @param int $illustrationId
+     * @param Illustration $illustration
      * @return bool
      */
-    public function isAlreadyDownloaded(int $illustrationId): bool
+    public function isAlreadyDownloaded(Illustration $illustration): bool
     {
         /** @var CustomerDownload $download */
         foreach ($this->downloads as $download) {
-            if ($download->getIllustrationId() === $illustrationId) {
+            if ($download->getIllustrationId() === $illustration->getId()) {
                 return true;
             }
         }
@@ -129,7 +130,9 @@ class Customer extends AbstractEntity
             }
         }
         if ($isNewDownload) {
-            $this->getActualSubscription()->newDownload($newDownload);
+            if ($newDownload->isFree() === false) {
+                $this->getActualSubscription()->useUpDownload($newDownload);
+            }
             $this->downloads[] = $newDownload;
         }
 

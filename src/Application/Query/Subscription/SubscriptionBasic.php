@@ -58,12 +58,16 @@ class SubscriptionBasic implements \JsonSerializable
     /** @var int|null */
     private ?int $membershipStatus;
 
+    /** @var string|null */
+    private ?string $nextBillDate;
+
     public function jsonSerialize()
     {
         return [
             'id'            => $this->id ?? null,
             'status'        => $this->status ?? null,
             'autoRenewal'   => $this->autoRenewal ?? null,
+            'nextBillDate'  => $this->nextBillDate ?? null,
             'customer' => [
                 'id'                => $this->customerId ?? null,
             ],
