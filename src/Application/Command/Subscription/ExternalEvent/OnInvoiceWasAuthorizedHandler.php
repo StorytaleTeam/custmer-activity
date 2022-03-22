@@ -127,18 +127,15 @@ class OnInvoiceWasAuthorizedHandler implements ExternalEventHandler
                 throw new ApplicationException('Get InvoiceWasAuthorizedEvent with empty paddle_subscription_id');
             }
             $subscription->initPaddleId($paddleSubscriptionId);
-            if (isset($event->getData()['nextBillDate'])) {
-                try {
-                    $nexBillDate = new \DateTime($event->getData()['nextBillDate']);
-                } catch (\Exception $e) {
-                    $nexBillDate = null;
-                }
-                if ($nexBillDate instanceof \DateTime) {
-                    $subscription->updateBillDate($nexBillDate);
-                }
-            }
 
             $this->subscriptionRepository->save($subscription);
+        }
+
+        if (isset($event->getData()['nextBillDate'])) {
+            try {
+                $nextBillDate = new \DateTime($event->getData()['nextBillDate']);
+                $subscription->updateBillDate($nextBillDate);
+            } catch (\Exception $e) {}
         }
 
         $invoiceAmount = $event->getData()['invoice']['amount'];
